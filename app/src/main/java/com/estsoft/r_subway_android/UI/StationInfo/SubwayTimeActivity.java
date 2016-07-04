@@ -1,4 +1,4 @@
-package com.estsoft.r_subway_android.UI.SubwayInfo;
+package com.estsoft.r_subway_android.UI.StationInfo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

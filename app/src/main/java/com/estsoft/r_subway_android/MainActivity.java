@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +20,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.SubwayController;
 import com.estsoft.r_subway_android.Station.Station;
 import com.estsoft.r_subway_android.TouchMapping.TtfMapImageView;
-import com.estsoft.r_subway_android.UI.SubwayInfo.SubwayInfoFragmentPagerAdapter;
+import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
@@ -230,8 +231,9 @@ public class MainActivity extends AppCompatActivity
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new SubwayInfoFragmentPagerAdapter(getSupportFragmentManager()));
+        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 
+        Log.d("pager",viewPager.toString());
         // Give the PagerSlidingTabStrip the ViewPager
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabsStrip.setTabPaddingLeftRight(25);
