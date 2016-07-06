@@ -174,7 +174,7 @@ public class TtfMapImageView extends MapTouchImageView {
 
     private void touchedStationAction( SemiStation semiStation ) {
         
-        Toast.makeText(getContext(), semiStation.getId(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), semiStation.getId(), Toast.LENGTH_SHORT).show();
 
         ttfMapImageViewListener.setActiveStation( semiStation );
 

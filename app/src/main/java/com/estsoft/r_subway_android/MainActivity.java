@@ -20,9 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
@@ -41,16 +43,19 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
+    private final int WAIT = 1;
+    private final int FULL = 2;
+    private int status = WAIT;
+
+    private static final int ALL_MARKERS = 0;
+    private static final int ACTI_MARKER = 1;
+
+
     private RouteController routeController = null;
     private Station activeStation = null;
     private Station startStation = null;
     private Station endStation = null;
 
-    private final int ACTIVE = 1;
-    private final int START = 2;
-    private final int END = 3;
-    private final int FULL = 4;
-    private int status = ACTIVE;
 
     private TtfMapImageView mapView = null;
 
@@ -257,13 +262,16 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.startMarker));
             markerList.add((ImageView) findViewById(R.id.endMarker));
         }
-        if (markerMode == 0) {
+        if (markerMode == ALL_MARKERS ) {
             for (ImageView marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
             activeStation = null;
             startStation = null;
             endStation = null;
+
+            status = WAIT;
+
         } else {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
@@ -272,16 +280,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        runBottomSheet(semiStation);
-//        runBottomSheet( station );
+        if ( status != FULL ) {
+            activeStation = RouteController.getInstance().getStation(semiStation);
+            setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
+            setMarkerPosition(0, null, null);
+            runBottomSheet(null, null);
+        }
+//        runBottomSheet( activeStation, null);
 
-        // 상황에 따른 Station 체인지
-//        activeStation = null;
-        activeStation = RouteController.getInstance().getStation(semiStation);
-        setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
-        setMarkerPosition(0, null, null);
-
-//        Log.d(TAG, "setActiveStation: " + semiStation.getPosition().toString());
     }
 
     private void setMarkerVisibility(ImageView marker, boolean visible) {
@@ -354,60 +360,59 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void runBottomSheet(SemiStation semiStation) {
+    public void runBottomSheet( Station station, Route route ) {
         BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
 
+        if ( status == WAIT ) {         // Station 정보
+            bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, bottomSheet, false));
 
-///////////////////////1번 station정보
-
-        bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, bottomSheet, false));
-
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+            // Get the ViewPager and set it's PagerAdapter so that it can display items
+            ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 //        viewPager.setOffscreenPageLimit(3);
-        Log.d("pager", "------------->" + viewPager.toString());
-        // Give the PagerSlidingTabStrip the ViewPager
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabsStrip.setTabPaddingLeftRight(25);
+            Log.d("pager", "------------->" + viewPager.toString());
+            // Give the PagerSlidingTabStrip the ViewPager
+            PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+            tabsStrip.setTabPaddingLeftRight(25);
 
-        // Attach the view pager to the tab strip
-        tabsStrip.setViewPager(viewPager);
+            // Attach the view pager to the tab strip
+            tabsStrip.setViewPager(viewPager);
 
-        TextView start = (TextView) findViewById(R.id.Start);
-        TextView arrive = (TextView) findViewById(R.id.Arrive);
-        Log.d("----------->", start.getText().toString());
-        Log.d("----------->", arrive.getText().toString());
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onStartClick(v);
-            }
-        });
-        arrive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onArriveClick(v);
-            }
-        });
+            TextView start = (TextView) findViewById(R.id.Start);
+            TextView arrive = (TextView) findViewById(R.id.Arrive);
+            Log.d("----------->", start.getText().toString());
+            Log.d("----------->", arrive.getText().toString());
+            start.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStartClick(v);
+                }
+            });
+            arrive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onArriveClick(v);
+                }
+            });
+        } else if ( status == FULL ) {          // Route 정보
+//            if(bottomSheet!= null) bottomSheet.dismissSheet();
+            BottomSheetLayout bottomSheet1 = (BottomSheetLayout) findViewById(R.id.bottomSheet1);
+            bottomSheet1.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, bottomSheet1, false));
+            // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
+            ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
+            viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager()));
+//        viewPager.setOffscreenPageLimit(3);
+            Log.d("pager", "------------->" + viewPager.toString());
+            // Give the PagerSlidingTabStrip the ViewPager
+            PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
+            tabsStrip.setTabPaddingLeftRight(25);
 
+            // Attach the view pager to the tab strip
+            tabsStrip.setViewPager(viewPager);
+            bottomSheet1.expandSheet();
+        }
 
-        ///////////////////////////////////////////2번 route정보
     }
-
-    bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, bottomSheet, false));
-
-    // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
-    ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
-    viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager()));
-//        viewPager.setOffscreenPageLimit(3);
-    Log.d("pager", "------------->" + viewPager.toString());
-    // Give the PagerSlidingTabStrip the ViewPager
-    PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
-    tabsStrip.setTabPaddingLeftRight(25);
-
-    // Attach the view pager to the tab strip
-    tabsStrip.setViewPager(viewPager);
 
     /*
         Down Here - BottomSheet
@@ -415,6 +420,7 @@ public class MainActivity extends AppCompatActivity
     */
 
     public void onStartClick(View v) {
+        ((BottomSheetLayout) findViewById(R.id.bottomSheet)).dismissSheet();
         startStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
@@ -422,9 +428,11 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(startMarker, true);
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
+        setStatus();
     }
 
     public void onArriveClick(View v) {
+        ((BottomSheetLayout) findViewById(R.id.bottomSheet)).dismissSheet();
         endStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
@@ -432,12 +440,16 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(startMarker, true);
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
+        setStatus();
     }
 
-/*
-    public void runRouteBottomSheet() {
-        BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
+    private void setStatus(){
+        if (startStation != null && endStation != null) {
+            status = FULL;
+            runBottomSheet(null, null);
+        } else {
+            status = WAIT;
+        }
+    }
 
-
-    }*/
 }
