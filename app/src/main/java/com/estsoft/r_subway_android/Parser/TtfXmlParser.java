@@ -33,14 +33,24 @@ public class TtfXmlParser {
         return gList;
     }
 
-    public List<CircleTag> getCircleList (){
+    public List<CircleTag> getCircleList(int laneNumber) {
+        List<CircleTag> lane = new ArrayList<>();
+        for (CircleTag circle : gList.get(laneNumber).getCircleList()) {
+            lane.add(circle);
+        }
+        return lane;
+    }
+
+    public List<CircleTag> getCircleList() {
+
         List<CircleTag> circleList = new ArrayList<>();
-        for ( GTag g : gList ) {
-            for ( CircleTag circle : g.getCircleList() ) {
+        for (GTag g : gList) {
+            for (CircleTag circle : g.getCircleList()) {
                 circleList.add(circle);
             }
         }
         return circleList;
+
     }
 
     public int getSvgWidth() {
@@ -51,7 +61,7 @@ public class TtfXmlParser {
         return svgHeight;
     }
 
-    public TtfXmlParser(InputStream in ) throws XmlPullParserException, IOException {
+    public TtfXmlParser(InputStream in) throws XmlPullParserException, IOException {
         this.inputStream = in;
         this.parse();
     }
@@ -61,9 +71,9 @@ public class TtfXmlParser {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput( inputStream, null );
+            parser.setInput(inputStream, null);
             parser.nextTag();
-            readSVG( parser );
+            readSVG(parser);
 
         } finally {
             inputStream.close();
@@ -71,9 +81,9 @@ public class TtfXmlParser {
         }
     }
 
-    private void readSVG( XmlPullParser parser ) throws  XmlPullParserException, IOException {
-        parser.require( XmlPullParser.START_TAG, namespace, "svg" );
-        if ( parser.getName().equals("svg") ) {
+    private void readSVG(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, namespace, "svg");
+        if (parser.getName().equals("svg")) {
             svgWidth = Integer.parseInt(parser.getAttributeValue(namespace, "width"));
             svgHeight = Integer.parseInt(parser.getAttributeValue(namespace, "height"));
         }
@@ -86,7 +96,7 @@ public class TtfXmlParser {
 
             if (name.equals("g")) {
                 readGTag(parser);
-            } else if( false ) {
+            } else if (false) {
 
             } else {
                 skip(parser);
@@ -96,10 +106,11 @@ public class TtfXmlParser {
 
     }
 
-    private void readGTag( XmlPullParser parser ) throws  XmlPullParserException, IOException {
+    private void readGTag(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, namespace, "g");
         String fill = parser.getAttributeValue(namespace, "fill");
-        GTag gTag = new GTag( fill );
+        int laneNumber = Integer.parseInt(parser.getAttributeValue(namespace, "number"));
+        GTag gTag = new GTag(fill, laneNumber);
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -107,8 +118,8 @@ public class TtfXmlParser {
             String name = parser.getName();
 
             if (name.equals("circle")) {
-                String[] circleFactorArr = readCircle( parser );
-                gTag.addCircle( circleFactorArr );
+                String[] circleFactorArr = readCircle(parser);
+                gTag.addCircle(circleFactorArr);
             } else {
                 skip(parser);
             }
@@ -116,7 +127,7 @@ public class TtfXmlParser {
         gList.add(gTag);
     }
 
-    private String[] readCircle( XmlPullParser parser ) throws XmlPullParserException, IOException {
+    private String[] readCircle(XmlPullParser parser) throws XmlPullParserException, IOException {
         String[] circleFactors = new String[circleFactorCount];
         //circleFactors 에 추가될 수 있다.
         parser.require(XmlPullParser.START_TAG, namespace, "circle");
@@ -125,7 +136,7 @@ public class TtfXmlParser {
             circleFactors[0] = parser.getAttributeValue(namespace, "cx");
             circleFactors[1] = parser.getAttributeValue(namespace, "cy");
             circleFactors[2] = parser.getAttributeValue(namespace, "r");
-            circleFactors[3] = parser.getAttributeValue(namespace, "name");
+            circleFactors[3] = parser.getAttributeValue(namespace, "id");
             circleFactors[4] = parser.getAttributeValue(namespace, "OTHER_TYPE");
             parser.nextTag();
         }
@@ -151,8 +162,6 @@ public class TtfXmlParser {
             }
         }
     }
-
-
 
 
 //    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {

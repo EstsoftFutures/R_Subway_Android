@@ -1,4 +1,4 @@
-package com.estsoft.r_subway_android.TouchMapping;
+package com.estsoft.r_subway_android.UI.MapTouchView;
 
 import android.content.Context;
 import android.graphics.Matrix;
@@ -20,7 +20,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     private static final boolean D = false;
 
     //최대 이미지 배율 상수 (뷰 * maxMagnification = 이미지)
-    private int maxMagnification = 10;
+    private int maxMagnification = 5;
 
     // 드래그, 줌 Sensitivity ; 1 을 기준으로 내려갈수록 적게 움직임
     private float dragSensitivity = 0.8f;
@@ -448,10 +448,10 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     //Override 용 함수들
     public void afterTouch ( int mode, Matrix matrix, MotionEvent event ) {}
     public void beforeTouch ( int mode,Matrix matrix, MotionEvent event ) {}
+    public void afterInit ( ) {}
+
 
     //getter setter
-
-
     public int getMaxMagnification() {
         return maxMagnification;
     }

@@ -13,12 +13,55 @@
     tools:showIn="@layout/activity_main"
 
     >
-
-        <com.estsoft.r_subway_android.TouchMapping.TtfMapImageView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/imageView01"
-            />
+            android:id="@+id/frame01">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                        <com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/mapView"
+                            />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/marker"
+                            android:src="@drawable/map_marker"
+                            android:scaleType="matrix"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/markerText"
+                            android:text=""/>
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/startMarker"
+                            android:src="@drawable/start_flag_blue"
+                            android:scaleType="matrix"/>
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/endMarker"
+                            android:src="@drawable/end_flag_red"
+                            android:scaleType="matrix"/>
+
+                </RelativeLayout>
+
+        </FrameLayout>
 
 </LinearLayout>
 
