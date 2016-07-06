@@ -14,15 +14,15 @@
   <path d="M200,300 Q400,50 600,300 T1000,300"
         fill="none" stroke="red" stroke-width="5"  />
   <!-- End points -->
-  <g fill="black" >
-    <circle cx="200" cy="300" r="10" name="200-300"/>
-    <circle cx="600" cy="300" r="10" name="600-300"/>
-    <circle cx="1000" cy="300" r="10" name="1000-300"/>
+  <g fill="black" number="1" >
+    <circle cx="200" cy="300" r="10" id="200-300"/>
+    <circle cx="600" cy="300" r="10" id="600-300"/>
+    <circle cx="1000" cy="300" r="10" id="1000-300"/>
   </g>
   <!-- Control points and lines from end points to control points -->
-  <g fill="#888888" >
-    <circle cx="400" cy="50" r="10" name="400-50"/>
-    <circle cx="800" cy="550" r="10"  name="800-550"/>
+  <g fill="#888888" number = "2">
+    <circle cx="400" cy="50" r="10" id="400-50"/>
+    <circle cx="800" cy="550" r="10"  id="800-550"/>
   </g>
   <path d="M200,300 L400,50 L600,300 
            L800,550 L1000,300"

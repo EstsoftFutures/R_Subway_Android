@@ -1,6 +1,10 @@
 package com.estsoft.r_subway_android;
 
 
+import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,21 +19,43 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.estsoft.r_subway_android.Controller.SubwayController;
-import com.estsoft.r_subway_android.Station.Station;
-import com.estsoft.r_subway_android.TouchMapping.TtfMapImageView;
+import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Repository.StationRepository.Route;
+import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
+import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         TtfMapImageViewListener, SearchView.OnQueryTextListener {
 
-    private SubwayController subwayService = null;
+    private static final String TAG = "MainActivity";
+
+    private RouteController routeController = null;
+    private Station activeStation = null;
+    private Station startStation = null;
+    private Station endStation = null;
+
+    private final int ACTIVE = 1;
+    private final int START = 2;
+    private final int END = 3;
+    private final int FULL = 4;
+    private int status = ACTIVE;
+
+    private TtfMapImageView mapView = null;
+
+    private List<ImageView> markerList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +122,7 @@ public class MainActivity extends AppCompatActivity
 //        });
 
         // TtfMapImageView ... mapView 의 구현
-        TtfMapImageView mapView = ((TtfMapImageView) findViewById(R.id.imageView01));
+        mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
         mapView.setTtfMapImageViewListener(this);
 
@@ -114,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        searchView.onActionViewExpanded();;
+     //   searchView.onActionViewExpanded();
         return true;
     }
     @Override
@@ -218,22 +244,118 @@ public class MainActivity extends AppCompatActivity
     }*/
 
 
-    /*
-        Down Here
+     /*
+        Down Here - TtfMapImageView
         Implemented Listener Override Methods
     */
 
     @Override
-    public void runBottomsheet(Station station) {
+    public void setMarkerDefault(float markerRatio) {
+        if ( markerList == null ) {
+            markerList = new ArrayList<>();
+            markerList.add( (ImageView)findViewById(R.id.marker) );
+            markerList.add( (ImageView)findViewById(R.id.startMarker) );
+            markerList.add( (ImageView)findViewById(R.id.endMarker) );
+        }
+        for ( ImageView marker : markerList ) {
+            setMarkerVisibility( marker, false );
+        }
+        activeStation = null;
+        startStation = null;
+        endStation = null;
+    }
+    @Override
+    public void setActiveStation( SemiStation semiStation ) {
+        runBottomSheet( semiStation );
+//        runBottomSheet( station );
 
-        BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomsheet);
+        // 상황에 따른 Station 체인지
+        activeStation = null;
+        activeStation = RouteController.getInstance().getStation( semiStation );
+        setMarkerVisibility( (ImageView)findViewById(R.id.marker), true );
+        setMarkerPosition( 0, null, null );
+
+//        Log.d(TAG, "setActiveStation: " + semiStation.getPosition().toString());
+    }
+
+    private void setMarkerVisibility( ImageView marker, boolean visible ) {
+        int visibility = visible ? View.VISIBLE : View.INVISIBLE;
+        marker.setVisibility( visibility );
+        if ( marker.getId() == R.id.marker ) ((TextView)findViewById(R.id.markerText)).setVisibility( visibility );
+
+    }
+
+    @Override
+    public void applyMapScaleChange() {
+        // 맵뷰 스케일이 바뀔때마다 Call
+        setMarkerPosition(0, null, null );
+    }
+
+    public void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
+
+        for ( ImageView marker : markerList ) {
+            if (marker.getVisibility() == View.VISIBLE ){
+
+                PointF markerPosition ;
+                String stationName = "";
+                switch ( marker.getId() ) {
+                    case R.id.marker :
+                        markerPosition = activeStation.getMapPoint();
+                        stationName = activeStation.getStationName();
+                        break;
+                    case R.id.startMarker :
+                        markerPosition = startStation.getMapPoint();
+                        stationName = startStation.getStationName();
+                        break;
+                    case R.id.endMarker :
+                        markerPosition = endStation.getMapPoint();
+                        stationName = endStation.getStationName();
+                        break;
+                    default :
+                        markerPosition = new PointF(0, 0);
+                }
+
+
+                Matrix markerMatrix = new Matrix();
+                float[] values = new float[9];
+                markerMatrix.getValues(values);
+
+                Drawable markerImage = marker.getDrawable();
+                float markerMagnification = mapView.getMarkerRatio() / ((markerImage.getIntrinsicWidth() + markerImage.getIntrinsicHeight()) / 2);
+                values[0] = values[4] = markerMagnification;
+                float markerWidth = markerImage.getIntrinsicWidth() * markerMagnification;
+                float markerHeight = markerImage.getIntrinsicHeight() * markerMagnification;
+                values[2] = markerPosition.x - markerWidth / 2;
+                values[5] = markerPosition.y - markerHeight;
+
+                markerMatrix.setValues(values);
+                marker.setImageMatrix( markerMatrix );
+
+                // StationName Set
+                if ( marker.getId() == R.id.marker ) {
+                    TextView markerText = (TextView)findViewById(R.id.markerText);
+                    markerText.setText( stationName );
+                    markerText.measure(0, 0);
+                    markerText.setX( markerPosition.x - markerText.getMeasuredWidth() / 2);
+                    markerText.setY( markerPosition.y -markerText.getMeasuredHeight() - markerWidth / 2);
+                    Log.d("main", (markerText.getMeasuredWidth() / 2) +  " / " + (markerText.getMeasuredHeight() - markerWidth / 2));
+
+                }
+            }
+
+        }
+
+    }
+
+    public void runBottomSheet(SemiStation semiStation) {
+        BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
         bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, bottomSheet, false));
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-
-        Log.d("pager",viewPager.toString());
+//        viewPager.setOffscreenPageLimit(3);
+        Log.d("pager","------------->"+viewPager.toString());
         // Give the PagerSlidingTabStrip the ViewPager
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabsStrip.setTabPaddingLeftRight(25);
@@ -242,4 +364,11 @@ public class MainActivity extends AppCompatActivity
         tabsStrip.setViewPager(viewPager);
 
     }
+
+    /*
+        Down Here - BottomSheet
+        Implemented Listener Override Methods
+    */
+
+
 }

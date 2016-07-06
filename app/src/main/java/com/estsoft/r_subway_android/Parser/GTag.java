@@ -10,6 +10,7 @@ public class GTag {
 
     private List<CircleTag> circleList = null;
     private String fill = "";
+    private int laneNumber;
 
     public List<CircleTag> getCircleList() {
         return circleList;
@@ -19,20 +20,21 @@ public class GTag {
         return fill;
     }
 
-    public GTag(String fill ) {
+    public GTag(String fill, int laneNumber) {
         this.fill = fill;
+        this.laneNumber = laneNumber;
         this.circleList = new ArrayList<>();
     }
 
-    public void addCircle( String[] circleFactors ){
+    public void addCircle(String[] circleFactors) {
 
-        CircleTag circle = new CircleTag( Float.parseFloat(circleFactors[0]),
+        CircleTag circle = new CircleTag(
+                Float.parseFloat(circleFactors[0]),
                 Float.parseFloat(circleFactors[1]),
-                Float.parseFloat(circleFactors[2]),
-                circleFactors[3],
-                fill,
-                circleFactors[4] );
-        circleList.add( circle );
+                laneNumber,
+                circleFactors[3]
+        );
+        circleList.add(circle);
     }
 
 }
