@@ -26,6 +26,7 @@ import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
+import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.startMarker));
             markerList.add((ImageView) findViewById(R.id.endMarker));
         }
-        if ( markerMode == 0 ) {
+        if (markerMode == 0) {
             for (ImageView marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
@@ -355,6 +356,10 @@ public class MainActivity extends AppCompatActivity
 
     public void runBottomSheet(SemiStation semiStation) {
         BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
+
+
+///////////////////////1번 station정보
+
         bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, bottomSheet, false));
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -371,12 +376,12 @@ public class MainActivity extends AppCompatActivity
 
         TextView start = (TextView) findViewById(R.id.Start);
         TextView arrive = (TextView) findViewById(R.id.Arrive);
-        Log.d("----------->",start.getText().toString());
-        Log.d("----------->",arrive.getText().toString());
+        Log.d("----------->", start.getText().toString());
+        Log.d("----------->", arrive.getText().toString());
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    onStartClick(v);
+                onStartClick(v);
             }
         });
         arrive.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +390,24 @@ public class MainActivity extends AppCompatActivity
                 onArriveClick(v);
             }
         });
+
+
+        ///////////////////////////////////////////2번 route정보
     }
+
+    bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, bottomSheet, false));
+
+    // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
+    ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
+    viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager()));
+//        viewPager.setOffscreenPageLimit(3);
+    Log.d("pager", "------------->" + viewPager.toString());
+    // Give the PagerSlidingTabStrip the ViewPager
+    PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
+    tabsStrip.setTabPaddingLeftRight(25);
+
+    // Attach the view pager to the tab strip
+    tabsStrip.setViewPager(viewPager);
 
     /*
         Down Here - BottomSheet
@@ -411,4 +433,11 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
     }
+
+/*
+    public void runRouteBottomSheet() {
+        BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
+
+
+    }*/
 }
