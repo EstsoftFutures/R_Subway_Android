@@ -37,7 +37,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/marker"
-                            android:src="@drawable/map_marker"
+                            android:src="@drawable/map_pin_orange"
                             android:scaleType="matrix"
                             />
                         <TextView
@@ -50,13 +50,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/startMarker"
-                            android:src="@drawable/start_flag_blue"
+                            android:src="@drawable/map_pin_navy_blue"
                             android:scaleType="matrix"/>
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/endMarker"
-                            android:src="@drawable/end_flag_red"
+                            android:src="@drawable/map_pin_light_green"
                             android:scaleType="matrix"/>
 
                 </RelativeLayout>

@@ -4,7 +4,6 @@ package com.estsoft.r_subway_android;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,11 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
-import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
@@ -252,19 +249,24 @@ public class MainActivity extends AppCompatActivity
     */
 
     @Override
-    public void setMarkerDefault(float markerRatio) {
+    public void setMarkerDefault(int markerMode) {
         if (markerList == null) {
             markerList = new ArrayList<>();
             markerList.add((ImageView) findViewById(R.id.marker));
             markerList.add((ImageView) findViewById(R.id.startMarker));
             markerList.add((ImageView) findViewById(R.id.endMarker));
         }
-        for (ImageView marker : markerList) {
-            setMarkerVisibility(marker, false);
+        if ( markerMode == 0 ) {
+            for (ImageView marker : markerList) {
+                setMarkerVisibility(marker, false);
+            }
+            activeStation = null;
+            startStation = null;
+            endStation = null;
+        } else {
+            setMarkerVisibility(markerList.get(0), false);
+            activeStation = null;
         }
-        activeStation = null;
-        startStation = null;
-        endStation = null;
     }
 
     @Override
@@ -273,7 +275,7 @@ public class MainActivity extends AppCompatActivity
 //        runBottomSheet( station );
 
         // 상황에 따른 Station 체인지
-        activeStation = null;
+//        activeStation = null;
         activeStation = RouteController.getInstance().getStation(semiStation);
         setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
         setMarkerPosition(0, null, null);
@@ -369,7 +371,7 @@ public class MainActivity extends AppCompatActivity
 
         TextView start = (TextView) findViewById(R.id.Start);
         TextView arrive = (TextView) findViewById(R.id.Arrive);
-Log.d("----------->",start.getText().toString());
+        Log.d("----------->",start.getText().toString());
         Log.d("----------->",arrive.getText().toString());
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -391,13 +393,22 @@ Log.d("----------->",start.getText().toString());
     */
 
     public void onStartClick(View v) {
-        TextView s = (TextView)v;
-        Log.d("start", s.getText().toString());
+        startStation = activeStation;
+//        activeStation = null;
+        // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
+        ImageView startMarker = markerList.get(1);
+        setMarkerVisibility(startMarker, true);
+        setMarkerVisibility(markerList.get(0), false);
+        setMarkerPosition(0, null, null);
     }
 
     public void onArriveClick(View v) {
-
-        TextView a = (TextView)v;
-        Log.d("arrive", a.getText().toString());
+        endStation = activeStation;
+//        activeStation = null;
+        // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
+        ImageView startMarker = markerList.get(2);
+        setMarkerVisibility(startMarker, true);
+        setMarkerVisibility(markerList.get(0), false);
+        setMarkerPosition(0, null, null);
     }
 }
