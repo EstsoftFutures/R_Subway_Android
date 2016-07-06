@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.startMarker));
             markerList.add((ImageView) findViewById(R.id.endMarker));
         }
-        if (markerMode == ALL_MARKERS ) {
+        if (markerMode == ALL_MARKERS) {
             for (ImageView marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        if ( status != FULL ) {
+        if (status != FULL) {
             activeStation = RouteController.getInstance().getStation(semiStation);
             setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
             setMarkerPosition(0, null, null);
@@ -360,12 +360,15 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void runBottomSheet( Station station, Route route ) {
-        BottomSheetLayout bottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
-
-        if ( status == WAIT ) {         // Station 정보
-            bottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, bottomSheet, false));
-
+    public void runBottomSheet(Station station, Route route) {
+        BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
+        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet1);
+        if (status == WAIT) {         // Station 정보
+            if (stationBottomSheet.isSheetShowing()) {
+                LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
+            } else {
+                stationBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false));
+            }
             // Get the ViewPager and set it's PagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
@@ -377,6 +380,9 @@ public class MainActivity extends AppCompatActivity
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
+
+            stationBottomSheet.setShouldDimContentView(false);
+            stationBottomSheet.setInterceptContentTouch(false);
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
@@ -394,10 +400,9 @@ public class MainActivity extends AppCompatActivity
                     onArriveClick(v);
                 }
             });
-        } else if ( status == FULL ) {          // Route 정보
+        } else if (status == FULL) {          // Route 정보
 //            if(bottomSheet!= null) bottomSheet.dismissSheet();
-            BottomSheetLayout bottomSheet1 = (BottomSheetLayout) findViewById(R.id.bottomSheet1);
-            bottomSheet1.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, bottomSheet1, false));
+            routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
             viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager()));
@@ -409,7 +414,8 @@ public class MainActivity extends AppCompatActivity
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
-            bottomSheet1.expandSheet();
+            stationBottomSheet.dismissSheet();
+
         }
 
     }
@@ -443,7 +449,7 @@ public class MainActivity extends AppCompatActivity
         setStatus();
     }
 
-    private void setStatus(){
+    private void setStatus() {
         if (startStation != null && endStation != null) {
             status = FULL;
             runBottomSheet(null, null);
