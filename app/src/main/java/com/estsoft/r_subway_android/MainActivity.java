@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-//Search icon없이 바로뜨게
+    //Search icon없이 바로뜨게
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -140,13 +141,15 @@ public class MainActivity extends AppCompatActivity
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-     //   searchView.onActionViewExpanded();
+        //   searchView.onActionViewExpanded();
         return true;
     }
+
     @Override
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 */
-
 
 
     //설정창 navigation items
@@ -251,67 +253,69 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setMarkerDefault(float markerRatio) {
-        if ( markerList == null ) {
+        if (markerList == null) {
             markerList = new ArrayList<>();
-            markerList.add( (ImageView)findViewById(R.id.marker) );
-            markerList.add( (ImageView)findViewById(R.id.startMarker) );
-            markerList.add( (ImageView)findViewById(R.id.endMarker) );
+            markerList.add((ImageView) findViewById(R.id.marker));
+            markerList.add((ImageView) findViewById(R.id.startMarker));
+            markerList.add((ImageView) findViewById(R.id.endMarker));
         }
-        for ( ImageView marker : markerList ) {
-            setMarkerVisibility( marker, false );
+        for (ImageView marker : markerList) {
+            setMarkerVisibility(marker, false);
         }
         activeStation = null;
         startStation = null;
         endStation = null;
     }
+
     @Override
-    public void setActiveStation( SemiStation semiStation ) {
-        runBottomSheet( semiStation );
+    public void setActiveStation(SemiStation semiStation) {
+        runBottomSheet(semiStation);
 //        runBottomSheet( station );
 
         // 상황에 따른 Station 체인지
         activeStation = null;
-        activeStation = RouteController.getInstance().getStation( semiStation );
-        setMarkerVisibility( (ImageView)findViewById(R.id.marker), true );
-        setMarkerPosition( 0, null, null );
+        activeStation = RouteController.getInstance().getStation(semiStation);
+        setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
+        setMarkerPosition(0, null, null);
 
 //        Log.d(TAG, "setActiveStation: " + semiStation.getPosition().toString());
     }
 
-    private void setMarkerVisibility( ImageView marker, boolean visible ) {
+    private void setMarkerVisibility(ImageView marker, boolean visible) {
         int visibility = visible ? View.VISIBLE : View.INVISIBLE;
-        marker.setVisibility( visibility );
-        if ( marker.getId() == R.id.marker ) ((TextView)findViewById(R.id.markerText)).setVisibility( visibility );
+        marker.setVisibility(visibility);
+        if (marker.getId() == R.id.marker)
+            ((TextView) findViewById(R.id.markerText)).setVisibility(visibility);
 
     }
 
     @Override
     public void applyMapScaleChange() {
         // 맵뷰 스케일이 바뀔때마다 Call
-        setMarkerPosition(0, null, null );
+        setMarkerPosition(0, null, null);
     }
 
     public void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
 
-        for ( ImageView marker : markerList ) {
-            if (marker.getVisibility() == View.VISIBLE ){
+        for (ImageView marker : markerList) {
+            if (marker.getVisibility() == View.VISIBLE) {
 
-                PointF markerPosition ;
+                PointF markerPosition;
                 String stationName = "";
-                switch ( marker.getId() ) {
-                    case R.id.marker :
+                switch (marker.getId()) {
+                    case R.id.marker:
                         markerPosition = activeStation.getMapPoint();
                         stationName = activeStation.getStationName();
                         break;
-                    case R.id.startMarker :
+                    case R.id.startMarker:
                         markerPosition = startStation.getMapPoint();
                         stationName = startStation.getStationName();
                         break;
-                    case R.id.endMarker :
+                    case R.id.endMarker:
                         markerPosition = endStation.getMapPoint();
                         stationName = endStation.getStationName();
                         break;
-                    default :
+                    default:
                         markerPosition = new PointF(0, 0);
                 }
 
@@ -329,16 +333,16 @@ public class MainActivity extends AppCompatActivity
                 values[5] = markerPosition.y - markerHeight;
 
                 markerMatrix.setValues(values);
-                marker.setImageMatrix( markerMatrix );
+                marker.setImageMatrix(markerMatrix);
 
                 // StationName Set
-                if ( marker.getId() == R.id.marker ) {
-                    TextView markerText = (TextView)findViewById(R.id.markerText);
-                    markerText.setText( stationName );
+                if (marker.getId() == R.id.marker) {
+                    TextView markerText = (TextView) findViewById(R.id.markerText);
+                    markerText.setText(stationName);
                     markerText.measure(0, 0);
-                    markerText.setX( markerPosition.x - markerText.getMeasuredWidth() / 2);
-                    markerText.setY( markerPosition.y -markerText.getMeasuredHeight() - markerWidth / 2);
-                    Log.d("main", (markerText.getMeasuredWidth() / 2) +  " / " + (markerText.getMeasuredHeight() - markerWidth / 2));
+                    markerText.setX(markerPosition.x - markerText.getMeasuredWidth() / 2);
+                    markerText.setY(markerPosition.y - markerText.getMeasuredHeight() - markerWidth / 2);
+                    Log.d("main", (markerText.getMeasuredWidth() / 2) + " / " + (markerText.getMeasuredHeight() - markerWidth / 2));
 
                 }
             }
@@ -355,7 +359,7 @@ public class MainActivity extends AppCompatActivity
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
 //        viewPager.setOffscreenPageLimit(3);
-        Log.d("pager","------------->"+viewPager.toString());
+        Log.d("pager", "------------->" + viewPager.toString());
         // Give the PagerSlidingTabStrip the ViewPager
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabsStrip.setTabPaddingLeftRight(25);
@@ -363,6 +367,22 @@ public class MainActivity extends AppCompatActivity
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(viewPager);
 
+        TextView start = (TextView) findViewById(R.id.Start);
+        TextView arrive = (TextView) findViewById(R.id.Arrive);
+Log.d("----------->",start.getText().toString());
+        Log.d("----------->",arrive.getText().toString());
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    onStartClick(v);
+            }
+        });
+        arrive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onArriveClick(v);
+            }
+        });
     }
 
     /*
@@ -370,5 +390,14 @@ public class MainActivity extends AppCompatActivity
         Implemented Listener Override Methods
     */
 
+    public void onStartClick(View v) {
+        TextView s = (TextView)v;
+        Log.d("start", s.getText().toString());
+    }
 
+    public void onArriveClick(View v) {
+
+        TextView a = (TextView)v;
+        Log.d("arrive", a.getText().toString());
+    }
 }
