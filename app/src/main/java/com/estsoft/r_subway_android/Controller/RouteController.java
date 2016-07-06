@@ -21,9 +21,7 @@ public class RouteController {
         return instance;
     }
 
-    private RouteController(  ) {
-
-    }
+    private RouteController(  ) {    }
 
     private Station actriveStation = null;
 

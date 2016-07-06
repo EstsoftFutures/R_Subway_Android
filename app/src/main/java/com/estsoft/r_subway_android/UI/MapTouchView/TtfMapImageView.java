@@ -27,6 +27,10 @@ public class TtfMapImageView extends MapTouchImageView {
 
     private static final int MARKER_SCALE_RATIO = 10;
 
+    private static final int ALL_MARKERS = 0;
+    private static final int ACTI_MARKER = 1;
+
+
     // Listeners...
     protected TtfMapImageViewListener ttfMapImageViewListener;
 
@@ -40,6 +44,8 @@ public class TtfMapImageView extends MapTouchImageView {
     private int currentImageY = 0;
     private int svgWidth = 0;
     private int svgHeight = 0;
+
+
 
     public void setTtfMapImageViewListener(TtfMapImageViewListener ttfMapImageViewListener) {
         this.ttfMapImageViewListener = ttfMapImageViewListener;
@@ -162,7 +168,7 @@ public class TtfMapImageView extends MapTouchImageView {
     }
 
     private void unTouchedStationAction() {
-        ttfMapImageViewListener.setMarkerDefault( 0 );
+        ttfMapImageViewListener.setMarkerDefault( ACTI_MARKER );
     }
 
 
@@ -185,7 +191,7 @@ public class TtfMapImageView extends MapTouchImageView {
     @Override
     public void init() {
         super.init();
-        ttfMapImageViewListener.setMarkerDefault( 0 );
+        ttfMapImageViewListener.setMarkerDefault( ALL_MARKERS );
     }
 
 

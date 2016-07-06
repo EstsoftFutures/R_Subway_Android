@@ -10,7 +10,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
  * Created by estsoft on 2016-06-28.
  */
 public interface TtfMapImageViewListener {
-    void setMarkerDefault(float markerRatio);
+    void setMarkerDefault(int markerMode);
     void setActiveStation(SemiStation semiStation);
     void applyMapScaleChange(  );
 }
