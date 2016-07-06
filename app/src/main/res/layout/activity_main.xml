@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+
  />
 
     </android.support.design.widget.AppBarLayout>
@@ -36,7 +37,7 @@
 
 
     <com.flipboard.bottomsheet.BottomSheetLayout
-        android:id="@+id/bottomSheet"
+        android:id="@+id/station_bottomSheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -47,7 +48,7 @@
             />
     </com.flipboard.bottomsheet.BottomSheetLayout>
         <com.flipboard.bottomsheet.BottomSheetLayout
-            android:id="@+id/bottomSheet1"
+            android:id="@+id/route_bottomSheet1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >

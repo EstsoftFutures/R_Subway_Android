@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         //search
         toolbar.inflateMenu(R.menu.search);
 
-      /*  SearchView mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
+        SearchView mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -83,8 +82,9 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextChange(String s) {
                 return false;
             }
-        });*/
-
+        });
+        mSearchView.onActionViewExpanded();
+        mSearchView.clearFocus();
         /////////////////////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
@@ -144,7 +144,8 @@ public class MainActivity extends AppCompatActivity
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        //   searchView.onActionViewExpanded();
+           searchView.onActionViewExpanded();
+        searchView.clearFocus();
         return true;
     }
 
@@ -275,6 +276,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
+            ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
         }
     }
 
@@ -361,8 +363,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void runBottomSheet(Station station, Route route) {
-        BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet);
-        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.bottomSheet1);
+        BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
+        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
                 LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
@@ -386,8 +388,8 @@ public class MainActivity extends AppCompatActivity
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
-            Log.d("----------->", start.getText().toString());
-            Log.d("----------->", arrive.getText().toString());
+//            Log.d("----------->", start.getText().toString());
+//            Log.d("----------->", arrive.getText().toString());
             start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -414,6 +416,9 @@ public class MainActivity extends AppCompatActivity
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
+            routeBottomSheet.setShouldDimContentView(false);
+            routeBottomSheet.setInterceptContentTouch(false);
+
             stationBottomSheet.dismissSheet();
 
         }
@@ -426,7 +431,7 @@ public class MainActivity extends AppCompatActivity
     */
 
     public void onStartClick(View v) {
-        ((BottomSheetLayout) findViewById(R.id.bottomSheet)).dismissSheet();
+        ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
         startStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
@@ -438,7 +443,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onArriveClick(View v) {
-        ((BottomSheetLayout) findViewById(R.id.bottomSheet)).dismissSheet();
+        ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
         endStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
