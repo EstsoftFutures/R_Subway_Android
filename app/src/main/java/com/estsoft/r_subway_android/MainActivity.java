@@ -1,6 +1,8 @@
 package com.estsoft.r_subway_android;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -13,15 +15,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +87,8 @@ public class MainActivity extends AppCompatActivity
         //search
         toolbar.inflateMenu(R.menu.search);
 
-        SearchView mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
+
+        final SearchView mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -91,7 +99,9 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
-        mSearchView.onActionViewExpanded();
+
+
+        mSearchView.onActionViewExpanded();       ;
         mSearchView.clearFocus();
         /////////////////////////////////////////////////////////////////
 
@@ -104,19 +114,20 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
-
                     drawer.closeDrawer(GravityCompat.START);
                 } else {
                     drawer.openDrawer(GravityCompat.START);
+                    hideSoftKeyboard(v);
                 }
             }
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+                navigationView.setNavigationItemSelectedListener(this);
 
         searchSetting = new SearchSetting();
         expListView = (ExpandableListView) findViewById(R.id.search_setting);
@@ -154,6 +165,8 @@ public class MainActivity extends AppCompatActivity
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
         mapView.setTtfMapImageViewListener(this);
 
+
+
     }
 
     //Search icon없이 바로뜨게
@@ -168,8 +181,9 @@ public class MainActivity extends AppCompatActivity
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-           searchView.onActionViewExpanded();
+        searchView.onActionViewExpanded();
         searchView.clearFocus();
+
         return true;
     }
 
@@ -190,6 +204,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         return true;
     }
 
@@ -233,6 +248,8 @@ public class MainActivity extends AppCompatActivity
             setMarkerPosition(0, null, null);
             runBottomSheet(null, null);
         }
+
+
 //        runBottomSheet( activeStation, null);
 
     }
@@ -249,6 +266,7 @@ public class MainActivity extends AppCompatActivity
     public void applyMapScaleChange() {
         // 맵뷰 스케일이 바뀔때마다 Call
         setMarkerPosition(0, null, null);
+        hideSoftKeyboard(mapView);
     }
 
     public void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
@@ -306,6 +324,16 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
+/*
+* hide keyboard
+* */
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+    }
+
 
 
     /*
@@ -411,5 +439,7 @@ public class MainActivity extends AppCompatActivity
             status = WAIT;
         }
     }
+
+
 
 }
