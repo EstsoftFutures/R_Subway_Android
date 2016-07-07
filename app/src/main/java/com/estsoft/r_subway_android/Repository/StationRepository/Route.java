@@ -17,4 +17,12 @@ public class Route extends TtfNode {
         this(conLevel, stationId1, stationId2);
         this.stationList = stationList;
     }
+
+    public List<TtfNode> getStationList() {
+        return stationList;
+    }
+
+    public void setStationList(List<TtfNode> stationList) {
+        this.stationList = stationList;
+    }
 }

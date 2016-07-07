@@ -59,6 +59,13 @@
                             android:src="@drawable/map_pin_light_green"
                             android:scaleType="matrix"/>
 
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/route_image_source"
+                            android:src="@drawable/map_marker"
+                            android:contentDescription="stationMarker in Route"/>
+
                 </RelativeLayout>
 
         </FrameLayout>

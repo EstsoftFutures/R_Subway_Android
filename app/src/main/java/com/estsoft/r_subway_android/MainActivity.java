@@ -1,6 +1,7 @@
 package com.estsoft.r_subway_android;
 
 
+import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,7 @@ import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
 import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity
     private Station activeStation = null;
     private Station startStation = null;
     private Station endStation = null;
+
+    private Route normalRoute = null;
+    private List<ImageView> routeMarkers = null;
 
 
     private TtfMapImageView mapView = null;
@@ -129,6 +134,8 @@ public class MainActivity extends AppCompatActivity
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
         mapView.setTtfMapImageViewListener(this);
+
+        routeController = RouteController.getInstance( mapView );
 
     }
 
@@ -273,6 +280,8 @@ public class MainActivity extends AppCompatActivity
 
             status = WAIT;
 
+            normalRoute = null;
+
         } else {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
@@ -283,7 +292,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setActiveStation(SemiStation semiStation) {
         if (status != FULL) {
-            activeStation = RouteController.getInstance().getStation(semiStation);
+            activeStation = routeController.getStation(semiStation);
             setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
             setMarkerPosition(0, null, null);
             runBottomSheet(null, null);
@@ -304,6 +313,14 @@ public class MainActivity extends AppCompatActivity
     public void applyMapScaleChange() {
         // 맵뷰 스케일이 바뀔때마다 Call
         setMarkerPosition(0, null, null);
+
+        if (normalRoute != null) {
+            for (TtfNode station : normalRoute.getStationList()) {
+                Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
+                Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
+            }
+        }
+
     }
 
     public void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
@@ -457,10 +474,29 @@ public class MainActivity extends AppCompatActivity
     private void setStatus() {
         if (startStation != null && endStation != null) {
             status = FULL;
+            //RouteBottomSheet Call
             runBottomSheet(null, null);
+            //MainActivity make Route Drawing
+            normalRoute = routeController.getRoute( startStation, endStation );
+            for ( TtfNode station : normalRoute.getStationList() ) {
+                Log.d("RouteTest", "getRoute: " + ((Station)station).getStationName() );
+                Log.d("RouteTest", "getRoute: " + ((Station)station).getMapPoint().toString() );
+            }
+
         } else {
             status = WAIT;
         }
+    }
+
+    private void inflateRoute( Route route ){
+        if (routeMarkers == null) routeMarkers = new ArrayList<>();
+        LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
+        for (int i = 0; i < route.getStationList().size(); i ++ ){
+            if ( i == 0 || i == route.getStationList().size() - 1) continue;
+            ImageView marker = (ImageView)inflater.inflate( R.layout., null );
+
+        }
+
     }
 
 }
