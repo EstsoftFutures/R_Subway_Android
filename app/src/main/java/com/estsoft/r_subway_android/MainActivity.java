@@ -18,8 +18,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
@@ -28,6 +32,8 @@ import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
 import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
+import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
+import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
@@ -59,12 +65,14 @@ public class MainActivity extends AppCompatActivity
     private TtfMapImageView mapView = null;
 
     private List<ImageView> markerList = null;
-
+    ExpandableListView expListView;
+    SearchSetting searchSetting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!설정창 Sliding menu
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,6 +96,9 @@ public class MainActivity extends AppCompatActivity
         /////////////////////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
+
+
+
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -107,7 +118,20 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        searchSetting = new SearchSetting();
+        expListView = (ExpandableListView) findViewById(R.id.search_setting);
+        final ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
+        expListView.setAdapter(expandableListAdapter);
 
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                final String selected = (String) expandableListAdapter.getChild(groupPosition, childPosition);
+                Toast.makeText(getBaseContext(), "item selected", Toast.LENGTH_SHORT).show();
+
+                return true;
+            }
+        });
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!BottomSheet
 ////        Button stationinfoButton = (Button) findViewById(R.id.stationinfoB);
 ////        Button stationinfoButton2 = (Button) findViewById(R.id.stationinfoB2);
@@ -159,95 +183,16 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
- /*   @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-*/
-
 
     //설정창 navigation items
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //     drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-
-    /*
-        down here
-        Implements Override Mettomsheet() {
-
-
-
-/*                ///////////////////////////////////////////////////////////////
-                TextView Stv = (TextView) findViewById(R.id.Start);
-                TextView Etv = (TextView) findViewById(R.id.End);
-
-                // we can use these listeners to make start/end pts
-                Stv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "Start clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                Etv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(MainActivity.this, "End clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-//이건 탭뷰에 있어야하
-                Button btn = (Button) findViewById(R.id.SubwayTime);
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, SubwayTimeActivity.class);
-                        startActivity(intent);
-                    }
-                });
-
-                    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-
-    }*/
 
 
      /*
@@ -362,6 +307,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    /*
+    Bottomsheets
+    */
     public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
