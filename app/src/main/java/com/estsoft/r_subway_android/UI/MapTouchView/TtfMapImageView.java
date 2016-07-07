@@ -193,6 +193,7 @@ public class TtfMapImageView extends MapTouchImageView {
                 return semiStation.getPosition();
         }
         return null;
+//        return new PointF(0,0);
     }
 
 

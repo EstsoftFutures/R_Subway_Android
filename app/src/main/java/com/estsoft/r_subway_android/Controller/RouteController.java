@@ -74,6 +74,11 @@ public class RouteController {
         station01.setMapPoint( mapView.getStationPoint( "600-300" ) );
         stationList.add( station01 );
 
+        Station station02 = new Station( 0, "400-50", null );
+        station02.setStationName( "400-50" );
+        station02.setMapPoint( mapView.getStationPoint( "400-50" ) );
+        stationList.add( station02 );
+
         stationList.add( end );
         Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1(), stationList);
 

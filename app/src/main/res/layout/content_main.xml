@@ -20,18 +20,21 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    >
                         <com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/mapView"
                             />
+
                 </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:id="@+id/route_mother">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -58,13 +61,6 @@
                             android:id="@+id/endMarker"
                             android:src="@drawable/map_pin_light_green"
                             android:scaleType="matrix"/>
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/route_image_source"
-                            android:src="@drawable/map_marker"
-                            android:contentDescription="stationMarker in Route"/>
 
                 </RelativeLayout>
 
