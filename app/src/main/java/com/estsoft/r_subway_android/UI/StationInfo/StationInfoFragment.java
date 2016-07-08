@@ -9,11 +9,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
 import com.estsoft.r_subway_android.R;
+import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 
 
 public class StationInfoFragment extends Fragment {
@@ -21,12 +24,12 @@ public class StationInfoFragment extends Fragment {
     private int mPage;
 
     FragmentActivity mActivity;
-    RecyclerView mRecyclerView;
-    RecyclerViewAdapter adapter;
-
+        RecyclerView mRecyclerView;
+       RecyclerViewAdapter adapter;
 
     public StationInfoFragment() {
         // Required empty public constructor
+
     }
 
 
@@ -50,6 +53,8 @@ public class StationInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
+
+//        Log.d("->stationinfoshowcreate",""+stationInfoShow.getChildList().toString());
     }
 
     // Inflate the fragment layout we defined above for this fragment
@@ -58,24 +63,26 @@ public class StationInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(mActivity);
+               adapter = new RecyclerViewAdapter(mActivity);
 
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view , Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+              mRecyclerView.setHasFixedSize(true);
+              mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+     mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+      adapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
 
             @Override
             public void onItemClick(View v , int position) {
                 // do something with position
             }
         });
+
+
     }
 }
