@@ -211,21 +211,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //     drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-    /*
-        down here
-        Implements Override Mettomsheet() {
-
-
-
-/*                ///////////////////////////////////////////////////////////////
-                TextView Stv = (TextView) findViewById(R.id.Start);
-                TextView Etv = (TextView) findViewById(R.id.End);
+        DrawerLayout drawer = (DrawerLaymR.id.End);
 
                 // we can use these listeners to make start/end pts
                 Stv.setOnClickListener(new View.OnClickListener() {
