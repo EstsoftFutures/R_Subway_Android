@@ -187,6 +187,15 @@ public class TtfMapImageView extends MapTouchImageView {
         return (getWidth() + getHeight()) / MARKER_SCALE_RATIO;
     }
 
+    public PointF getStationPoint ( String stationId ) {
+        for ( SemiStation semiStation : semiStationList ) {
+            if (semiStation.getId().equals( stationId ))
+                return semiStation.getPosition();
+        }
+        return null;
+//        return new PointF(0,0);
+    }
+
 
     @Override
     public void init() {

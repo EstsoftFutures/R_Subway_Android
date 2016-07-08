@@ -15,20 +15,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +34,7 @@ import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
 import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
@@ -68,18 +66,23 @@ public class MainActivity extends AppCompatActivity
     private Station startStation = null;
     private Station endStation = null;
 
+    private Route normalRoute = null;
+    private List<ImageView> routeMarkers = null;
+
+    private RelativeLayout passMarkerMother = null;
 
     private TtfMapImageView mapView = null;
 
     private List<ImageView> markerList = null;
     ExpandableListView expListView;
     SearchSetting searchSetting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!설정창 Sliding menu
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextSubmit(String s) {
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -101,12 +105,12 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        mSearchView.onActionViewExpanded();       ;
+        mSearchView.onActionViewExpanded();
+        ;
         mSearchView.clearFocus();
         /////////////////////////////////////////////////////////////////
 
         setSupportActionBar(toolbar);
-
 
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
 
         searchSetting = new SearchSetting();
         expListView = (ExpandableListView) findViewById(R.id.search_setting);
@@ -143,31 +147,21 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!BottomSheet
-////        Button stationinfoButton = (Button) findViewById(R.id.stationinfoB);
-////        Button stationinfoButton2 = (Button) findViewById(R.id.stationinfoB2);
-//        stationinfoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                runBottomsheet();
-//            }
-//            });
-//
-//        stationinfoButton2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                runBottomsheet();
-//            }
-//        });
+
+
+
+        // passMarkerMother Relative View reference
+        passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
 
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
         mapView.setTtfMapImageViewListener(this);
 
-
+        routeController = RouteController.getInstance(mapView);
 
     }
+
 
     //Search icon없이 바로뜨게
     @Override
@@ -198,6 +192,15 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /*
+    Hide Keyboard
+     */
+    public void hideSoftKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+    }
+
     //설정창 navigation items
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -207,7 +210,6 @@ public class MainActivity extends AppCompatActivity
 
         return true;
     }
-
 
 
      /*
@@ -227,11 +229,22 @@ public class MainActivity extends AppCompatActivity
             for (ImageView marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
+//            setMarkerVisibility( (ImageView)findViewById(R.id.route_image_source), false);
             activeStation = null;
             startStation = null;
             endStation = null;
-
             status = WAIT;
+
+            normalRoute = null;
+            if (routeMarkers != null) {
+                for (ImageView view : routeMarkers) {
+                    view.setVisibility(View.GONE);
+                    passMarkerMother.removeView(view);
+                }
+            }
+            routeMarkers = null;
+
+            applyMapScaleChange();
 
         } else {
             setMarkerVisibility(markerList.get(0), false);
@@ -243,14 +256,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setActiveStation(SemiStation semiStation) {
         if (status != FULL) {
-            activeStation = RouteController.getInstance().getStation(semiStation);
+            activeStation = routeController.getStation(semiStation);
             setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
             setMarkerPosition(0, null, null);
             runBottomSheet(null, null);
         }
 
 
-//        runBottomSheet( activeStation, null);
 
     }
 
@@ -266,73 +278,94 @@ public class MainActivity extends AppCompatActivity
     public void applyMapScaleChange() {
         // 맵뷰 스케일이 바뀔때마다 Call
         setMarkerPosition(0, null, null);
+
         hideSoftKeyboard(mapView);
+
+        if (normalRoute != null) {
+            for (TtfNode station : normalRoute.getStationList()) {
+//                Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
+//                Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
+                setRouteMarkerPosition();
+            }
+        }
+
     }
 
-    public void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
+    private void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
 
         for (ImageView marker : markerList) {
             if (marker.getVisibility() == View.VISIBLE) {
 
                 PointF markerPosition;
-                String stationName = "";
                 switch (marker.getId()) {
                     case R.id.marker:
                         markerPosition = activeStation.getMapPoint();
-                        stationName = activeStation.getStationName();
                         break;
                     case R.id.startMarker:
                         markerPosition = startStation.getMapPoint();
-                        stationName = startStation.getStationName();
                         break;
                     case R.id.endMarker:
                         markerPosition = endStation.getMapPoint();
-                        stationName = endStation.getStationName();
                         break;
                     default:
                         markerPosition = new PointF(0, 0);
                 }
 
 
-                Matrix markerMatrix = new Matrix();
-                float[] values = new float[9];
-                markerMatrix.getValues(values);
+                setImageMatrix(marker, mapView.getMarkerRatio(), markerPosition);
 
-                Drawable markerImage = marker.getDrawable();
-                float markerMagnification = mapView.getMarkerRatio() / ((markerImage.getIntrinsicWidth() + markerImage.getIntrinsicHeight()) / 2);
-                values[0] = values[4] = markerMagnification;
-                float markerWidth = markerImage.getIntrinsicWidth() * markerMagnification;
-                float markerHeight = markerImage.getIntrinsicHeight() * markerMagnification;
-                values[2] = markerPosition.x - markerWidth / 2;
-                values[5] = markerPosition.y - markerHeight;
-
-                markerMatrix.setValues(values);
-                marker.setImageMatrix(markerMatrix);
-
-                // StationName Set
-                if (marker.getId() == R.id.marker) {
-                    TextView markerText = (TextView) findViewById(R.id.markerText);
-                    markerText.setText(stationName);
-                    markerText.measure(0, 0);
-                    markerText.setX(markerPosition.x - markerText.getMeasuredWidth() / 2);
-                    markerText.setY(markerPosition.y - markerText.getMeasuredHeight() - markerWidth / 2);
-                    Log.d("main", (markerText.getMeasuredWidth() / 2) + " / " + (markerText.getMeasuredHeight() - markerWidth / 2));
-
-                }
             }
 
         }
 
     }
 
-/*
-* hide keyboard
-* */
-    public void hideSoftKeyboard(View view){
-        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    private void setRouteMarkerPosition() {
+
+        if (routeMarkers == null || normalRoute == null) return;
+
+        for (int i = 0; i < normalRoute.getStationList().size(); i++) {
+            if (i == 0 || i == normalRoute.getStationList().size() - 1) continue;
+
+            setImageMatrix(
+                    routeMarkers.get(i - 1),
+                    mapView.getMarkerRatio(),
+                    ((Station) normalRoute.getStationList().get(i)).getMapPoint()
+            );
+//            Log.d(TAG, "setRouteMarkerPosition: " + markerMatrix.toString());
+//            Log.d(TAG, "setRouteMarkerPosition: " + passMarker.getMatrix().toString());
+
+        }
 
     }
+
+    private void setImageMatrix(ImageView view, float markerRatio, PointF point) {
+        if (view.getScaleType() != ImageView.ScaleType.MATRIX)
+            view.setScaleType(ImageView.ScaleType.MATRIX);
+        Matrix matrix = new Matrix();
+        float[] values = new float[9];
+        matrix.getValues(values);
+        Drawable image = view.getDrawable();
+        float magnification = markerRatio / ((image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2);
+        values[0] = values[4] = magnification;
+        float width = image.getIntrinsicWidth() * magnification;
+        float height = image.getIntrinsicHeight() * magnification;
+        values[2] = point.x - width / 2;
+        values[5] = point.y - height;
+        matrix.setValues(values);
+        view.setImageMatrix(matrix);
+
+        if (view.getId() == R.id.marker) {
+            TextView markerText = (TextView) findViewById(R.id.markerText);
+            markerText.setText(activeStation.getStationName());
+            markerText.measure(0, 0);
+            markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
+            markerText.setY(point.y - markerText.getMeasuredHeight() - width / 2);
+        }
+
+
+    }
+
 
 
 
@@ -434,12 +467,43 @@ public class MainActivity extends AppCompatActivity
     private void setStatus() {
         if (startStation != null && endStation != null) {
             status = FULL;
+            //RouteBottomSheet Call
             runBottomSheet(null, null);
+            //MainActivity make Route Drawing
+            normalRoute = routeController.getRoute(startStation, endStation);
+            for (TtfNode station : normalRoute.getStationList()) {
+                Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
+                Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
+            }
+            inflateRoute(normalRoute);
+
         } else {
             status = WAIT;
         }
     }
 
+
+    private void inflateRoute(Route route) {
+        if (routeMarkers == null) routeMarkers = new ArrayList<>();
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        for (int i = 0; i < route.getStationList().size(); i++) {
+            if (i == 0 || i == route.getStationList().size() - 1) continue;
+
+            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
+            marker.setId(3000 + i);
+            if (passMarkerMother != null) {
+                passMarkerMother.addView(marker);
+                marker.setVisibility(View.VISIBLE);
+                routeMarkers.add(marker);
+                //marker set Layout width, height using startMarker's LayoutParam
+                marker.setLayoutParams(markerList.get(0).getLayoutParams());
+                Log.d(TAG, "inflateRoute: max : " + marker.getMaxWidth() + " / " + marker.getMaxHeight());
+            }
+        }
+        setRouteMarkerPosition();
+
+    }
 
 
 }
