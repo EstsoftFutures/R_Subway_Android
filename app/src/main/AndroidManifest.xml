@@ -15,7 +15,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".UI.Tutorial.TutorialActivity" />
-        <activity android:name=".UI.StationInfo.SubwayTimeActivity" />
     </application>
 
 </manifest>
