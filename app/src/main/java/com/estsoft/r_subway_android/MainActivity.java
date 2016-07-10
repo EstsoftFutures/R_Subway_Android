@@ -389,11 +389,11 @@ public class MainActivity extends AppCompatActivity
         view.setImageMatrix(matrix);
 
         if (view.getId() == R.id.marker) {
-            TextView markerText = (TextView) findViewById(R.id.markerText);
+            markerText = (TextView) findViewById(R.id.markerText);
             markerText.setText(activeStation.getStationName());
             markerText.measure(0, 0);
             markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
-            markerText.setY(point.y - markerText.getMeasuredHeight() - width / 2);
+            markerText.setY(point.y - markerText.getMeasuredHeight() - height / 3);
         }
 
 
