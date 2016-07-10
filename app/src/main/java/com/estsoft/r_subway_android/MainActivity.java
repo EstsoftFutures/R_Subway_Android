@@ -41,6 +41,7 @@ import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
+import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
 import java.util.ArrayList;
@@ -48,18 +49,31 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        TtfMapImageViewListener, SearchView.OnQueryTextListener {
+        implements TtfMapImageViewListener {
 
     private static final String TAG = "MainActivity";
 
-    private final int WAIT = 1;
-    private final int FULL = 2;
-    private int status = WAIT;
+    public final int WAIT = 1;
+    public final int FULL = 2;
+    public int status = WAIT;
 
-    private static final int ALL_MARKERS = 0;
-    private static final int ACTI_MARKER = 1;
+    public static final int ALL_MARKERS = 0;
+    public static final int ACTI_MARKER = 1;
 
+    private InteractionListener interactionListener = null;
+
+    private BottomSheetLayout stationBottomSheet = null;
+    private BottomSheetLayout routeBottomSheet = null;
+
+    private Toolbar toolbar = null;
+
+    private DrawerLayout drawer = null;
+
+    private SearchView mSearchView = null;
+
+    private NavigationView navigationView = null;
+
+    private ExpandableListAdapter expandableListAdapter = null;
 
     private RouteController routeController = null;
     private Station activeStation = null;
@@ -67,13 +81,14 @@ public class MainActivity extends AppCompatActivity
     private Station endStation = null;
 
     private Route normalRoute = null;
-    private List<ImageView> routeMarkers = null;
-
     private RelativeLayout passMarkerMother = null;
+    private List<ImageView> routeMarkers = null;
+    private TextView markerText = null;
+    private List<ImageView> markerList = null;
 
     private TtfMapImageView mapView = null;
 
-    private List<ImageView> markerList = null;
+
     ExpandableListView expListView;
     SearchSetting searchSetting;
 
@@ -82,17 +97,28 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        interactionListener = new InteractionListener( this );
+        stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
+        routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!설정창 Sliding menu
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        //설정창 Sliding menu
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         //search
         toolbar.inflateMenu(R.menu.search);
 
+        mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
+        mSearchView.setOnQueryTextListener( interactionListener );
 
-        final SearchView mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.onActionViewExpanded();
+        mSearchView.clearFocus();
+
+        setSupportActionBar(toolbar);
+
+        //리스너로 감
+/*        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;
@@ -102,24 +128,21 @@ public class MainActivity extends AppCompatActivity
             public boolean onQueryTextChange(String s) {
                 return false;
             }
-        });
+        });*/
 
 
-        mSearchView.onActionViewExpanded();
-        ;
-        mSearchView.clearFocus();
-        /////////////////////////////////////////////////////////////////
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        setSupportActionBar(toolbar);
-
-
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toolbar.setNavigationOnClickListener( interactionListener );
+
+        //리스너로 감
+/*        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -129,16 +152,21 @@ public class MainActivity extends AppCompatActivity
                     hideSoftKeyboard(v);
                 }
             }
-        });
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        });*/
+
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener( interactionListener );
 
         searchSetting = new SearchSetting();
+        expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
+
         expListView = (ExpandableListView) findViewById(R.id.search_setting);
-        final ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
         expListView.setAdapter(expandableListAdapter);
 
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        expListView.setOnChildClickListener( interactionListener );
+
+        //리스너로 감
+/*        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 final String selected = (String) expandableListAdapter.getChild(groupPosition, childPosition);
@@ -146,9 +174,11 @@ public class MainActivity extends AppCompatActivity
 
                 return true;
             }
-        });
+        });*/
 
 
+        //역이름 텍스트
+        markerText = ((TextView) findViewById(R.id.markerText));
 
         // passMarkerMother Relative View reference
         passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
@@ -156,9 +186,10 @@ public class MainActivity extends AppCompatActivity
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
-        mapView.setTtfMapImageViewListener(this);
+        mapView.setTtfMapImageViewListener( this );
 
-        routeController = RouteController.getInstance(mapView);
+        routeController = RouteController.getInstance( mapView );
+
 
     }
 
@@ -170,7 +201,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem searchMenu = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchMenu.getActionView();
-        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener( interactionListener );
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -179,16 +210,6 @@ public class MainActivity extends AppCompatActivity
         searchView.clearFocus();
 
         return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
     }
 
 
@@ -202,14 +223,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     //설정창 navigation items
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        return true;
-    }
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//
+//        return true;
+//    } 수정
 
 
      /*
@@ -249,7 +270,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
-            ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
+            if (findViewById(R.id.station_bottomSheet) != null) {
+                stationBottomSheet.dismissSheet();
+            }
         }
     }
 
@@ -261,16 +284,13 @@ public class MainActivity extends AppCompatActivity
             setMarkerPosition(0, null, null);
             runBottomSheet(null, null);
         }
-
-
-
     }
 
     private void setMarkerVisibility(ImageView marker, boolean visible) {
         int visibility = visible ? View.VISIBLE : View.INVISIBLE;
         marker.setVisibility(visibility);
         if (marker.getId() == R.id.marker)
-            ((TextView) findViewById(R.id.markerText)).setVisibility(visibility);
+            markerText.setVisibility(visibility);
 
     }
 
@@ -282,11 +302,7 @@ public class MainActivity extends AppCompatActivity
         hideSoftKeyboard(mapView);
 
         if (normalRoute != null) {
-            for (TtfNode station : normalRoute.getStationList()) {
-//                Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
-//                Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
                 setRouteMarkerPosition();
-            }
         }
 
     }
@@ -310,8 +326,6 @@ public class MainActivity extends AppCompatActivity
                     default:
                         markerPosition = new PointF(0, 0);
                 }
-
-
                 setImageMatrix(marker, mapView.getMarkerRatio(), markerPosition);
 
             }
@@ -326,14 +340,12 @@ public class MainActivity extends AppCompatActivity
 
         for (int i = 0; i < normalRoute.getStationList().size(); i++) {
             if (i == 0 || i == normalRoute.getStationList().size() - 1) continue;
-
+            Log.d(TAG, "setRouteMarkerPosition: " + i);
             setImageMatrix(
                     routeMarkers.get(i - 1),
                     mapView.getMarkerRatio(),
                     ((Station) normalRoute.getStationList().get(i)).getMapPoint()
             );
-//            Log.d(TAG, "setRouteMarkerPosition: " + markerMatrix.toString());
-//            Log.d(TAG, "setRouteMarkerPosition: " + passMarker.getMatrix().toString());
 
         }
 
@@ -370,11 +382,11 @@ public class MainActivity extends AppCompatActivity
 
 
     /*
-    Bottomsheets
+    BottomSheets
     */
     public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
-        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+        final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
                 LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
@@ -398,9 +410,14 @@ public class MainActivity extends AppCompatActivity
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
+            start.setOnClickListener(interactionListener);
+            arrive.setOnClickListener(interactionListener);
+
 //            Log.d("----------->", start.getText().toString());
 //            Log.d("----------->", arrive.getText().toString());
-            start.setOnClickListener(new View.OnClickListener() {
+
+            // 리스너로 감
+            /*start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onStartClick(v);
@@ -411,7 +428,9 @@ public class MainActivity extends AppCompatActivity
                 public void onClick(View v) {
                     onArriveClick(v);
                 }
-            });
+            });*/
+
+
         } else if (status == FULL) {          // Route 정보
 //            if(bottomSheet!= null) bottomSheet.dismissSheet();
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
@@ -426,6 +445,18 @@ public class MainActivity extends AppCompatActivity
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
+
+
+            routeBottomSheet.findViewById(R.id.endinfo).setOnClickListener(interactionListener);
+            // 리스너로 감
+            /*routeBottomSheet.findViewById(R.id.endinfo).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setMarkerDefault( ALL_MARKERS );
+                    routeBottomSheet.dismissSheet();
+                }
+            });*/
+
             routeBottomSheet.setShouldDimContentView(false);
             routeBottomSheet.setInterceptContentTouch(false);
 
@@ -482,7 +513,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     private void inflateRoute(Route route) {
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -506,4 +536,28 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+    /*
+    getters
+    */
+
+    public BottomSheetLayout getRouteBottomSheet() {
+        return routeBottomSheet;
+    }
+
+    public BottomSheetLayout getStationBottomSheet() {
+        return stationBottomSheet;
+    }
+
+    public DrawerLayout getDrawer() {
+        return drawer;
+    }
+
+    public ExpandableListAdapter getExpandableListAdapter() {
+        return expandableListAdapter;
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 }
