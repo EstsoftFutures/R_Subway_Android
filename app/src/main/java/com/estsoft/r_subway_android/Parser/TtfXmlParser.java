@@ -84,8 +84,12 @@ public class TtfXmlParser {
     private void readSVG(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, namespace, "svg");
         if (parser.getName().equals("svg")) {
-            svgWidth = Integer.parseInt(parser.getAttributeValue(namespace, "width"));
-            svgHeight = Integer.parseInt(parser.getAttributeValue(namespace, "height"));
+            String data = parser.getAttributeValue(namespace, "width");
+            svgWidth = Integer.parseInt(data.replace("px", ""));
+            data = parser.getAttributeValue(namespace, "height");
+            svgHeight = Integer.parseInt(data.replace("px", ""));
+//            svgWidth = Integer.parseInt(parser.getAttributeValue(namespace, "width"));
+//            svgHeight = Integer.parseInt(parser.getAttributeValue(namespace, "height"));
         }
         while (parser.next() != XmlPullParser.END_TAG) {
 
@@ -137,7 +141,7 @@ public class TtfXmlParser {
             circleFactors[1] = parser.getAttributeValue(namespace, "cy");
             circleFactors[2] = parser.getAttributeValue(namespace, "r");
             circleFactors[3] = parser.getAttributeValue(namespace, "id");
-            circleFactors[4] = parser.getAttributeValue(namespace, "OTHER_TYPE");
+            circleFactors[4] = parser.getAttributeValue(namespace, "name");
             parser.nextTag();
         }
         parser.require(XmlPullParser.END_TAG, namespace, "circle");

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 public class MapTouchImageView extends ImageView implements View.OnTouchListener {
 
     private static final String TAG = "MapTouchListener";
-    private static final String STAG = "StationMapTouchListener";
     private static final boolean D = false;
 
     //최대 이미지 배율 상수 (뷰 * maxMagnification = 이미지)
@@ -34,6 +33,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     private float maxMag = (float) maxMagnification;
     //최소 배율 (뷰 = 이미지)
     private float minMag = 1f;
+    private float minMagSupport = 1.4f;
+    private float heightSupport = 50f;
     //기본 배율 (Default minMig);
     private float defaultMag = 1f;
 
@@ -61,9 +62,14 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     //
     private static final int WIDTH = 0;
     private static final int HEIGHT = 1;
+    // 너비 높이 타겟 결정
+    int target = WIDTH;
+
 
     //
     private boolean isInit = false;
+
+
 
 
     //드래그시 좌표 저장
@@ -164,7 +170,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 //        }
 
         if ( biggerThanViewWidth ) value[2] = calMidTranslateFactor(imageWidth, width, minMag);
-        if ( biggerThanViewHeight) value[5] = calMidTranslateFactor(imageHeight, height, minMag);
+        if ( biggerThanViewHeight) value[5] = calMidTranslateFactor(imageHeight, height, minMag) + heightSupport;
 
         movedImageX = (int)value[2];
         movedImageY = (int)value[5];
@@ -177,9 +183,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     private float calMidTranslateFactor( int imageFactor, int viewFactor,  float Mag ) {
         float transFactor = 0;
         int scaledFactor = (int)(imageFactor * Mag);
-        if (viewFactor > scaledFactor) {
-            transFactor = (float) viewFactor / 2 - (float) scaledFactor / 2;
-        }
+        transFactor = (float) viewFactor / 2 - (float) scaledFactor / 2;
         return transFactor;
     }
 
@@ -187,11 +191,19 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
         float mag = minMag;
 
+        Log.d(TAG, "calMinMaxMag: imageHeight = " + imageHeight);
+        Log.d(TAG, "calMinMaxMag: ViewHeight = " + viewHeight);
+
         if ( imageWidth > viewWidth || imageHeight > viewHeight ) {
-            int target = WIDTH;
+//            Width matches ViewWidth
+//            target = WIDTH;
+
+//            Height matches ViewHeight
+            target = HEIGHT;
             if ( imageWidth < imageHeight ) target = HEIGHT;
-            if ( target == WIDTH ) mag = (float)viewWidth / imageWidth;
-            if ( target == HEIGHT ) mag = (float)viewHeight / imageHeight;
+            if ( target == WIDTH ) mag = ((float)viewWidth / imageWidth) * minMagSupport ;
+            if ( target == HEIGHT ) mag = ((float)viewHeight / imageHeight) * minMagSupport;
+            Log.d(TAG, "calMinMaxMag: " + mag);
 
 
             // Default Magnification set
@@ -294,6 +306,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
                     if ( Math.abs(newDist - oldDist) > 10 ) {
 
+
                         savedMatrix1.set(matrix);
 //                        아래 코드는 수정하거나 삭제하지 말길
 //                        matrix.set(savedMatrix1);
@@ -302,8 +315,6 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                         float scaleRevision = (scale -1) * pinchSensitivity;
                         scale = 1 + scaleRevision;
 
-                        oldDist = newDist;
-
                         Log.d(TAG, "ACTION_MOVE");
                         Log.d(TAG, "ZOOM IN!");
                         Log.d(TAG, "MODE = PINCH_ZOOMING");
@@ -311,6 +322,14 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                         Log.d(TAG, "OLD_DIST : " + oldDist);
                         Log.d(TAG, "Scale : " + scale);
 
+                        oldDist = newDist;
+
+                        Log.d(TAG, "onTouch: SCALE " + scale );
+
+
+                        Log.d(TAG, "onTouch: 포스트 전 " + matrix.toString() + " mode = " + mode);
+                        float[] val = new float[9];
+                        matrix.getValues(val);
                         matrix.postScale(scale, scale, mid.x, mid.y);
 
                         select = NONE;
@@ -393,6 +412,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         // 화면보다 작게 축소하지 않도록
         if ( value[0] < minMag || value[4] < minMag ) {
             value[0] = value[4] = minMag;
+            value[2] = savedValue[2];
+            value[5] = savedValue[5];
         }
 //        if ( imageWidth > width || imageHeight > height ) {
 //            if (scaledImageWidth < width && scaledImageHeight < height) {

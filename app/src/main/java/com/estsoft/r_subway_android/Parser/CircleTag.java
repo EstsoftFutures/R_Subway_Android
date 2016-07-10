@@ -12,6 +12,8 @@ public class CircleTag {
     private Float radius;
     private int laneNumber;
     private String id;
+
+    //잠시만 지하철 이름
     private String otherFactor;
 
     public int getLaneNumber() {
@@ -52,6 +54,14 @@ public class CircleTag {
         this.positionY = positionY;
         this.laneNumber = laneNumber;
         this.id = id;
+    }
+
+    public CircleTag(Float positionX, Float positionY, int laneNumber, String id, String otherFactor) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.laneNumber = laneNumber;
+        this.id = id;
+        this.otherFactor = otherFactor;
     }
 
     @Override

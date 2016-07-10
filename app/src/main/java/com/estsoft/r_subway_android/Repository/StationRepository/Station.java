@@ -10,6 +10,7 @@ public class Station extends TtfNode {
     private PointF geoPoint = null;
     private PointF mapPoint = null;
     private String stationName = "";
+    private int stationId;
 
     private Station(int conLevel, String stationId1, String stationId2) {
         super(conLevel, stationId1, stationId2);
@@ -39,5 +40,13 @@ public class Station extends TtfNode {
     public String getStationName() {        return stationName;    }
 
     public void setStationName(String stationName) {        this.stationName = stationName;    }
+
+    public int getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(int stationId) {
+        this.stationId = stationId;
+    }
 }
 

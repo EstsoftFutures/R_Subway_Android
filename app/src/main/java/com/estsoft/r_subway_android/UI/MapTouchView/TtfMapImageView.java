@@ -25,7 +25,8 @@ public class TtfMapImageView extends MapTouchImageView {
     private static final String TAG = "TtfMapImageView";
     private static final int TOUCH_RADIUS = 50;
 
-    private static final int MARKER_SCALE_RATIO = 10;
+    // smaller number, bigger marker.
+    private static final int MARKER_SCALE_RATIO = 20;
 
     private static final int ALL_MARKERS = 0;
     private static final int ACTI_MARKER = 1;
@@ -57,13 +58,14 @@ public class TtfMapImageView extends MapTouchImageView {
         super(context, attrs, defStyleAttr);
         setScaleType( ScaleType.MATRIX );
 
-        parser = new TtfXmlParser( getResources().openRawResource( R.raw.example_curve ) );
+        parser = new TtfXmlParser( getResources().openRawResource( R.raw.linemap_naver ) );
         semiStationList = new ArrayList<>();
         for ( CircleTag circle : parser.getCircleList() ) {
             SemiStation semiStation = new SemiStation(
                     circle.getId(),
                     circle.getLaneNumber(),
-                    new PointF( circle.getPositionX(), circle.getPositionY() )
+                    new PointF( circle.getPositionX(), circle.getPositionY() ),
+                    circle.getOtherFactor()
             );
             semiStationList.add(semiStation);
         }
