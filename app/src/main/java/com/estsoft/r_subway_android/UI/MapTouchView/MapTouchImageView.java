@@ -33,7 +33,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     private float maxMag = (float) maxMagnification;
     //최소 배율 (뷰 = 이미지)
     private float minMag = 1f;
-    private float minMagSupport = 1.4f;
+    private float minMagSupport = 1.3f;
     private float heightSupport = 50f;
     //기본 배율 (Default minMig);
     private float defaultMag = 1f;
@@ -65,12 +65,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     // 너비 높이 타겟 결정
     int target = WIDTH;
 
-
     //
     private boolean isInit = false;
-
-
-
 
     //드래그시 좌표 저장
     int posX1 = 0, posY1 = 0, posX2 = 0, posY2 = 0;

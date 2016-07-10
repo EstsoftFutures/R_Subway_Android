@@ -23,7 +23,7 @@ import java.util.List;
 public class TtfMapImageView extends MapTouchImageView {
 
     private static final String TAG = "TtfMapImageView";
-    private static final int TOUCH_RADIUS = 50;
+    private static final int TOUCH_RADIUS = 30;
 
     // smaller number, bigger marker.
     private static final int MARKER_SCALE_RATIO = 20;
