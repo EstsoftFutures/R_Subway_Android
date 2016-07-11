@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
 
@@ -24,6 +26,7 @@ public class StationInfoFragment extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerViewAdapter adapter;
 
+    static boolean position1isvisible =false;
 
     public StationInfoFragment() {
         // Required empty public constructor
@@ -58,13 +61,16 @@ public class StationInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+
+//////
+
         adapter = new RecyclerViewAdapter(mActivity);
 
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view , Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setHasFixedSize(true);
@@ -73,9 +79,26 @@ public class StationInfoFragment extends Fragment {
         adapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
 
             @Override
-            public void onItemClick(View v , int position) {
+            public void onItemClick(View v, int position) {
+
+        TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
                 // do something with position
+                if (position1isvisible) {
+                    Log.d("position1isvisibletrue",""+position1isvisible);
+
+                    test1.setVisibility(View.GONE);
+                    position1isvisible = false;
+
+                } else {
+                    Log.d("position1isvisiblefalse",""+position1isvisible);
+
+                    test1.setText("timetable abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
+                    test1.setVisibility(View.VISIBLE);
+                    position1isvisible = true;
+                }
             }
+
+
         });
     }
 }

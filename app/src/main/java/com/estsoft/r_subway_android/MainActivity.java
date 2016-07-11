@@ -44,6 +44,10 @@ import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
+import junit.framework.Test;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        interactionListener = new InteractionListener( this );
+        interactionListener = new InteractionListener(this);
         stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
 
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.inflateMenu(R.menu.search);
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-        mSearchView.setOnQueryTextListener( interactionListener );
+        mSearchView.setOnQueryTextListener(interactionListener);
 
         mSearchView.onActionViewExpanded();
         mSearchView.clearFocus();
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toolbar.setNavigationOnClickListener( interactionListener );
+        toolbar.setNavigationOnClickListener(interactionListener);
 
         //리스너로 감
 /*        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -154,8 +158,8 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-        navigationView = (NavigationView)findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener( interactionListener );
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(interactionListener);
 
         searchSetting = new SearchSetting();
         expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         expListView = (ExpandableListView) findViewById(R.id.search_setting);
         expListView.setAdapter(expandableListAdapter);
 
-        expListView.setOnChildClickListener( interactionListener );
+        expListView.setOnChildClickListener(interactionListener);
 
         //리스너로 감
 /*        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -186,9 +190,9 @@ public class MainActivity extends AppCompatActivity
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
-        mapView.setTtfMapImageViewListener( this );
+        mapView.setTtfMapImageViewListener(this);
 
-        routeController = RouteController.getInstance( mapView );
+        routeController = RouteController.getInstance(mapView);
 
 
     }
@@ -201,7 +205,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search, menu);
         MenuItem searchMenu = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchMenu.getActionView();
-        searchView.setOnQueryTextListener( interactionListener );
+        searchView.setOnQueryTextListener(interactionListener);
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -302,7 +306,7 @@ public class MainActivity extends AppCompatActivity
         hideSoftKeyboard(mapView);
 
         if (normalRoute != null) {
-                setRouteMarkerPosition();
+            setRouteMarkerPosition();
         }
 
     }
@@ -379,8 +383,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
     /*
     BottomSheets
     */
@@ -429,6 +431,7 @@ public class MainActivity extends AppCompatActivity
                     onArriveClick(v);
                 }
             });*/
+
 
 
         } else if (status == FULL) {          // Route 정보

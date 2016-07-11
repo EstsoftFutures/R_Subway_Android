@@ -6,9 +6,11 @@ package com.estsoft.r_subway_android.UI.StationInfo;
 public class Car {
     private int id;
     private String name;
+    private boolean isClicked;
     public Car(int id, String name){
         this.id = id;
         this.name =name;
+        this.isClicked = false;
     }
 
     public int getId() {
@@ -27,11 +29,20 @@ public class Car {
         this.name = name;
     }
 
+    public boolean isclicked() {
+        return isClicked;
+    }
+
+    public void setClicked(boolean clicked) {
+        this.isClicked = clicked;
+    }
+
     @Override
     public String toString() {
         return "Car{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", isClicked=" + isClicked +
                 '}';
     }
 }

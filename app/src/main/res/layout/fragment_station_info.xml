@@ -1,15 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-       tools:context="com.estsoft.r_subway_android.UI.StationInfo.StationInfoFragment">
+    tools:context="com.estsoft.r_subway_android.UI.StationInfo.StationInfoFragment">
 
-<android.support.v7.widget.RecyclerView
-android:id="@+id/recycler_view"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:layout_alignParentTop="true"
-android:background="#FFFFFF"
-android:scrollbarStyle="insideOverlay" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFF"
+        android:scrollbarStyle="insideOverlay" />
 
-    </FrameLayout>
+</LinearLayout>
