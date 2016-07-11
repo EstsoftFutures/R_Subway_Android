@@ -13,10 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
-import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 
 
 public class StationInfoFragment extends Fragment {
@@ -27,9 +26,10 @@ public class StationInfoFragment extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerViewAdapter adapter;
 
+    static boolean position1isvisible =false;
+
     public StationInfoFragment() {
         // Required empty public constructor
-
     }
 
 
@@ -53,8 +53,6 @@ public class StationInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
-
-//        Log.d("->stationinfoshowcreate",""+stationInfoShow.getChildList().toString());
     }
 
     // Inflate the fragment layout we defined above for this fragment
@@ -79,10 +77,25 @@ public class StationInfoFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
+
+                TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
                 // do something with position
+                if (position1isvisible) {
+                    Log.d("position1isvisibletrue",""+position1isvisible);
+
+                    test1.setVisibility(View.GONE);
+                    position1isvisible = false;
+
+                } else {
+                    Log.d("position1isvisiblefalse",""+position1isvisible);
+
+                    test1.setText("timetable abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
+                    test1.setVisibility(View.VISIBLE);
+                    position1isvisible = true;
+                }
             }
+
+
         });
-
-
     }
 }

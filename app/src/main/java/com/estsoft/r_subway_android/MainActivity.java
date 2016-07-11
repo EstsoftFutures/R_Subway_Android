@@ -41,6 +41,10 @@ import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
+import junit.framework.Test;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -186,8 +190,11 @@ public class MainActivity extends AppCompatActivity
         Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth() );
         mapView.setTtfMapImageViewListener(this);
 
-        routeController = RouteController.getInstance(mapView)
-        ;
+        routeController = RouteController.getInstance(mapView);
+        mapView.setImageResource(R.drawable.linemap_naver);
+        mapView.setTtfMapImageViewListener(this);
+
+        routeController = RouteController.getInstance(mapView);
 
 
     }
@@ -450,6 +457,7 @@ public class MainActivity extends AppCompatActivity
             });*/
 
 
+
         } else if (status == FULL) {          // Route 정보
 //            if(bottomSheet!= null) bottomSheet.dismissSheet();
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
@@ -547,7 +555,7 @@ public class MainActivity extends AppCompatActivity
                 routeMarkers.add(marker);
                 //marker set Layout width, height using startMarker's LayoutParam
                 marker.setLayoutParams(markerList.get(0).getLayoutParams());
-                Log.d(TAG, "inflateRoute: max : " + marker.getMaxWidth() + " / " + marker.getMaxHeight());
+
             }
         }
         setRouteMarkerPosition();
