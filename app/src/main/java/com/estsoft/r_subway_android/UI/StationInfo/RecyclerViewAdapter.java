@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,10 +20,12 @@ import java.util.List;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
+    private int expandedPosition = -1;
     private final FragmentActivity mActivity;
     private final List<Car> mUserDetails = new ArrayList<>();
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
+
 
     public RecyclerViewAdapter(FragmentActivity mActivity) {
         this.mActivity = mActivity;
@@ -37,34 +40,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return new ViewHolder(sView);
     }
 
-
-    /*
-    *         adapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(View v, int position) {
-
-                TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
-                // do something with position
-                if (position1isvisible) {
-                    Log.d("position1isvisibletrue",""+position1isvisible);
-
-                    test1.setVisibility(View.GONE);
-                    position1isvisible = false;
-
-                } else {
-                    Log.d("position1isvisiblefalse",""+position1isvisible);
-
-                    test1.setText("timetable abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
-                    test1.setVisibility(View.VISIBLE);
-                    position1isvisible = true;
-                }
-            }
-
-
-        });
-*/
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
@@ -72,7 +47,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.vName.setText("Name: " + mUserDetails.get(position).getName());
 
-
+        holder.test.setText("wowowowowowowowowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooooooooooooooooooooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaa");
+        if(position == expandedPosition){
+            holder.test.setVisibility(View.VISIBLE);
+        }else{
+            holder.test.setVisibility(View.GONE);
+        }
 
     }
 
@@ -89,16 +69,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(view);
             vId = (TextView) view.findViewById(R.id.list_id);
             vName = (TextView) view.findViewById(R.id.list_name);
+            test = (TextView) view.findViewById(R.id.test_expandable);
             view.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+
+
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition());
-
-
             }
         }
 
@@ -129,4 +110,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     /* ==========This Part is not necessary========= */
+
 }

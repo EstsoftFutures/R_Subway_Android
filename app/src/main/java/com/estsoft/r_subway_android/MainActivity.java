@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,10 +41,6 @@ import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
-
-import junit.framework.Test;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -433,6 +430,8 @@ public class MainActivity extends AppCompatActivity
 
             stationBottomSheet.setShouldDimContentView(false);
             stationBottomSheet.setInterceptContentTouch(false);
+
+            Log.d(TAG, "runBottomSheet: " + ((LinearLayout)stationBottomSheet.getSheetView()).getChildAt(0).getClass() );
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
