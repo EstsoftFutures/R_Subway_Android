@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,34 +39,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         return new ViewHolder(sView);
     }
-
-
-    /*
-    *         adapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(View v, int position) {
-
-                TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
-                // do something with position
-                if (position1isvisible) {
-                    Log.d("position1isvisibletrue",""+position1isvisible);
-
-                    test1.setVisibility(View.GONE);
-                    position1isvisible = false;
-
-                } else {
-                    Log.d("position1isvisiblefalse",""+position1isvisible);
-
-                    test1.setText("timetable abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
-                    test1.setVisibility(View.VISIBLE);
-                    position1isvisible = true;
-                }
-            }
-
-
-        });
-*/
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -137,4 +110,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     /* ==========This Part is not necessary========= */
+
 }

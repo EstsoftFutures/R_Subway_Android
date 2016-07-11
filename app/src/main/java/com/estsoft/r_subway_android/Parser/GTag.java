@@ -32,7 +32,8 @@ public class GTag {
                 Float.parseFloat(circleFactors[0]),
                 Float.parseFloat(circleFactors[1]),
                 laneNumber,
-                circleFactors[3]
+                circleFactors[3],
+                circleFactors[4]
         );
         circleList.add(circle);
     }

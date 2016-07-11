@@ -54,7 +54,8 @@ public class RouteController {
         // stationMapping 을 추후에!!! 꼭!!!
         // 이하 두줄은 지금 꼭 필요한거 대충 만들어놓은 거임. 필수임.
         station.setMapPoint( semiStation.getPosition() );
-        station.setStationName( semiStation.getId() );
+        station.setStationName( semiStation.getName() );
+        station.setStationId( Integer.parseInt(semiStation.getId()) );
 
         Log.d( TAG, "semiStation pointf hash : " + System.identityHashCode( semiStation.getPosition() )  );
         Log.d( TAG, "NewStation pointf hash : " + System.identityHashCode( station.getMapPoint() )  );
@@ -71,12 +72,12 @@ public class RouteController {
         // 알고리즘 적용
         Station station01 = new Station( 0, "600-300", null );
         station01.setStationName( "600-300" );
-        station01.setMapPoint( mapView.getStationPoint( "600-300" ) );
+        station01.setMapPoint( mapView.getStationPoint( "101" ) );
         stationList.add( station01 );
 
         Station station02 = new Station( 0, "400-50", null );
         station02.setStationName( "400-50" );
-        station02.setMapPoint( mapView.getStationPoint( "400-50" ) );
+        station02.setMapPoint( mapView.getStationPoint( "105" ) );
         stationList.add( station02 );
 
         stationList.add( end );

@@ -60,9 +60,6 @@ public class StationInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-
-//////
-
         adapter = new RecyclerViewAdapter(mActivity);
 
         return rootView;
@@ -79,8 +76,7 @@ public class StationInfoFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-Log.d("clicked","position"+position);
-        TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
+             TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
                 // do something with position
                 if (position == 2) {
                     Log.d("child=2","child2");
@@ -104,4 +100,7 @@ Log.d("clicked","position"+position);
 
         });
     }
+
+
+
 }

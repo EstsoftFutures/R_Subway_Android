@@ -11,11 +11,17 @@ public class SemiStation {
     private String id = "";
     private int laneNumber = -1;
     private PointF position = null;
+    private String name = "";
 
-    public SemiStation(String id, int laneNumber, PointF position) {
+    public SemiStation(String id, int laneNumber, PointF position, String name) {
         this.id = id;
         this.laneNumber = laneNumber;
         this.position = position;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getId() {
@@ -34,4 +40,6 @@ public class SemiStation {
         this.position = position;
         Log.e("TEST", position.toString());
     }
+
+
 }

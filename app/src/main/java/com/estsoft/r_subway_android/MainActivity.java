@@ -1,6 +1,5 @@
 package com.estsoft.r_subway_android;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Matrix;
@@ -8,7 +7,6 @@ import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,9 +23,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
@@ -43,10 +41,6 @@ import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
-
-import junit.framework.Test;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +183,12 @@ public class MainActivity extends AppCompatActivity
 
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
-        mapView.setImageResource(R.drawable.example_curve_62kb_1200x600);
+        mapView.setImageResource(R.drawable.linemap_naver);
+        Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth() );
+        mapView.setTtfMapImageViewListener(this);
+
+        routeController = RouteController.getInstance(mapView);
+        mapView.setImageResource(R.drawable.linemap_naver);
         mapView.setTtfMapImageViewListener(this);
 
         routeController = RouteController.getInstance(mapView);
@@ -271,22 +270,44 @@ public class MainActivity extends AppCompatActivity
 
             applyMapScaleChange();
 
-        } else {
+        } else if ( markerMode == ACTI_MARKER ){
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
             if (findViewById(R.id.station_bottomSheet) != null) {
                 stationBottomSheet.dismissSheet();
             }
+        } else {
+
         }
     }
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        if (status != FULL) {
+        if ( status != FULL ) {
             activeStation = routeController.getStation(semiStation);
-            setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
-            setMarkerPosition(0, null, null);
-            runBottomSheet(null, null);
+            Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
+
+            boolean flag = false;
+            List<Station> checkList = new ArrayList<>();
+            checkList.add( startStation );
+            checkList.add( endStation );
+            for ( Station station : checkList ) {
+                if (station == null) continue;
+                else {
+                    if ( activeStation.getStationId1().equals( station.getStationId1() ) ) {
+                        activeStation = station;
+                        setMarkerVisibility((ImageView) findViewById(R.id.marker), false);
+                        flag = true; break;
+                    }
+                }
+            }
+
+            if (flag == false) {
+                setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
+                setMarkerPosition(0, null, null);
+            }
+
+            runBottomSheet( activeStation , null);
         }
     }
 
@@ -372,11 +393,11 @@ public class MainActivity extends AppCompatActivity
         view.setImageMatrix(matrix);
 
         if (view.getId() == R.id.marker) {
-            TextView markerText = (TextView) findViewById(R.id.markerText);
+            markerText = (TextView) findViewById(R.id.markerText);
             markerText.setText(activeStation.getStationName());
             markerText.measure(0, 0);
             markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
-            markerText.setY(point.y - markerText.getMeasuredHeight() - width / 2);
+            markerText.setY(point.y - markerText.getMeasuredHeight() - height / 3);
         }
 
 
@@ -409,6 +430,8 @@ public class MainActivity extends AppCompatActivity
 
             stationBottomSheet.setShouldDimContentView(false);
             stationBottomSheet.setInterceptContentTouch(false);
+
+            Log.d(TAG, "runBottomSheet: " + ((LinearLayout)stationBottomSheet.getSheetView()).getChildAt(0).getClass() );
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
@@ -531,7 +554,7 @@ public class MainActivity extends AppCompatActivity
                 routeMarkers.add(marker);
                 //marker set Layout width, height using startMarker's LayoutParam
                 marker.setLayoutParams(markerList.get(0).getLayoutParams());
-                Log.d(TAG, "inflateRoute: max : " + marker.getMaxWidth() + " / " + marker.getMaxHeight());
+
             }
         }
         setRouteMarkerPosition();
