@@ -19,10 +19,12 @@ import java.util.List;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
+    private int expandedPosition = -1;
     private final FragmentActivity mActivity;
     private final List<Car> mUserDetails = new ArrayList<>();
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
+
 
     public RecyclerViewAdapter(FragmentActivity mActivity) {
         this.mActivity = mActivity;
@@ -72,7 +74,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.vName.setText("Name: " + mUserDetails.get(position).getName());
 
-
+        holder.test.setText("wowowowowowowowowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooooooooooooooooooooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaa");
+        if(position == expandedPosition){
+            holder.test.setVisibility(View.VISIBLE);
+        }else{
+            holder.test.setVisibility(View.GONE);
+        }
 
     }
 
@@ -89,16 +96,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(view);
             vId = (TextView) view.findViewById(R.id.list_id);
             vName = (TextView) view.findViewById(R.id.list_name);
+            test = (TextView) view.findViewById(R.id.test_expandable);
             view.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
+
+
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition());
-
-
             }
         }
 

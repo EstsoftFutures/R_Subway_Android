@@ -26,7 +26,6 @@ public class StationInfoFragment extends Fragment {
     RecyclerView mRecyclerView;
     RecyclerViewAdapter adapter;
 
-    static boolean position1isvisible =false;
 
     public StationInfoFragment() {
         // Required empty public constructor
@@ -80,21 +79,25 @@ public class StationInfoFragment extends Fragment {
 
             @Override
             public void onItemClick(View v, int position) {
-
+Log.d("clicked","position"+position);
         TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
                 // do something with position
-                if (position1isvisible) {
-                    Log.d("position1isvisibletrue",""+position1isvisible);
+                if (position == 2) {
+                    Log.d("child=2","child2");
+                    if(test1.getVisibility() == View.VISIBLE){
+                        Log.d("child=2","child2&willbegone");
 
-                    test1.setVisibility(View.GONE);
-                    position1isvisible = false;
+                        test1.setVisibility(View.GONE);
+
+
+                    }else{
+                        Log.d("child=2","child2&willbeshown");
+                        test1.setVisibility(View.VISIBLE);
+                    }
 
                 } else {
-                    Log.d("position1isvisiblefalse",""+position1isvisible);
-
-                    test1.setText("timetable abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
-                    test1.setVisibility(View.VISIBLE);
-                    position1isvisible = true;
+                    Log.d("child=!2","child!2");
+                    test1.setVisibility(View.GONE);
                 }
             }
 
