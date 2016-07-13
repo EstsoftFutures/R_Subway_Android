@@ -205,5 +205,7 @@ public class TtfMapImageView extends MapTouchImageView {
         ttfMapImageViewListener.setMarkerDefault( ALL_MARKERS );
     }
 
-
+    public List<SemiStation> getSemiStationList() {
+        return semiStationList;
+    }
 }

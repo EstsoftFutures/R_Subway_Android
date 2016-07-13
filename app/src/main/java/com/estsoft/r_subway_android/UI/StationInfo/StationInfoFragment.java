@@ -101,7 +101,6 @@ public class StationInfoFragment extends Fragment {
 
         });
         ViewPager vp = (ViewPager) mRecyclerView.getParent().getParent();
-        vp.setOffscreenPageLimit(3);
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
