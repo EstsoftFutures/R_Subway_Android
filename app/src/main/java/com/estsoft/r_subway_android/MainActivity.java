@@ -1,7 +1,9 @@
 package com.estsoft.r_subway_android;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -13,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.view.View;
 
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +39,9 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Controller.StationController;
+import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
+import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
@@ -46,11 +53,16 @@ import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
+import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity
@@ -102,8 +114,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         //역이름 텍스트
         markerText = ((TextView) findViewById(R.id.markerText));
 
@@ -138,32 +148,9 @@ public class MainActivity extends AppCompatActivity
         toolbar.inflateMenu(R.menu.search);
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-   //     mSearchView.setOnQueryTextListener(interactionListener);
 
-    //    mSearchView.onActionViewExpanded();
-    //    mSearchView.clearFocus();
-    /*    mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.d("clickedededed", "clickedededede");
-            }
-        });
-
-*/
         setSupportActionBar(toolbar);
 
-        //리스너로 감
-/*        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });*/
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -176,18 +163,6 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar.setNavigationOnClickListener(interactionListener);
 
-        //리스너로 감
-/*        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                    hideSoftKeyboard(v);
-                }
-            }
-        });*/
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(interactionListener);
@@ -200,16 +175,39 @@ public class MainActivity extends AppCompatActivity
 
         expListView.setOnChildClickListener(interactionListener);
 
-        //리스너로 감
-/*        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                final String selected = (String) expandableListAdapter.getChild(groupPosition, childPosition);
-                Toast.makeText(getBaseContext(), "item selected", Toast.LENGTH_SHORT).show();
 
-                return true;
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
+
+        SharedPreferences initRealmPrefs = getSharedPreferences("initRealmPrefs", MODE_PRIVATE);
+        String init = initRealmPrefs.getString("Init",null);
+        if(init == null) {
+            InitializeRealm initRealm = new InitializeRealm(this);
+            for(int i=100, j=1; i<=20138; i++, j++) {
+                String json = initRealm.getJSONFromAsset(i);
+                if(json != null) {
+                    initRealm.loadJSONToRealm(json, j);
+                }
             }
-        });*/
+            initRealm.connectStations();
+
+            SharedPreferences.Editor editor = initRealmPrefs.edit();
+            editor.putString("Init", "Done");
+            editor.commit();
+        }
+
+        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
+        Realm realm = Realm.getInstance(this);
+        RealmResults<RealmStation> results = realm.where(RealmStation.class).findAll();
+        for(RealmStation station : results) {
+            Log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
+        }
+
+
+        new StationController( Realm.getInstance(this) );
 
     }
 
@@ -220,19 +218,65 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search, menu);
         final MenuItem searchMenu = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) searchMenu.getActionView();
+        final SearchView searchView = (SearchView) searchMenu.getActionView();
+
 
         interactionListener.setMenu(menu);
+//        searchView.setIconifiedByDefault(false);
+        searchView.onActionViewExpanded();
+        searchView.clearFocus();
+
+
+        if (searchMenu!= null) {
+            // Associate searchable configuration with the SearchView
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+            if(searchView !=null){
+                LinearLayout searchPlate = (LinearLayout)searchView.findViewById(R.id.search_plate);
+                if(searchPlate != null){
+                    EditText mSearchEditText = (EditText)searchPlate.findViewById(R.id.search_src_text);
+                    if(mSearchEditText != null){
+                        mSearchEditText.clearFocus();     // This fixes the keyboard from popping up each time
+                        mSearchEditText.setCursorVisible(false);
+                    }
+                }
+            }
+        }
 
         searchView.setOnQueryTextListener(interactionListener);
+
+        ImageView closebtn = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        closebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LinearLayout searchPlate = (LinearLayout)searchView.findViewById(R.id.search_plate);
+                EditText mSearchEditText = (EditText)searchPlate.findViewById(R.id.search_src_text);
+                RecyclerView list = (RecyclerView) findViewById(R.id.list_test_view);
+                mSearchEditText.setText("");
+
+                hideSoftKeyboard(v);
+                list.setVisibility(View.GONE);
+
+            }
+        });
+
+
+        LinearLayout searchPlate = (LinearLayout)searchView.findViewById(R.id.search_plate);
+        EditText mSearchEditText = (EditText)searchPlate.findViewById(R.id.search_src_text);
+        mSearchEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG,"searchtextview");
+            }
+        });
 
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");
 
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-//        searchView.onActionViewExpanded();
-//        searchView.clearFocus();
+
 
 
         return true;
@@ -321,6 +365,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
+
         if (status != FULL) {
             activeStation = routeController.getStation(semiStation);
             Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
@@ -457,7 +502,7 @@ public class MainActivity extends AppCompatActivity
             }
             // Get the ViewPager and set it's PagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), station));
 //        viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
@@ -584,6 +629,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < route.getStationList().size(); i++) {
             if (i == 0 || i == route.getStationList().size() - 1) continue;
 
+
+            Log.d(TAG, "inflateRoute: ");
             ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
             marker.setId(3000 + i);
             if (passMarkerMother != null) {

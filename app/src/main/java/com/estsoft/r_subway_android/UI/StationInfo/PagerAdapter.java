@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+
 /**
  * Created by Administrator on 2016-07-04.
  */
@@ -12,9 +14,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 4;
     private String tabTitles[] = new String[]{"Tab1", "Tab2", "Tab3", "Tab4"};
 
-    public PagerAdapter(FragmentManager fm) {
-        super(fm);
+    private Station station = null;
 
+    public PagerAdapter(FragmentManager fm, Station station) {
+        super(fm);
+        this.station = station;
     }
 
     @Override
