@@ -2,6 +2,7 @@ package com.estsoft.r_subway_android.Repository.StationRepository;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 /**
  * Created by estsoft on 2016-07-13.
@@ -12,6 +13,8 @@ public class RealmStation extends RealmObject {
     private String stationName;
     private int laneType;
     private String laneName;
+    private double xPos;
+    private double yPos;
     private String address;
     private String tel;
     private int platform;
@@ -66,6 +69,22 @@ public class RealmStation extends RealmObject {
 
     public void setLaneName(String laneName) {
         this.laneName = laneName;
+    }
+
+    public double getxPos() {
+        return xPos;
+    }
+
+    public void setxPos(double xPos) {
+        this.xPos = xPos;
+    }
+
+    public double getyPos() {
+        return yPos;
+    }
+
+    public void setyPos(double yPos) {
+        this.yPos = yPos;
     }
 
     public String getAddress() {

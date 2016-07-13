@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
+import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
@@ -53,6 +54,9 @@ import com.flipboard.bottomsheet.BottomSheetLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity
@@ -230,7 +234,12 @@ public class MainActivity extends AppCompatActivity
             editor.putString("Init", "Done");
             editor.commit();
         }
-        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
+//        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
+//        Realm realm = Realm.getInstance(this);
+//        RealmResults<RealmStation> results = realm.where(RealmStation.class).findAll();
+//        for(RealmStation station : results) {
+//            Log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
+//        }
     }
 
 

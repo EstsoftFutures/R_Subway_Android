@@ -54,6 +54,8 @@ public class InitializeRealm {
         JsonPrimitive stationName = result.getAsJsonPrimitive("stationName");
         JsonPrimitive laneType = result.getAsJsonPrimitive("type");
         JsonPrimitive laneName = result.getAsJsonPrimitive("laneName");
+        JsonPrimitive xPos = result.getAsJsonPrimitive("x");
+        JsonPrimitive yPos = result.getAsJsonPrimitive("y");
 
         JsonObject defaultInfo = result.getAsJsonObject("defaultInfo");
         JsonPrimitive address = defaultInfo.getAsJsonPrimitive("address");
@@ -78,6 +80,8 @@ public class InitializeRealm {
         station.setStationName(stationName.getAsString());
         station.setLaneType(laneType.getAsInt());
         station.setLaneName(laneName.getAsString());
+        station.setxPos(xPos.getAsDouble());
+        station.setyPos(yPos.getAsDouble());
         station.setAddress(address.getAsString());
         station.setTel(tel.getAsString());
         station.setPlatform(platform.getAsInt());
