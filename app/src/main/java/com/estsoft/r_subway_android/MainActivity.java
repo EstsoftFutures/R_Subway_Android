@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final int ALL_MARKERS = 0;
     public static final int ACTI_MARKER = 1;
+    private static boolean INIT_REALM = false;
 
     private InteractionListener interactionListener = null;
 
@@ -211,6 +213,19 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
+        // Realm 초기화
+        if(INIT_REALM == false) {
+            InitializeRealm initRealm = new InitializeRealm(this);
+            for(int i=100, j=1; i<=20138; i++, j++) {
+                String json = initRealm.getJSONFromAsset(i);
+                if(json != null) {
+                    initRealm.loadJSONToRealm(json, j);
+                }
+            }
+            initRealm.connectStations();
+
+            INIT_REALM = true;
+        }
     }
 
 
