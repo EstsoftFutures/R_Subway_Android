@@ -6,9 +6,11 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.WindowManager;
@@ -24,7 +27,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -43,6 +49,7 @@ import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -95,24 +102,54 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        interactionListener = new InteractionListener(this);
+
+
+        //역이름 텍스트
+        markerText = ((TextView) findViewById(R.id.markerText));
+
+        // passMarkerMother Relative View reference
+        passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
+
+        // TtfMapImageView ... mapView 의 구현
+        mapView = ((TtfMapImageView) findViewById(R.id.mapView));
+        mapView.setImageResource(R.drawable.linemap_naver);
+        Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
+        mapView.setTtfMapImageViewListener(this);
+
+        routeController = RouteController.getInstance(mapView);
+        mapView.setImageResource(R.drawable.linemap_naver);
+        mapView.setTtfMapImageViewListener(this);
+
+        routeController = RouteController.getInstance(mapView);
+
+        interactionListener = new InteractionListener(this, mapView.getSemiStationList());
+
+
         stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
 
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        AppBarLayout appbar = (AppBarLayout) findViewById(R.id.appbar);
         //설정창 Sliding menu
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //search
         toolbar.inflateMenu(R.menu.search);
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-        mSearchView.setOnQueryTextListener(interactionListener);
+   //     mSearchView.setOnQueryTextListener(interactionListener);
 
-        mSearchView.onActionViewExpanded();
-        mSearchView.clearFocus();
+    //    mSearchView.onActionViewExpanded();
+    //    mSearchView.clearFocus();
+    /*    mSearchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d("clickedededed", "clickedededede");
+            }
+        });
 
+*/
         setSupportActionBar(toolbar);
 
         //리스너로 감
@@ -174,26 +211,6 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
-
-        //역이름 텍스트
-        markerText = ((TextView) findViewById(R.id.markerText));
-
-        // passMarkerMother Relative View reference
-        passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
-
-        // TtfMapImageView ... mapView 의 구현
-        mapView = ((TtfMapImageView) findViewById(R.id.mapView));
-        mapView.setImageResource(R.drawable.linemap_naver);
-        Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth() );
-        mapView.setTtfMapImageViewListener(this);
-
-        routeController = RouteController.getInstance(mapView);
-        mapView.setImageResource(R.drawable.linemap_naver);
-        mapView.setTtfMapImageViewListener(this);
-
-        routeController = RouteController.getInstance(mapView);
-
-
     }
 
 
@@ -202,23 +219,47 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search, menu);
-        MenuItem searchMenu = menu.findItem(R.id.menu_search);
+        final MenuItem searchMenu = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchMenu.getActionView();
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.d(TAG, "onFocusChange: ");
+            }
+        });
+        interactionListener.setMenu(menu);
         searchView.setOnQueryTextListener(interactionListener);
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");
+
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        searchView.onActionViewExpanded();
-        searchView.clearFocus();
+//        searchView.onActionViewExpanded();
+//        searchView.clearFocus();
+
 
         return true;
     }
 
+    public void onComposeAction(MenuItem mi) {
+        // handle click here
+        Log.d("123","123");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                Log.d("1234534534534533","12334534534534");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     /*
-    Hide Keyboard
-     */
+            Hide Keyboard
+             */
     public void hideSoftKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -270,7 +311,7 @@ public class MainActivity extends AppCompatActivity
 
             applyMapScaleChange();
 
-        } else if ( markerMode == ACTI_MARKER ){
+        } else if (markerMode == ACTI_MARKER) {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
             if (findViewById(R.id.station_bottomSheet) != null) {
@@ -283,21 +324,22 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        if ( status != FULL ) {
+        if (status != FULL) {
             activeStation = routeController.getStation(semiStation);
             Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
 
             boolean flag = false;
             List<Station> checkList = new ArrayList<>();
-            checkList.add( startStation );
-            checkList.add( endStation );
-            for ( Station station : checkList ) {
+            checkList.add(startStation);
+            checkList.add(endStation);
+            for (Station station : checkList) {
                 if (station == null) continue;
                 else {
-                    if ( activeStation.getStationId1().equals( station.getStationId1() ) ) {
+                    if (activeStation.getStationId1().equals(station.getStationId1())) {
                         activeStation = station;
                         setMarkerVisibility((ImageView) findViewById(R.id.marker), false);
-                        flag = true; break;
+                        flag = true;
+                        break;
                     }
                 }
             }
@@ -307,7 +349,7 @@ public class MainActivity extends AppCompatActivity
                 setMarkerPosition(0, null, null);
             }
 
-            runBottomSheet( activeStation , null);
+            runBottomSheet(activeStation, null);
         }
     }
 
@@ -431,7 +473,7 @@ public class MainActivity extends AppCompatActivity
             stationBottomSheet.setShouldDimContentView(false);
             stationBottomSheet.setInterceptContentTouch(false);
 
-            Log.d(TAG, "runBottomSheet: " + ((LinearLayout)stationBottomSheet.getSheetView()).getChildAt(0).getClass() );
+            Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
             TextView start = (TextView) findViewById(R.id.Start);
             TextView arrive = (TextView) findViewById(R.id.Arrive);
@@ -454,7 +496,6 @@ public class MainActivity extends AppCompatActivity
                     onArriveClick(v);
                 }
             });*/
-
 
 
         } else if (status == FULL) {          // Route 정보
