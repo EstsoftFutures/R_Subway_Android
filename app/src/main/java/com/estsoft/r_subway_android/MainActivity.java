@@ -215,7 +215,8 @@ public class MainActivity extends AppCompatActivity
 
         // Realm 초기화
         SharedPreferences initRealmPrefs = getSharedPreferences("initRealmPrefs", MODE_PRIVATE);
-        if(initRealmPrefs.getString("Init",null) != "Done") {
+        String init = initRealmPrefs.getString("Init",null);
+        if(init == null) {
             InitializeRealm initRealm = new InitializeRealm(this);
             for(int i=100, j=1; i<=20138; i++, j++) {
                 String json = initRealm.getJSONFromAsset(i);
@@ -229,6 +230,7 @@ public class MainActivity extends AppCompatActivity
             editor.putString("Init", "Done");
             editor.commit();
         }
+        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
     }
 
 
