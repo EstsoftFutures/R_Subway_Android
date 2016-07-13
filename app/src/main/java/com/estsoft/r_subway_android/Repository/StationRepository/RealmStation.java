@@ -1,7 +1,10 @@
 package com.estsoft.r_subway_android.Repository.StationRepository;
 
+import android.graphics.PointF;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 /**
  * Created by estsoft on 2016-07-13.
@@ -205,4 +208,5 @@ public class RealmStation extends RealmObject {
     public void setNextStations(RealmList<RealmStation> nextStations) {
         this.nextStations = nextStations;
     }
+
 }

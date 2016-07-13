@@ -7,6 +7,7 @@ import android.graphics.PointF;
  */
 public class Station extends TtfNode {
 
+
     private PointF geoPoint = null;
     private PointF mapPoint = null;
     private String stationName = "";
