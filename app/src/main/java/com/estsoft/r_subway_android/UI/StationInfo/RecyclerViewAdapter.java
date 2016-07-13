@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
+    private static final String TAG = "RecyclerViewAdapter";
+
     private int expandedPosition = -1;
     private final FragmentActivity mActivity;
     private final List<Car> mUserDetails = new ArrayList<>();
@@ -47,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         holder.vName.setText("Name: " + mUserDetails.get(position).getName());
 
-        holder.test.setText("wowowowowowowowowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwooooooooooooooooooooooooooooooooooooooooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeaaaaaaaaaaaaaaaaaaaaaa");
+        holder.test.setText("woa");
         if(position == expandedPosition){
             holder.test.setVisibility(View.VISIBLE);
         }else{
@@ -76,8 +78,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         @Override
         public void onClick(View v) {
-
-
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition());
             }
@@ -86,7 +86,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
