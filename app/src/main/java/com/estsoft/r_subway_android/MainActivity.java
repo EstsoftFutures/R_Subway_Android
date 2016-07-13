@@ -2,6 +2,7 @@ package com.estsoft.r_subway_android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity
 
     public static final int ALL_MARKERS = 0;
     public static final int ACTI_MARKER = 1;
-    private static boolean INIT_REALM = false;
 
     private InteractionListener interactionListener = null;
 
@@ -214,7 +214,8 @@ public class MainActivity extends AppCompatActivity
         });*/
 
         // Realm 초기화
-        if(INIT_REALM == false) {
+        SharedPreferences initRealmPrefs = getSharedPreferences("initRealmPrefs", MODE_PRIVATE);
+        if(initRealmPrefs.getString("Init",null) != "Done") {
             InitializeRealm initRealm = new InitializeRealm(this);
             for(int i=100, j=1; i<=20138; i++, j++) {
                 String json = initRealm.getJSONFromAsset(i);
@@ -224,7 +225,9 @@ public class MainActivity extends AppCompatActivity
             }
             initRealm.connectStations();
 
-            INIT_REALM = true;
+            SharedPreferences.Editor editor = initRealmPrefs.edit();
+            editor.putString("Init", "Done");
+            editor.commit();
         }
     }
 

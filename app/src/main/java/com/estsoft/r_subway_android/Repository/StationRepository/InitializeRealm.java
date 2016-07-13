@@ -1,10 +1,8 @@
 package com.estsoft.r_subway_android.Repository.StationRepository;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.estsoft.r_subway_android.MainActivity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * Created by estsoft on 2016-07-13.
@@ -25,6 +24,8 @@ public class InitializeRealm {
 
     public InitializeRealm(Context context) {
         this.context = context;
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+        Realm.setDefaultConfiguration(realmConfig);
         realm = Realm.getDefaultInstance();
     }
 
@@ -70,7 +71,6 @@ public class InitializeRealm {
         JsonPrimitive bicycleCount = useInfo.getAsJsonPrimitive("bicycleCount");
         JsonPrimitive civilCount = useInfo.getAsJsonPrimitive("civilCount");
 
-//        realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmStation station = realm.createObject(RealmStation.class);
         station.setIndex(index);
@@ -97,9 +97,8 @@ public class InitializeRealm {
         for(int i=100; i<=20138; i++) {
             String json = getJSONFromAsset(i);
             if (json != null) {
-//                realm = Realm.getDefaultInstance();
                 RealmStation station = realm.where(RealmStation.class).equalTo("stationID", i).findFirst();
-                Log.d("\\\\", String.valueOf(station.getStationID()));
+//                Log.d("\\\\", String.valueOf(station.getStationID()));
                 JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
                 JsonObject result = jsonObject.getAsJsonObject("result");
                 JsonObject exOBJ = result.getAsJsonObject("exOBJ");
@@ -108,7 +107,7 @@ public class InitializeRealm {
                     for (JsonElement ex : exStations) {
                         int exStationID = ex.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation exStation = realm.where(RealmStation.class).equalTo("stationID", exStationID).findFirst();
-                        Log.d("\\\\", String.valueOf(exStation.getStationID()));
+//                        Log.d("\\\\", String.valueOf(exStation.getStationID()));
 
                         realm.beginTransaction();
                         station.getExStations().add(exStation);
@@ -123,7 +122,7 @@ public class InitializeRealm {
                     for(JsonElement prev : prevStations) {
                         int prevStationID = prev.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation prevStation = realm.where(RealmStation.class).equalTo("stationID", prevStationID).findFirst();
-                        Log.d("\\\\", String.valueOf(prevStation.getStationID()));
+//                        Log.d("\\\\", String.valueOf(prevStation.getStationID()));
 
                         realm.beginTransaction();
                         station.getPrevStations().add(prevStation);
@@ -137,7 +136,7 @@ public class InitializeRealm {
                     for(JsonElement next : nextStations) {
                         int nextStationID = next.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation nextStation = realm.where(RealmStation.class).equalTo("stationID", nextStationID).findFirst();
-                        Log.d("\\\\", String.valueOf(nextStation.getStationID()));
+//                        Log.d("\\\\", String.valueOf(nextStation.getStationID()));
 
                         realm.beginTransaction();
                         station.getNextStations().add(nextStation);
