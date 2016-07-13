@@ -17,12 +17,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
+import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 
 public class StationInfoFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPage;
-
+private static Station station= null;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
     RecyclerViewAdapter adapter;
@@ -33,11 +34,12 @@ public class StationInfoFragment extends Fragment {
     }
 
 
-    public static StationInfoFragment newInstance(int page) {
+    public static StationInfoFragment newInstance(int page, Station station1) {
         StationInfoFragment fragment = new StationInfoFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         fragment.setArguments(args);
+        station = station1;
         return fragment;
     }
 
@@ -61,7 +63,7 @@ public class StationInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        adapter = new RecyclerViewAdapter(mActivity);
+        adapter = new RecyclerViewAdapter(mActivity, station);
 
         return rootView;
     }

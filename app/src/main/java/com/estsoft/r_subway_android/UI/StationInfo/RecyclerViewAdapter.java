@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
+import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +25,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private int expandedPosition = -1;
     private final FragmentActivity mActivity;
-    private final List<Car> mUserDetails = new ArrayList<>();
+    private final List<Station> mUserDetails = new ArrayList<>();
+    private static Station station = null;
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
 
 
-    public RecyclerViewAdapter(FragmentActivity mActivity) {
+    public RecyclerViewAdapter(FragmentActivity mActivity, Station station) {
         this.mActivity = mActivity;
-        createUserDetails();
+        this.station = station;
+        createUserDetails(station);
     }
 
     @Override
@@ -45,14 +48,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.vId.setText("ID: " + mUserDetails.get(position).getId());
+        holder.vId.setText("ID: " + mUserDetails.get(position).getStationId());
 
-        holder.vName.setText("Name: " + mUserDetails.get(position).getName());
+        holder.vName.setText("Name: " + mUserDetails.get(position).getStationName());
 
         holder.test.setText("woa");
-        if(position == expandedPosition){
+        if (position == expandedPosition) {
             holder.test.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             holder.test.setVisibility(View.GONE);
         }
 
@@ -98,13 +101,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     /**
      * Create Random Users
      */
-    private void createUserDetails() {
+    private void createUserDetails(Station station) {
         if (mUserDetails != null) mUserDetails.clear();
 
         for (int i = 0; i < 15; i++) {
-
-            Car mDetails = new Car(i, "name" + i);
-            mUserDetails.add(mDetails);
+            mUserDetails.add(station);
         }
     }
 

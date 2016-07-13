@@ -14,7 +14,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 4;
     private String tabTitles[] = new String[]{"Tab1", "Tab2", "Tab3", "Tab4"};
 
-    private Station station = null;
+    private static Station station = null;
 
     public PagerAdapter(FragmentManager fm, Station station) {
         super(fm);
@@ -28,7 +28,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return StationInfoFragment.newInstance(position);
+        return StationInfoFragment.newInstance(position, station);
     }
 
     @Override
