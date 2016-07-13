@@ -75,10 +75,10 @@
                 android:groupIndicator="@null" />
 
         </android.support.design.widget.NavigationView>
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#000000"
+            android:background="#FFFFFF"
             android:id="@+id/list_test_view"
             android:visibility="gone"/>
     </android.support.v4.widget.DrawerLayout>

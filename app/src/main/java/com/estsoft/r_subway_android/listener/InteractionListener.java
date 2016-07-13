@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
+import com.estsoft.r_subway_android.UI.SearchListAdapter;
+import com.estsoft.r_subway_android.UI.StationInfo.RecyclerViewAdapter;
 import com.estsoft.r_subway_android.localization.KoreanChar;
 import com.estsoft.r_subway_android.localization.KoreanTextMatch;
 import com.estsoft.r_subway_android.localization.KoreanTextMatcher;
@@ -115,27 +119,34 @@ public class InteractionListener implements
         final MenuItem searchMenu = m.findItem(R.id.menu_search);
         m.performIdentifierAction(searchMenu.getItemId(), 0);
 
-        ListView list = (ListView) host.findViewById(R.id.list_test_view);
+        RecyclerView list = (RecyclerView) host.findViewById(R.id.list_test_view);
         list.setVisibility(View.VISIBLE);
+
         List<SemiStation> searchResult = checkChoseong(newText);
         if (searchResult == null) {
             searchResult = new ArrayList<>();
         }
 
-        List<HashMap<String, String>> stationList = new ArrayList<HashMap<String, String>>();
+        // use a linear layout manager
+        list.setLayoutManager(new LinearLayoutManager(host.getApplicationContext()));
+        SearchListAdapter sla = new SearchListAdapter( searchResult );
+        list.setAdapter( sla );
+        sla.SetOnItemClickListener( sla );
 
-        for (int i = 0; i < searchResult.size(); i++) {
-            HashMap<String, String> stations = new HashMap<String, String>();
-            stations.put("ID : ", searchResult.get(i).getId() + "");
-            stations.put("NAME : ", searchResult.get(i).getName());
-            stationList.add(stations);
-            Log.d(TAG, "onQueryTextChange: " + searchResult.get(i).getName());
-        }
-
-        ListAdapter adapter = new SimpleAdapter(host, stationList, R.layout.list_item
-                , new String[]{"ID : ", "NAME : "}, new int[]{R.id.id, R.id.name});
-
-        list.setAdapter(adapter);
+//        List<HashMap<String, String>> stationList = new ArrayList<HashMap<String, String>>();
+//
+//        for (int i = 0; i < searchResult.size(); i++) {
+//            HashMap<String, String> stations = new HashMap<String, String>();
+//            stations.put("ID : ", searchResult.get(i).getId() + "");
+//            stations.put("NAME : ", searchResult.get(i).getName());
+//            stationList.add(stations);
+//            Log.d(TAG, "onQueryTextChange: " + searchResult.get(i).getName());
+//        }
+//
+//        ListAdapter adapter = new SimpleAdapter(host, stationList, R.layout.list_item
+//                , new String[]{"ID : ", "NAME : "}, new int[]{R.id.id, R.id.name});
+//
+//        list.setAdapter(adapter);
 
         return true;
     }
@@ -156,7 +167,6 @@ public class InteractionListener implements
         return true;
     }
 
-
     private List<SemiStation> checkChoseong(String searchSt) {
         List<SemiStation> sl = new ArrayList<>();
         for (SemiStation st : semiStationList) {
@@ -172,4 +182,7 @@ public class InteractionListener implements
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
+
+
+
 }
