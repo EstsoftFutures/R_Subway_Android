@@ -221,13 +221,6 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.search, menu);
         final MenuItem searchMenu = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchMenu.getActionView();
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                Log.d(TAG, "onFocusChange: ");
-            }
-        });
-        interactionListener.setMenu(menu);
         searchView.setOnQueryTextListener(interactionListener);
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");

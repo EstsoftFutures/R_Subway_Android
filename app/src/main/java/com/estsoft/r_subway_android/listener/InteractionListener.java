@@ -129,6 +129,7 @@ public class InteractionListener implements
             stations.put("ID : ", searchResult.get(i).getId() + "");
             stations.put("NAME : ", searchResult.get(i).getName());
             stationList.add(stations);
+            Log.d(TAG, "onQueryTextChange: " + searchResult.get(i).getName());
         }
 
         ListAdapter adapter = new SimpleAdapter(host, stationList, R.layout.list_item
@@ -157,13 +158,14 @@ public class InteractionListener implements
 
 
     private List<SemiStation> checkChoseong(String searchSt) {
-
+        List<SemiStation> sl = new ArrayList<>();
         for (SemiStation st : semiStationList) {
             if (KoreanTextMatcher.isMatch(st.getName(), searchSt)) {
-                Log.d(TAG, "checkChoseong: " + st.getName());
+//                Log.d(TAG, "checkChoseong: " + st.getName());
+                sl.add(st);
             }
         }
-        return null;
+        return sl;
     }
 
 
