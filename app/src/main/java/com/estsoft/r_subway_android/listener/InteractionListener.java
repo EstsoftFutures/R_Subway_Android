@@ -115,6 +115,7 @@ public class InteractionListener implements
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        Log.d(TAG, "onQueryTextChange: CHECHEHCHCHEHCH" );
         Menu m = menu;
         final MenuItem searchMenu = m.findItem(R.id.menu_search);
         m.performIdentifierAction(searchMenu.getItemId(), 0);
@@ -129,24 +130,11 @@ public class InteractionListener implements
 
         // use a linear layout manager
         list.setLayoutManager(new LinearLayoutManager(host.getApplicationContext()));
-        SearchListAdapter sla = new SearchListAdapter( searchResult );
-        list.setAdapter( sla );
-        sla.SetOnItemClickListener( sla );
+        SearchListAdapter sla = new SearchListAdapter( searchResult, host.getLayoutInflater() );
 
-//        List<HashMap<String, String>> stationList = new ArrayList<HashMap<String, String>>();
-//
-//        for (int i = 0; i < searchResult.size(); i++) {
-//            HashMap<String, String> stations = new HashMap<String, String>();
-//            stations.put("ID : ", searchResult.get(i).getId() + "");
-//            stations.put("NAME : ", searchResult.get(i).getName());
-//            stationList.add(stations);
-//            Log.d(TAG, "onQueryTextChange: " + searchResult.get(i).getName());
-//        }
-//
-//        ListAdapter adapter = new SimpleAdapter(host, stationList, R.layout.list_item
-//                , new String[]{"ID : ", "NAME : "}, new int[]{R.id.id, R.id.name});
-//
-//        list.setAdapter(adapter);
+        sla.SetOnItemClickListener(sla.getmItemClickListener());
+
+        list.setAdapter( sla );
 
         return true;
     }

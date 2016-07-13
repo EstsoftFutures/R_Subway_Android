@@ -2,6 +2,7 @@ package com.estsoft.r_subway_android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +37,7 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
@@ -46,7 +49,9 @@ import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
+import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,8 +106,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         //역이름 텍스트
         markerText = ((TextView) findViewById(R.id.markerText));
@@ -210,6 +213,30 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });*/
+        //Facebook Stetho setting
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
+
+        SharedPreferences initRealmPrefs = getSharedPreferences("initRealmPrefs", MODE_PRIVATE);
+        String init = initRealmPrefs.getString("Init",null);
+        if(init == null) {
+            InitializeRealm initRealm = new InitializeRealm(this);
+            for(int i=100, j=1; i<=20138; i++, j++) {
+                String json = initRealm.getJSONFromAsset(i);
+                if(json != null) {
+                    initRealm.loadJSONToRealm(json, j);
+                }
+            }
+            initRealm.connectStations();
+
+            SharedPreferences.Editor editor = initRealmPrefs.edit();
+            editor.putString("Init", "Done");
+            editor.commit();
+        }
 
     }
 
@@ -220,7 +247,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search, menu);
         final MenuItem searchMenu = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) searchMenu.getActionView();
+        final SearchView searchView = (SearchView) searchMenu.getActionView();
 
         interactionListener.setMenu(menu);
 
@@ -230,6 +257,24 @@ public class MainActivity extends AppCompatActivity
         searchView.setQueryHint("역검색");
 
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        ImageView closebtn = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        closebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView list = (RecyclerView) findViewById(R.id.list_test_view);
+
+//                hideSoftKeyboard(v);
+//                searchView.setQuery("",false);
+
+                searchView.onActionViewCollapsed();
+
+                list.setVisibility(View.GONE);
+
+//                searchView.setIconified(true);
+            }
+        });
+
 
 //        searchView.onActionViewExpanded();
 //        searchView.clearFocus();
@@ -321,6 +366,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
+
         if (status != FULL) {
             activeStation = routeController.getStation(semiStation);
             Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
@@ -584,6 +630,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < route.getStationList().size(); i++) {
             if (i == 0 || i == route.getStationList().size() - 1) continue;
 
+
+            Log.d(TAG, "inflateRoute: ");
             ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
             marker.setId(3000 + i);
             if (passMarkerMother != null) {
