@@ -33,6 +33,7 @@ public class RealmStation extends RealmObject {
     private RealmList<RealmStation> prevStations;
     private RealmList<RealmStation> nextStations;
 
+
     public int getIndex() {
         return index;
     }

@@ -51,6 +51,7 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.facebook.stetho.Stetho;
@@ -66,7 +67,8 @@ import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity
-        implements TtfMapImageViewListener {
+        implements TtfMapImageViewListener,
+        SearchListAdapterListener {
 
     private static final String TAG = "MainActivity";
 
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity
     private ExpandableListAdapter expandableListAdapter = null;
 
     private RouteController routeController = null;
+    private StationController stationController = null;
     private Station activeStation = null;
     private Station startStation = null;
     private Station endStation = null;
@@ -129,8 +132,6 @@ public class MainActivity extends AppCompatActivity
         routeController = RouteController.getInstance(mapView);
         mapView.setImageResource(R.drawable.linemap_naver);
         mapView.setTtfMapImageViewListener(this);
-
-        routeController = RouteController.getInstance(mapView);
 
         interactionListener = new InteractionListener(this, mapView.getSemiStationList());
 
@@ -199,6 +200,7 @@ public class MainActivity extends AppCompatActivity
             editor.commit();
         }
 
+
         Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
         Realm realm = Realm.getInstance(this);
         RealmResults<RealmStation> results = realm.where(RealmStation.class).findAll();
@@ -207,8 +209,8 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        new StationController( Realm.getInstance(this) );
-
+        stationController = new StationController( Realm.getInstance(this) );
+//        mapView.setSemiStationLaneNumber( stationController );
     }
 
 
@@ -317,8 +319,25 @@ public class MainActivity extends AppCompatActivity
 //        return true;
 //    } 수정
 
+    /*
+        Down Here - SearchListAdapter
+        Implemented Listener Override Methods
+    */
 
-     /*
+    @Override
+    public void itemClick(SemiStation semiStation) {
+        setActiveStation( semiStation );
+        RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
+        list.setVisibility(View.GONE);
+        mapView.moveToMapCenter( semiStation.getPosition() );
+
+        hideSoftKeyboard(mapView);
+
+        Log.d(TAG, "itemClick: ");
+    }
+
+
+    /*
         Down Here - TtfMapImageView
         Implemented Listener Override Methods
     */
@@ -367,7 +386,7 @@ public class MainActivity extends AppCompatActivity
     public void setActiveStation(SemiStation semiStation) {
 
         if (status != FULL) {
-            activeStation = routeController.getStation(semiStation);
+            activeStation = stationController.getStation(semiStation);
             Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
 
             boolean flag = false;
@@ -435,6 +454,7 @@ public class MainActivity extends AppCompatActivity
                     default:
                         markerPosition = new PointF(0, 0);
                 }
+                Log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
                 setImageMatrix(marker, mapView.getMarkerRatio(), markerPosition);
 
             }
@@ -670,5 +690,9 @@ public class MainActivity extends AppCompatActivity
 
     public Toolbar getToolbar() {
         return toolbar;
+    }
+
+    public StationController getStationController() {
+        return stationController;
     }
 }
