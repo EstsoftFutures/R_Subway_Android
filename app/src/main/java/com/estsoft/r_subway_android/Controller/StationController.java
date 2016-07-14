@@ -65,57 +65,63 @@ public class StationController {
         // API
 
         //Realm
-        RealmStation matchRealmStation = null;
-        for ( RealmStation rst : realmStationList ) {
-            if ( rst.getStationID() == semiStation.getIntId() ) {
-                matchRealmStation = rst;
-                break;
-            }
+//        RealmStation matchRealmStation = null;
+//        for ( RealmStation rst : realmStationList ) {
+//            if ( rst.getStationID() == semiStation.getIntId() ) {
+//                matchRealmStation = rst;
+//                break;
+//            }
+//        }
+//
+//        Station station = new Station( matchRealmStation, semiStation.getPosition(), getConLevel(semiStation.getIntId()) );
+
+        Station station = null;
+        for ( Station ss : deepCopiedStations ) {
+            if ( semiStation.getIntId() == ss.getStationID() )
+                return ss;
         }
 
-        Station station = new Station( matchRealmStation, semiStation.getPosition(), getConLevel(semiStation.getIntId()) );
-
-        return  station;
+        return null;
 
     }
 
-    public Station getLiteStation( SemiStation semiStation ) {
-        // Sever Communication
-        int conLevel = 0;
-        // API
+//    public Station getLiteStation( SemiStation semiStation ) {
+//        // Sever Communication
+//        int conLevel = 0;
+//        // API
+//
+//        //Realm
+//        RealmStation matchRealmStation = null;
+//        for ( RealmStation rst : realmStationList ) {
+//            if ( rst.getStationID() == semiStation.getIntId() ) {
+//                matchRealmStation = rst;
+//                break;
+//            }
+//        }
+//
+//        Station station = new Station( matchRealmStation, getConLevel(semiStation.getIntId()) );
+//
+//        return  station;
+//    }
 
-        //Realm
-        RealmStation matchRealmStation = null;
-        for ( RealmStation rst : realmStationList ) {
-            if ( rst.getStationID() == semiStation.getIntId() ) {
-                matchRealmStation = rst;
-                break;
-            }
-        }
+//    public List<Station> getExStations( SemiStation semiStation ) {
+//        List<Station> ExStations = new ArrayList<>();
+//        RealmStation seedRealmStation = getRealmStationByID( semiStation.getIntId() );
+//        ExStations.add( new Station(seedRealmStation, semiStation.getPosition(), getConLevel(semiStation.getIntId())) );
+//        for ( RealmStation rst : seedRealmStation.getExStations() ) {
+//            ExStations.add( new Station(rst, semiStation.getPosition(), getConLevel(semiStation.getIntId())) );
+//        }
+//
+//        return ExStations;
+//    }
 
-        Station station = new Station( matchRealmStation, getConLevel(semiStation.getIntId()) );
-
-        return  station;
-    }
-
-    public List<Station> getExStations( SemiStation semiStation ) {
-        List<Station> ExStations = new ArrayList<>();
-        RealmStation seedRealmStation = getRealmStationByID( semiStation.getIntId() );
-        ExStations.add( new Station(seedRealmStation, semiStation.getPosition(), getConLevel(semiStation.getIntId())) );
-        for ( RealmStation rst : seedRealmStation.getExStations() ) {
-            ExStations.add( new Station(rst, semiStation.getPosition(), getConLevel(semiStation.getIntId())) );
-        }
-
-        return ExStations;
-    }
-
-    public List<Station> getStationList (List<SemiStation> semiStationList) {
-        List<Station> stationList = new ArrayList<>();
-        for ( SemiStation ss : semiStationList ) {
-            stationList.add(getLiteStation( ss ));
-        }
-        return stationList;
-    }
+//    public List<Station> getStationList (List<SemiStation> semiStationList) {
+//        List<Station> stationList = new ArrayList<>();
+//        for ( SemiStation ss : semiStationList ) {
+//            stationList.add(getLiteStation( ss ));
+//        }
+//        return stationList;
+//    }
 
     public Station getDeepStation ( int id ) {
         for ( Station st : deepCopiedStations ) {
