@@ -126,6 +126,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
         //뷰 크기
         int width = this.getWidth();
+        Log.d(TAG, "setImagePit123123123: " + width);
         int height = this.getHeight();
         Log.d(TAG, "ViewSize = " + width + "/" + height);
 
@@ -365,7 +366,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         point.set(x, y);
     }
 
-    private void matrixTurning( Matrix matrix, ImageView imageView ) {
+    protected void matrixTurning( Matrix matrix, ImageView imageView ) {
 
         // 매트릭스 값
         float[] value = new float[9];
@@ -532,5 +533,21 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
     public int getMovedImageY() {
         return movedImageY;
+    }
+
+    @Override
+    public Matrix getMatrix() {
+        return matrix;
+    }
+
+    public void setMatrix(Matrix matrix) {
+        this.matrix = matrix;
+    }
+
+    public int getViewWidth(){
+        return this.getWidth();
+    }
+    public int getViewHeight(){
+        return this.getHeight();
     }
 }

@@ -15,23 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
-import com.estsoft.r_subway_android.UI.SearchListAdapter;
-import com.estsoft.r_subway_android.UI.StationInfo.RecyclerViewAdapter;
-import com.estsoft.r_subway_android.localization.KoreanChar;
-import com.estsoft.r_subway_android.localization.KoreanTextMatch;
+import com.estsoft.r_subway_android.UI.StationInfo.SearchListAdapter;
 import com.estsoft.r_subway_android.localization.KoreanTextMatcher;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -115,7 +107,7 @@ public class InteractionListener implements
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d(TAG, "onQueryTextChange: CHECHEHCHCHEHCH" );
+
         Menu m = menu;
         final MenuItem searchMenu = m.findItem(R.id.menu_search);
         m.performIdentifierAction(searchMenu.getItemId(), 0);
@@ -124,14 +116,16 @@ public class InteractionListener implements
         list.setVisibility(View.VISIBLE);
 
         List<SemiStation> searchResult = checkChoseong(newText);
-        if (searchResult == null) {
-            searchResult = new ArrayList<>();
-        }
+
 
         // use a linear layout manager
         list.setLayoutManager(new LinearLayoutManager(host.getApplicationContext()));
+        // semiStation 에 라인번호들 입력
+//        for ( SemiStation ss : searchResult ) {
+//            ss.setLaneNumbers( host.getStationController().getExNumbers(ss) );
+//        }
         SearchListAdapter sla = new SearchListAdapter( searchResult, host.getLayoutInflater() );
-
+        sla.setmSearchListAdapterListener(host);
         sla.SetOnItemClickListener(sla.getmItemClickListener());
 
         list.setAdapter( sla );
@@ -159,7 +153,6 @@ public class InteractionListener implements
         List<SemiStation> sl = new ArrayList<>();
         for (SemiStation st : semiStationList) {
             if (KoreanTextMatcher.isMatch(st.getName(), searchSt)) {
-//                Log.d(TAG, "checkChoseong: " + st.getName());
                 sl.add(st);
             }
         }

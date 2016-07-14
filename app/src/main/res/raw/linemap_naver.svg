@@ -50,26 +50,26 @@
 		
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="891.875" cy="1113.25" r="7" id="141" name="구로"/>
 		
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="838" cy="1114.26" r="7" id="999" name="구일"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="784.333" cy="1114.26" r="7" id="999" name="개봉"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="727.667" cy="1127.25" r="7" id="999" name="오류동"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="708.333" cy="1179.667" r="7" id="999" name="온수"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="708.333" cy="1216" r="7" id="999" name="역곡"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="701.333" cy="1242.667" r="7" id="999" name="소사"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="678" cy="1256.667" r="7" id="999" name="부천"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="646.667" cy="1258.334" r="7" id="999" name="중동"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="615" cy="1258.334" r="7" id="999" name="송내"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="583" cy="1258.334" r="7" id="999" name="부개"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="545.667" cy="1258.334" r="7" id="999" name="부평"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="513.667" cy="1268.334" r="7" id="999" name="백운"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="497.667" cy="1287.667" r="7" id="999" name="동암"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1314.334" r="7" id="999" name="간석"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1340.125" r="7" id="999" name="주안"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1367.25" r="7" id="999" name="도화"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1394.334" r="7" id="999" name="제물포"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1420" r="7" id="999" name="도원"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1447.667" r="7" id="999" name="동인천"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1475" r="7" id="999" name="인천"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="838" cy="1114.26" r="7" id="142" name="구일"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="784.333" cy="1114.26" r="7" id="143" name="개봉"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="727.667" cy="1127.25" r="7" id="144" name="오류동"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="708.333" cy="1179.667" r="7" id="145" name="온수"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="708.333" cy="1216" r="7" id="146" name="역곡"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="701.333" cy="1242.667" r="7" id="147" name="소사"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="678" cy="1256.667" r="7" id="148" name="부천"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="646.667" cy="1258.334" r="7" id="149" name="중동"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="615" cy="1258.334" r="7" id="150" name="송내"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="583" cy="1258.334" r="7" id="151" name="부개"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="545.667" cy="1258.334" r="7" id="152" name="부평"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="513.667" cy="1268.334" r="7" id="153" name="백운"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="497.667" cy="1287.667" r="7" id="154" name="동암"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1314.334" r="7" id="155" name="간석"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1340.125" r="7" id="156" name="주안"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1367.25" r="7" id="157" name="도화"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1394.334" r="7" id="158" name="제물포"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1420" r="7" id="159" name="도원"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1447.667" r="7" id="160" name="동인천"/>
+		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="493.333" cy="1475" r="7" id="161" name="인천"/>
 		
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="870.25" cy="1191.5" r="7" id="172" name="가산디지털단지"/>
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="870.25" cy="1239.5" r="7" id="173" name="독산"/>
@@ -108,7 +108,7 @@
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="1832.375" cy="1652.875" r="7" id="1409" name="봉명"/>
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="1880.375" cy="1652.875" r="7" id="1410" name="쌍용"/>
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="1927.625" cy="1652.875" r="7" id="1411" name="아산"/>
-		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="1975.125" cy="1652.875" r="7" id="1412" name="탕정"/>
+		<!--<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="1975.125" cy="1652.875" r="7" id="1412" name="탕정"/>-->
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="2023.375" cy="1652.875" r="7" id="1413" name="배방"/>
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="2065.875" cy="1639.625" r="7" id="1415" name="온양온천"/>
 		<circle fill="none" stroke="#283D98" stroke-miterlimit="10" cx="2084" cy="1598.75" r="7" id="1416" name="신창(순천향대)"/>
@@ -159,15 +159,15 @@
 		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1230" cy="760" r="7" id="203" name="을지로입구"/>
 		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1195.333" cy="754.667" r="7" id="202" name="을지로입구"/>
 		
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="870" cy="1098.667" r="12" id="999" name="도림천"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="809.333" cy="1098.667" r="12" id="999" name="양천구청"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="746.667" cy="1095.333" r="12" id="999" name="신정네거리"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="708.667" cy="1048.333" r="12" id="999" name="까치산"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="870" cy="1098.667" r="12" id="261" name="도림천"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="809.333" cy="1098.667" r="12" id="262" name="양천구청"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="746.667" cy="1095.333" r="12" id="263" name="신정네거리"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="708.667" cy="1048.333" r="12" id="264" name="까치산"/>
 		
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1615.001" cy="790.333" r="15.167" id="999" name="용답"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1604" cy="711.333" r="15.167" id="999" name="신답"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1511.001" cy="691" r="15.167" id="999" name="용두"/>
-		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1458.334" cy="686" r="15.167" id="999" name="신설동"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1615.001" cy="790.333" r="15.167" id="251" name="용답"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1604" cy="711.333" r="15.167" id="252" name="신답"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1511.001" cy="691" r="15.167" id="254" name="용두"/>
+		<circle fill="none" stroke="#3AB334" stroke-miterlimit="10" cx="1458.334" cy="686" r="15.167" id="253" name="신설동"/>
 	</g>
 	
 	<g number="3">
@@ -179,7 +179,7 @@
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="636.75" cy="497.75" r="8.125" id="315" name="대곡"/>
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="668.75" cy="503.75" r="8.125" id="316" name="화정"/>
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="699.5" cy="503.75" r="8.125" id="317" name="원당"/>
-		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="730" cy="503.75" r="8.125" id="999" name="원흥" />
+		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="730" cy="503.75" r="8.125" id="370" name="원흥" />
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="760.5" cy="503.75" r="8.125"id="318" name="삼송"/>
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="790.75" cy="503.75" r="8.125" id="319" name="지축"/>
 		<circle fill="none" stroke="#FF7201" stroke-miterlimit="10" cx="822.25" cy="503.75" r="8.125" id="320" name="구파발"/>
@@ -471,7 +471,7 @@
 		<circle fill="none"stroke="#D7A836"stroke-miterlimit="10"cx="1587.335"cy="1204.167"r="8.125"id="930"name="종합운동장"/>
 	</g>
 	
-	<g number="10" name="경의중앙">
+	<g number="104" name="경의중앙">
 		<circle fill="none" stroke="#3EAB7B" stroke-miterlimit="10" cx="2146.001" cy="734" r="8.125"id="1300"name="용문"/>
 		<circle fill="none" stroke="#3EAB7B" stroke-miterlimit="10" cx="2146.001" cy="770.333" r="8.125"id="1301"name="원덕"/>
 		<circle fill="none" stroke="#3EAB7B" stroke-miterlimit="10" cx="2146.001" cy="804.667" r="8.125"id="1302"name="양평"/>
@@ -528,7 +528,7 @@
 		<circle fill="none" stroke="#3EAB7B" stroke-miterlimit="10" cx="1266" cy="1021.5" r="8.125"id="198"name="이촌"/>
 	</g>
 	
-	<g number="11" name="분당선">
+	<g number="100" name="분당선">
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1529.126" cy="762.335" r="8.125"id="1510"name="왕십리"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1523.999" cy="871.208" r="8.125"id="1511"name="서울숲"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1523.999" cy="973.668" r="8.125"id="1512"name="압구정로데오"/>
@@ -567,7 +567,7 @@
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1084.665" cy="1653.002" r="8.125"id="1545"name="수원"/>
 	</g>
 	
-	<g number="12" name="에버라인">
+	<g number="107" name="에버라인">
 		<circle fill="none" stroke="#7BC877" stroke-miterlimit="10" cx="1266" cy="1479" r="8.125"id="1701"name="기흥"/>
 		<circle fill="none" stroke="#7BC877" stroke-miterlimit="10" cx="1273.125" cy="1535.875" r="8.125"id="1702"name="강남대"/>
 		<circle fill="none" stroke="#7BC877" stroke-miterlimit="10" cx="1316.5" cy="1563.5" r="8.125"id="1703"name="지석"/>
@@ -585,7 +585,7 @@
 		<circle fill="none" stroke="#7BC877" stroke-miterlimit="10" cx="1984" cy="1563.5" r="8.125"id="1715"name="전대.에버랜드"/>
 	</g>
 	
-	<g number="13" name="경춘선">
+	<g number="108" name="경춘선">
 		<circle fill="none" stroke="#009448" stroke-miterlimit="10" cx="1768.5" cy="569" r="8.125"id="1809"name="광운대"/>
 		<circle fill="none" stroke="#009448" stroke-miterlimit="10" cx="1833.667" cy="690.333" r="8.125"id="1810"name="상봉"/>
 		<circle fill="none" stroke="#009448" stroke-miterlimit="10" cx="1870.333" cy="686.667" r="8.125"id="1811"name="망우"/>
@@ -610,7 +610,7 @@
 		<circle fill="none" stroke="#009448" stroke-miterlimit="10" cx="2145.125" cy="347.333" r="8.125"id="1830"name="춘천"/>
 	</g>
 	
-	<g number="14" name="신분당선">
+	<g number="109" name="신분당선">
 		<circle fill="none" stroke="#A82033" stroke-miterlimit="10" cx="1427.5" cy="1262.5" r="8.125"id="1910"name="강남"/>
 		<circle fill="none" stroke="#A82033" stroke-miterlimit="10" cx="1427.5" cy="1340.5" r="8.125"id="1911"name="양재"/>
 		<circle fill="none" stroke="#A82033" stroke-miterlimit="10" cx="1482.5" cy="1378.5" r="8.125"id="1912"name="양재시민의숲"/>
@@ -625,7 +625,7 @@
 		<circle fill="none" stroke="#A82033" stroke-miterlimit="10" cx="1307.5" cy="1437.75" r="8.125"id="1922"name="광교(경기대)"/>
 	</g>
 	
-	<g number="15" name="공항철도">
+	<g number="101" name="공항철도">
 		<circle fill="none" stroke="#44A1E1" stroke-miterlimit="10" cx="1154.5" cy="863.5" r="8.125"id="4001"name="서울역"/>
 		<circle fill="none" stroke="#44A1E1" stroke-miterlimit="10" cx="1085.5" cy="908.5" r="8.125"id="4002"name="공덕"/>
 		<circle fill="none" stroke="#44A1E1" stroke-miterlimit="10" cx="935" cy="844.5" r="8.125"id="4003"name="홍대입구"/>
@@ -640,7 +640,7 @@
 		<circle fill="none" stroke="#44A1E1" stroke-miterlimit="10" cx="385" cy="1380.5" r="8.125"id="4012"name="영종"/>
 	</g>
 	
-	<g number="16" name="자기부상">
+	<g number="102" name="자기부상">
 		<circle fill="none" stroke="#FF7F21" stroke-miterlimit="10" cx="391.333" cy="1516.666" r="8.125"id="4101"name="인천국제공항"/>
 		<circle fill="none" stroke="#FF7F21" stroke-miterlimit="10" cx="397.333" cy="1548.666" r="8.125"id="4102"name="장기주차장"/>
 		<circle fill="none" stroke="#FF7F21" stroke-miterlimit="10" cx="397.333" cy="1574.333" r="8.125"id="4103"name="합동청사"/>
@@ -649,7 +649,7 @@
 		<circle fill="none" stroke="#FF7F21" stroke-miterlimit="10" cx="397.333" cy="1652.333" r="8.125"id="4106"name="용유"/>
 	</g>
 	
-	<g number="17" name="의정부경전철">
+	<g number="110" name="의정부경전철">
 		<circle fill="none" stroke="#FF8E0D" stroke-miterlimit="10" cx="1590.5" cy="370" r="8.125"id="11001"name="발곡"/>
 		<circle fill="none" stroke="#FF8E0D" stroke-miterlimit="10" cx="1596.5" cy="413.5" r="8.125"id="11002"name="회룡"/>
 		<circle fill="none" stroke="#FF8E0D" stroke-miterlimit="10" cx="1578.25" cy="446" r="8.125"id="11003"name="범골"/>
@@ -667,7 +667,7 @@
 		<circle fill="none" stroke="#FF8E0D" stroke-miterlimit="10" cx="2034.5" cy="380.5" r="8.125"id="11015"name="탑석"/>
 	</g>
 	
-	<g number="18" name="수인선">
+	<g number="111" name="수인선">
 		<circle fill="none" stroke="#FFCE35" stroke-miterlimit="10" cx="820.5" cy="1593.5" r="8.125"id="11121"name="오이도"/>
 		<circle fill="none" stroke="#FFCE35" stroke-miterlimit="10" cx="811.375" cy="1518" r="8.125"id="11122"name="월곶"/>
 		<circle fill="none" stroke="#FFCE35" stroke-miterlimit="10" cx="772" cy="1508.875" r="8.125"id="11123"name="소래포구"/>
@@ -684,7 +684,7 @@
 		<circle fill="none" stroke="#FFCE35" stroke-miterlimit="10" cx="824" cy="1555.75" r="8.125"id="11150"name="달월"/>	
 	</g>
 	
-	<g number="19" name="인천1호선">
+	<g number="21" name="인천1호선">
 		<circle fill="none" stroke="#709ACF" stroke-miterlimit="10" cx="437.5" cy="698" r="8.125"id="20110"name="계양"/>
 		<circle fill="none" stroke="#709ACF" stroke-miterlimit="10" cx="490.5" cy="737" r="8.125"id="20111"name="귤현"/>
 		<circle fill="none" stroke="#709ACF" stroke-miterlimit="10" cx="492.5" cy="801.5" r="8.125"id="20112"name="박촌"/>

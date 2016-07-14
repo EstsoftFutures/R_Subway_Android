@@ -22,11 +22,18 @@ public class InitializeRealm {
     private Context context;
     private Realm realm;
 
+    //인규 수정
+    private int zeroIndex ;
+
     public InitializeRealm(Context context) {
         this.context = context;
         RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
         Realm.setDefaultConfiguration(realmConfig);
         realm = Realm.getDefaultInstance();
+
+        //인규 수정
+        zeroIndex = 0;
+
     }
 
     public String getJSONFromAsset(int stationID) {
@@ -75,7 +82,13 @@ public class InitializeRealm {
 
         realm.beginTransaction();
         RealmStation station = realm.createObject(RealmStation.class);
-        station.setIndex(index);
+
+        // 인규 수정
+        station.setIndex( zeroIndex );
+        zeroIndex ++;
+        // 규도 원본
+//        station.setIndex(index);
+
         station.setStationID(stationID.getAsInt());
         station.setStationName(stationName.getAsString());
         station.setLaneType(laneType.getAsInt());

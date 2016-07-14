@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.estsoft.r_subway_android.Controller.StationController;
 import com.estsoft.r_subway_android.Parser.CircleTag;
 import com.estsoft.r_subway_android.Parser.TtfXmlParser;
 import com.estsoft.r_subway_android.R;
@@ -46,6 +47,8 @@ public class TtfMapImageView extends MapTouchImageView {
     private int svgWidth = 0;
     private int svgHeight = 0;
 
+    private PointF mapCenter = null;
+
 
 
     public void setTtfMapImageViewListener(TtfMapImageViewListener ttfMapImageViewListener) {
@@ -67,7 +70,8 @@ public class TtfMapImageView extends MapTouchImageView {
                     new PointF( circle.getPositionX(), circle.getPositionY() ),
                     circle.getOtherFactor()
             );
-            semiStationList.add(semiStation);
+
+            saveSemiStation(semiStation);
         }
 
 
@@ -76,7 +80,21 @@ public class TtfMapImageView extends MapTouchImageView {
         setMaxMagnification( 5 );
         svgWidth = parser.getSvgWidth();
         svgHeight = parser.getSvgHeight();
+    }
 
+    //중복 역 제거 & 호선 입력
+    private void saveSemiStation( SemiStation semiStation ) {
+        if (semiStation.getLaneNumbers() == null){
+            semiStation.setLaneNumbers(new ArrayList<Integer>());
+        }
+        semiStation.getLaneNumbers().add( semiStation.getLaneNumber() );
+        for ( SemiStation ss : semiStationList ) {
+            if (ss.getName().equals( semiStation.getName() )) {
+                ss.getLaneNumbers().add( semiStation.getLaneNumber() );
+                return;
+            }
+        }
+        semiStationList.add(semiStation);
     }
 
     public TtfMapImageView(Context context, AttributeSet attrs)  throws Exception  {
@@ -175,14 +193,9 @@ public class TtfMapImageView extends MapTouchImageView {
 
 
     private void touchedStationAction( SemiStation semiStation ) {
-        
-//        Toast.makeText(getContext(), semiStation.getId(), Toast.LENGTH_SHORT).show();
 
         ttfMapImageViewListener.setActiveStation( semiStation );
 
-//        setMarkerPosition( (ImageView)findViewById(R.id.marker), semiStation.getPosition() );
-//        ttfMapImageViewListener.setMarkerPosition( (getWidth() + getHeight()) / MARKER_SCALE_RATIO , semiStation.getPosition(), semiStation.getId() );
-//        ttfMapImageViewListener.runBottomsheet( semiStation );
     }
 
     public float getMarkerRatio() {
@@ -196,6 +209,31 @@ public class TtfMapImageView extends MapTouchImageView {
         }
         return null;
 //        return new PointF(0,0);
+    }
+
+    public void setSemiStationLaneNumber( StationController sc ){
+        sc.setSemiStationLaneNumber( semiStationList );
+    }
+
+    public void moveToMapCenter( PointF point ) {
+        if (mapCenter == null) {
+            mapCenter = new PointF( getViewWidth() / 2 , getViewHeight() / 2);
+        }
+        Log.d(TAG, "moveToMapCenter: " + mapCenter.toString());
+        Log.d(TAG, "moveToMapCenter: " + point );
+        float moveX = (mapCenter.x - point.x) / 10;
+        float moveY = (mapCenter.y - point.y) / 10;
+        Log.d(TAG, "moveToMapCenter: " + moveX + " / " + moveY);
+
+
+        for ( int i = 0; i < 10; i ++ ) {
+            getMatrix().postTranslate( moveX, moveY );
+            matrixTurning( getMatrix(), this );
+            this.setImageMatrix( getMatrix() );
+            setStationsPosition( getMatrix() );
+            ttfMapImageViewListener.applyMapScaleChange();
+
+        }
     }
 
 
