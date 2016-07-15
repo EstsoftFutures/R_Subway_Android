@@ -26,7 +26,7 @@ public class StationInfoFragment extends Fragment {
 private static Station station= null;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
-    RecyclerViewAdapter adapter;
+    static RecyclerViewAdapter adapter;
 
 
     public StationInfoFragment() {
@@ -63,6 +63,7 @@ private static Station station= null;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        Log.d("station","station"+station.toString());
         adapter = new RecyclerViewAdapter(mActivity, station);
 
         return rootView;
@@ -79,24 +80,21 @@ private static Station station= null;
 
             @Override
             public void onItemClick(View v, int position) {
-             TextView test1 = (TextView) v.findViewById(R.id.test_expandable);
+             TextView test1 = (TextView) v.findViewById(R.id.info_stationinfo);
                 // do something with position
-                if (position == 2) {
-                    Log.d("child=2","child2");
+                if (position == 1) {
+                    Log.d("child=1","child1");
                     if(test1.getVisibility() == View.VISIBLE){
-                        Log.d("child=2","child2&willbegone");
+                        Log.d("child=1","child2&willbegone");
 
                         test1.setVisibility(View.GONE);
 
 
                     }else{
-                        Log.d("child=2","child2&willbeshown");
+                        Log.d("child=1","child2&willbeshown");
                         test1.setVisibility(View.VISIBLE);
                     }
 
-                } else {
-                    Log.d("child=!2","child!2");
-                    test1.setVisibility(View.GONE);
                 }
             }
 

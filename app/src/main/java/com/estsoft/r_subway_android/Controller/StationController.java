@@ -77,8 +77,10 @@ public class StationController {
 
         Station station = null;
         for ( Station ss : deepCopiedStations ) {
-            if ( semiStation.getIntId() == ss.getStationID() )
+            if ( semiStation.getIntId() == ss.getStationID() ) {
+                ss.setMapPoint(semiStation.getPosition());
                 return ss;
+            }
         }
 
         return null;

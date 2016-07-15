@@ -51,7 +51,7 @@ public class InteractionListener implements
 
     private final int startStationButton = R.id.Start;
     private final int arriveStationButton = R.id.Arrive;
-    private final int endInfoButton = R.id.endinfo;
+    private final int endInfoButton = R.id.end_info;
     private final int toolbarNavButtonView = 0;
 
     private final List<SemiStation> semiStationList;

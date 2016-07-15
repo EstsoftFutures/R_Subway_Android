@@ -18,16 +18,18 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp" />
-        <TextView
-            android:id="@+id/endinfo"
+
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/end_info"
+            android:src="@drawable/close_bottomsheet"
             android:layout_alignParentRight="true"
-            android:paddingRight="20dp"
             android:layout_marginTop="10dp"
-            android:text="X"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000" />
+            android:paddingRight="20dp"
+            />
+
 
     </RelativeLayout>
 
@@ -35,7 +37,7 @@
         android:id="@+id/route_viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"/>
+        android:background="#FFFFFF" />
 
 </LinearLayout>
 
