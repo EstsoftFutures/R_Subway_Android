@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ListViewAutoScrollHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 import android.view.WindowManager;
@@ -31,10 +29,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -59,7 +54,6 @@ import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -513,6 +507,7 @@ public class MainActivity extends AppCompatActivity
     */
     public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
+        stationBottomSheet.setPeekSheetTranslation(490);
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
@@ -576,7 +571,7 @@ public class MainActivity extends AppCompatActivity
             tabsStrip.setViewPager(viewPager);
 
 
-            routeBottomSheet.findViewById(R.id.endinfo).setOnClickListener(interactionListener);
+            routeBottomSheet.findViewById(R.id.end_info).setOnClickListener(interactionListener);
             // 리스너로 감
             /*routeBottomSheet.findViewById(R.id.endinfo).setOnClickListener(new View.OnClickListener() {
                 @Override
