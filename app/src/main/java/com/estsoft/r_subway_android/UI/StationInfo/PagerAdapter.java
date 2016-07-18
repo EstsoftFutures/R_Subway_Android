@@ -1,5 +1,6 @@
 package com.estsoft.r_subway_android.UI.StationInfo;
 
+import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,6 +8,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 import java.util.ArrayList;
@@ -15,14 +18,15 @@ import java.util.List;
 /**
  * Created by Administrator on 2016-07-04.
  */
-public class PagerAdapter extends FragmentStatePagerAdapter {
+public class PagerAdapter extends FragmentStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
     int PAGE_COUNT;
-    private String tabTitles[] = new String[]{"Tab1", "Tab2", "Tab3", "Tab4"};
-    private static Station station = null;
+/*    private String tabTitles[] = new String[]{"Tab1", "Tab2", "Tab3", "Tab4"};*/
+    private int[] imageResId = {R.drawable.lane1,R.drawable.lane2,R.drawable.lane3,R.drawable.lane4,R.drawable.lane5,R.drawable.lane6,R.drawable.lane7,R.drawable.lane8,R.drawable.lane9,R.drawable.lane21,R.drawable.lane100,R.drawable.lane101,R.drawable.lane104,R.drawable.lane107, R.drawable.lane108,R.drawable.lane109,R.drawable.lane110,R.drawable.lane111};
+    private static List<Station> exStations = null;
 
-    public PagerAdapter(FragmentManager fm, Station station) {
+    public PagerAdapter(FragmentManager fm, List<Station> exStations) {
         super(fm);
-        this.station = station;
+        this.exStations = exStations;
 
     }
 
@@ -30,9 +34,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
 
         //page 개수 넘기기_ 환승역 line수+1(자기자신)+(다음정류장수-1) 다음정류장이 2개인곳, 성수
-        PAGE_COUNT = station.getExStations().size() + station.getNextStations().size();
+        PAGE_COUNT = exStations.size();
 
-          //신도림 !!!!!!!!!!!!!!!!!!!!!!해결필요함
+
+        //신도림 !!!!!!!!!!!!!!!!!!!!!!해결필요함
 /*        if(station.getExStations().size()>0) {
             for (Station s : station.getExStations()) {
                 if (s.getNextStations().size() > 1) {
@@ -40,30 +45,42 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 }
             }
         }*/
+
+
         return PAGE_COUNT;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return StationInfoFragment.newInstance(position, station);
+        Log.d("",""+exStations.get(position).getStationName());
+        return StationInfoFragment.newInstance(position, exStations);
     }
 
     @Override
-    public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
+    public int getPageIconResId(int position) {
+        switch (exStations.get(position).getLaneType()){
 
-        tabTitles[0] = station.getLaneName();
-        if (station.getExStations().size() != 0) {
-            for (int i = 1; i < station.getExStations().size() + 1; i++) {
-                tabTitles[i] = station.getExStations().get(i - 1).getLaneName();
-            }
-        }
-        if(station.getNextStations().size()>1){
-            Log.d("station","second next station"+station.getNextStations().get(1).getLaneName());
-            tabTitles[station.getExStations().size()+1] = station.getNextStations().get(1).getLaneName();
-        }
+            case 1: return imageResId[0];
+            case 2: return imageResId[1];
+            case 3: return imageResId[2];
+            case 4: return imageResId[3];
+            case 5: return imageResId[4];
+            case 6: return imageResId[5];
+            case 7: return imageResId[6];
+            case 8: return imageResId[7];
+            case 9: return imageResId[8];
+            case 21: return imageResId[9];
+            case 100: return imageResId[10];
+            case 101: return imageResId[11];
+            case 104: return imageResId[12];
+            case 107: return imageResId[13];
+            case 108: return imageResId[14];
+            case 109: return imageResId[15];
+            case 110: return imageResId[16];
+            case 111: return imageResId[17];
+            default: return imageResId[0];
 
-        return tabTitles[position];
+        }
     }
 
     @Override

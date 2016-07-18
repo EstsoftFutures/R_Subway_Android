@@ -27,16 +27,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private int expandedPosition = -1;
     private final FragmentActivity mActivity;
     private List<String> StationInfo;
-    private static Station station = null;
+    private static List<Station> stations = null;
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
     private int page;    //pager page ; page에 맞게 수정할 예정
 
 
-    public RecyclerViewAdapter(FragmentActivity mActivity, Station station, int page) {
-        Log.d(TAG, "stationinadapterconstructor" + station.toString());
+    public RecyclerViewAdapter(FragmentActivity mActivity, List<Station> stations1, int page) {
+        Log.d(TAG, "stationinadapterconstructor" + stations1.toString());
         this.mActivity = mActivity;
-        this.station = station;
+        stations = stations1;
         this.page = page;
     }
 
@@ -54,8 +54,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         switch (position) {
             case 0:
                 //이전역
-                if (station.getPrevStations().size() !=0) {
-                    holder.preStation.setText("" + station.getPrevStations().get(0).getStationName());
+                if (stations.get(page).getPrevStations().size() != 0) {
+                    holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
                     holder.preTime1.setText("00행 00분");
                     holder.preTime2.setText("00행 00분");
                 } else {
@@ -65,11 +65,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
 
                 // 현재역
-                holder.curStation.setText("" + station.getStationName());
+                holder.curStation.setText("" + stations.get(page).getStationName());
 
                 // 다음역
-                if (station.getNextStations().size() !=0) {
-                    holder.nextStation.setText("" + station.getNextStations().get(0).getStationName());
+                if (stations.get(page).getNextStations().size() != 0) {
+                    holder.nextStation.setText("" + stations.get(page).getNextStations().get(0).getStationName());
                     holder.nextTime1.setText("00행 00분");
                     holder.nextTime2.setText("00행 00분");
                 } else {
@@ -96,7 +96,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("역혼잡도");
 
-                if (station.getPrevStations().size()== 0  || station.getNextStations().size() == 0) {
+                if (stations.get(page).getPrevStations().size() == 0 || stations.get(page).getNextStations().size() == 0) {
 
                     holder.stationInfo.setText("-");
                 } else {
@@ -106,10 +106,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
             case 3:
-                if (station.getExStations() != null) {
+                if (stations.get(page).getExStations() != null) {
                     holder.curInfo.setVisibility(View.GONE);
                     holder.infoName.setText("환승구역");
-                    switch (station.getOffDoor()) {
+                    switch (stations.get(page).getOffDoor()) {
                         case 0:
                             holder.stationInfo.setText("출입문 왼쪽");
                             break;
@@ -128,7 +128,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case 4:
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("역내 시설정보");
-                holder.stationInfo.setText("" + station.getTel() + station.getBicycleCount() + station.getHandicapCount() + station.getParkingCount() + station.getRestroom() + station.getPlatform() + station.getMeetingPlace() + station.getOffDoor() + station.getCivilCount());
+                holder.stationInfo.setText("" + stations.get(page).getTel() + stations.get(page).getBicycleCount() + stations.get(page).getHandicapCount() + stations.get(page).getParkingCount() +stations.get(page).getRestroom() +stations.get(page).getPlatform() +stations.get(page).getMeetingPlace() + stations.get(page).getOffDoor() + stations.get(page).getCivilCount());
                 break;
 
             case 5:
@@ -151,7 +151,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (station != null) return 7;
+        if (stations.get(page) != null) return 7;
         return 0;
     }
 
@@ -161,13 +161,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         LinearLayout curInfo;
         //현재 역 상세정보
         TextView preStation, curStation, nextStation, infoName, stationInfo;
-        TextView preTime1, preTime2, nextTime1,nextTime2;
+        TextView preTime1, preTime2, nextTime1, nextTime2;
 
         public ViewHolder(View view) {
             super(view);
 
 
-            Log.d("station", "station" + station.toString());
+            Log.d("station", "station" + stations.get(page).toString());
             curInfo = (LinearLayout) view.findViewById(R.id.cur_info);
             preStation = (TextView) view.findViewById(R.id.pre_station);
             curStation = (TextView) view.findViewById(R.id.cur_station);

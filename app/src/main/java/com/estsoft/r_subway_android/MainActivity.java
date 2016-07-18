@@ -405,8 +405,8 @@ public class MainActivity extends AppCompatActivity
             }
 
 
-//            runBottomSheet(stationController.getExStations(activeStation), null);
-            runBottomSheet(activeStation, null);
+            runBottomSheet(stationController.getExStations(activeStation), null);
+//            runBottomSheet(activeStation, null);
             stationController.getExStations(activeStation);
         }
     }
@@ -508,7 +508,8 @@ public class MainActivity extends AppCompatActivity
     /*
     BottomSheets
     */
-    public void runBottomSheet(Station station, Route route) {
+    public void runBottomSheet(List<Station> exStations, Route route) {
+//    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
@@ -520,7 +521,7 @@ public class MainActivity extends AppCompatActivity
             }
             // Get the ViewPager and set it's PagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), station));
+            viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
 //        viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
