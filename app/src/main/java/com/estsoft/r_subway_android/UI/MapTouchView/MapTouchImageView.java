@@ -55,7 +55,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     int select = NONE;
 
     //
-    private Matrix matrix = new Matrix();
+    private Matrix usingMatrix = new Matrix();
     private Matrix savedMatrix1 = new Matrix();
     private Matrix savedMatrix2 = new Matrix();
 
@@ -106,12 +106,12 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
             isInit = true;
             setOnTouchListener(this);
             float[] value = new float[9];
-            matrix.getValues(value);
+            usingMatrix.getValues(value);
             value[0] = value[4] = 1.0f;
-            matrix.setValues(value);
-            matrixTurning(matrix, this);
+            usingMatrix.setValues(value);
+            matrixTurning(usingMatrix, this);
 
-            setImageMatrix(matrix);
+            setImageMatrix(usingMatrix);
             setImagePit();
         }
     }
@@ -120,9 +120,9 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
         //매트릭스 값
         float[] value = new float[9];
-        this.matrix.getValues( value );
+        this.usingMatrix.getValues( value );
 
-        Log.d(TAG, "Matrix = " + matrix.toString());
+        Log.d(TAG, "Matrix = " + usingMatrix.toString());
 
         //뷰 크기
         int width = this.getWidth();
@@ -172,8 +172,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         movedImageX = (int)value[2];
         movedImageY = (int)value[5];
 
-        matrix.setValues( value );
-        setImageMatrix( matrix );
+        usingMatrix.setValues( value );
+        setImageMatrix(usingMatrix);
 
     }
 
@@ -228,7 +228,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     public boolean onTouch(View v, MotionEvent event) {
 
         // 이미지 터치 전에 할 일
-        beforeTouch( mode, matrix, event );
+        beforeTouch( mode, usingMatrix, event );
 
         ImageView imageView = (ImageView)v;
 
@@ -236,7 +236,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
             case MotionEvent.ACTION_DOWN :
                 mode = DRAG;
                 select = START;
-                savedMatrix1.set(matrix);
+                savedMatrix1.set(usingMatrix);
                 start.set( event.getX(), event.getY() );
 //                posX1 = (int) event.getX();
 //                posY1 = (int) event.getY();
@@ -262,7 +262,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                 newDist = spacing(event);
                 oldDist = spacing(event);
                 if (oldDist > 10f) {
-                    savedMatrix1.set(matrix);
+                    savedMatrix1.set(usingMatrix);
                     midpoint( mid, event );
                 }
 
@@ -284,10 +284,10 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                     float distY = event.getY() - start.y;
 
 
-                    //matrix 안의 X,Y로
+                    //usingMatrix 안의 X,Y로
                     if (Math.abs( distX ) > 10 || Math.abs( distY ) > 10 ) {
-                        matrix.set(savedMatrix1);
-                        matrix.postTranslate( distX * dragSensitivity, distY * dragSensitivity);
+                        usingMatrix.set(savedMatrix1);
+                        usingMatrix.postTranslate( distX * dragSensitivity, distY * dragSensitivity);
 
                         select = NONE;
 
@@ -304,9 +304,9 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                     if ( Math.abs(newDist - oldDist) > 10 ) {
 
 
-                        savedMatrix1.set(matrix);
+                        savedMatrix1.set(usingMatrix);
 //                        아래 코드는 수정하거나 삭제하지 말길
-//                        matrix.set(savedMatrix1);
+//                        usingMatrix.set(savedMatrix1);
 
                         float scale = (newDist / oldDist);
                         float scaleRevision = (scale -1) * pinchSensitivity;
@@ -324,10 +324,10 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                         Log.d(TAG, "onTouch: SCALE " + scale );
 
 
-                        Log.d(TAG, "onTouch: 포스트 전 " + matrix.toString() + " mode = " + mode);
+                        Log.d(TAG, "onTouch: 포스트 전 " + usingMatrix.toString() + " mode = " + mode);
                         float[] val = new float[9];
-                        matrix.getValues(val);
-                        matrix.postScale(scale, scale, mid.x, mid.y);
+                        usingMatrix.getValues(val);
+                        usingMatrix.postScale(scale, scale, mid.x, mid.y);
 
                         select = NONE;
 
@@ -340,14 +340,12 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         }
 
         // 매트릭스 값 튜닝
-        matrixTurning(matrix, imageView);
+        matrixTurning(usingMatrix, imageView);
 
-        imageView.setImageMatrix( matrix );
-
-        Log.d("matrix", matrix.toString());
+        imageView.setImageMatrix(usingMatrix);
 
         // 이미지 터치 후에 할 일
-        afterTouch( mode, matrix, event );
+        afterTouch( mode, usingMatrix, event );
 
 
 //        return false; // getAction()에서 ACTION_DOWN 만 서치됨.
@@ -538,7 +536,16 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     public int getViewWidth(){
         return this.getWidth();
     }
+
     public int getViewHeight(){
         return this.getHeight();
+    }
+
+    public Matrix getUsingMatrix() {
+        return usingMatrix;
+    }
+
+    public void setUsingMatrix(Matrix usingMatrix) {
+        this.usingMatrix = usingMatrix;
     }
 }

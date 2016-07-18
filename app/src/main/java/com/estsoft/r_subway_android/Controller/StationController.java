@@ -149,22 +149,6 @@ public class StationController {
             exNumbers.add( st.getExStations().get(i).getLaneType() );
         }
         return exNumbers;
-//        List<Integer> exNumbers = new ArrayList<>();
-//        RealmStation rst = getRealmStationByID( semiStation.getIntId() );
-//        exNumbers.add( rst.getLaneType() );
-//        for ( RealmStation lowRst : rst.getExStations() ) {
-//            exNumbers.add( lowRst.getLaneType() );
-//        }
-//        for ( int i : exNumbers  ) {
-//            Log.d(TAG, "getExNumbers: " + i + semiStation.getName());
-//        }
-//        Log.d(TAG, "getExNumbers -------------");
-//        return exNumbers;
-
-//        List<Integer> list = new ArrayList<>();
-//        list.add(1);
-//        list.add(2);
-//        return list;
     }
 
     private RealmStation getRealmStationByID( int ID ) {
@@ -196,6 +180,27 @@ public class StationController {
 //        }
     }
 
+
+    public List<Station> getExStations( Station station ) {
+        int debugCount = 0;
+        List<Station> exStations = new ArrayList<>();
+        exStations.add(station);
+        List<Integer> stationIDs = station.getExStationIDs();
+        for ( Station st : deepCopiedStations ) {
+            for ( Integer exStID : stationIDs ) {
+                debugCount ++;
+                if (st.getStationID() == exStID ) {
+                    exStations.add( st );
+                    break;
+                }
+            }
+        }
+        Log.d(TAG, "getExStations: for count = " + debugCount);
+        return exStations;
+    }
+    public List<Station> getExStations( SemiStation semiStation ) {
+        return null;
+    }
 
     //Server Communication
     private int getConLevel ( int ID ) {

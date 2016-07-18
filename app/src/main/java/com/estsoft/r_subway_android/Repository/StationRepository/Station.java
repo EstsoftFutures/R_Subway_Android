@@ -36,6 +36,10 @@ public class Station extends TtfNode {
     private List<Station> prevStations;
     private List<Station> nextStations;
 
+    private List<Integer> exStationIDs;
+    private List<Integer> prevStationIDs;
+    private List<Integer> nextStationIDs;
+
     private PointF mapPoint = null;
     private int conLevel;
     private List<Integer> exLaneNumbers;
@@ -52,6 +56,10 @@ public class Station extends TtfNode {
         copyExStationLite();
         copyNextStationLite();
         copyPrevStationLite();
+
+        copyExStationID();
+        copyPrevStationID();
+        copyNextStationID();
     }
 
     public Station ( RealmStation rst, int conLevel ) {
@@ -87,6 +95,30 @@ public class Station extends TtfNode {
 //        Pair<Station, Integer> pair = new Pair<>(station, cost);
        // Pair< Station, Integer > pair = new Pair<>(  );
 
+    }
+
+    public void copyExStationID () {
+        exStationIDs = new ArrayList<>();
+        for (RealmStation loRst : realmStation.getExStations()) {
+            //Lite Copy Only ID
+            exStationIDs.add( loRst.getStationID() );
+        }
+    }
+
+    public void copyPrevStationID () {
+        prevStationIDs = new ArrayList<>();
+        for (RealmStation loRst : realmStation.getPrevStations()) {
+            //Lite Copy Only ID
+            prevStationIDs.add( loRst.getStationID() );
+        }
+    }
+
+    public void copyNextStationID () {
+        nextStationIDs = new ArrayList<>();
+        for (RealmStation loRst : realmStation.getNextStations()) {
+            //Lite Copy Only ID
+            nextStationIDs.add( loRst.getStationID() );
+        }
     }
 
 
@@ -304,7 +336,11 @@ public class Station extends TtfNode {
         this.nextStations = nextStations;
     }
 
+    public List<Integer> getPrevStationIDs() {        return prevStationIDs;    }
 
+    public List<Integer> getNextStationIDs() {        return nextStationIDs;    }
+
+    public List<Integer> getExStationIDs() {        return exStationIDs;    }
 
     //Ignore Variable
 

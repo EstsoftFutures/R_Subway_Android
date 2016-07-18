@@ -404,7 +404,10 @@ public class MainActivity extends AppCompatActivity
                 setMarkerPosition(0, null, null);
             }
 
+
+//            runBottomSheet(stationController.getExStations(activeStation), null);
             runBottomSheet(activeStation, null);
+            stationController.getExStations(activeStation);
         }
     }
 
@@ -623,6 +626,7 @@ public class MainActivity extends AppCompatActivity
         if (startStation != null && endStation != null) {
             status = FULL;
             //RouteBottomSheet Call
+//            runBottomSheet(null, Route);
             runBottomSheet(null, null);
             //MainActivity make Route Drawing
             normalRoute = routeController.getRoute(startStation, endStation);
