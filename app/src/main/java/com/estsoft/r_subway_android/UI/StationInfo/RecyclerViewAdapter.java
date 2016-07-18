@@ -47,10 +47,6 @@ private List<String> StationInfo;
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-Log.d(TAG,"adapterstinfo"+ station.getPrevStations().get(0).getStationName());
-        Log.d(TAG,"adapterstinfo"+station.getStationName());
-        Log.d(TAG,"adapterstinfo"+station.getNextStations().get(0).getStationName());
-
         switch (position) {
 
             case 0:

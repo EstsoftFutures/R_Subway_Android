@@ -6,7 +6,6 @@ import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.estsoft.r_subway_android.Controller.StationController;
 import com.estsoft.r_subway_android.Parser.CircleTag;
@@ -227,10 +226,10 @@ public class TtfMapImageView extends MapTouchImageView {
 
 
         for ( int i = 0; i < 10; i ++ ) {
-            getMatrix().postTranslate( moveX, moveY );
-            matrixTurning( getMatrix(), this );
-            this.setImageMatrix( getMatrix() );
-            setStationsPosition( getMatrix() );
+            getUsingMatrix().postTranslate( moveX, moveY );
+            matrixTurning( getUsingMatrix(), this );
+            this.setImageMatrix( getUsingMatrix() );
+            setStationsPosition( getUsingMatrix() );
             ttfMapImageViewListener.applyMapScaleChange();
 
         }
