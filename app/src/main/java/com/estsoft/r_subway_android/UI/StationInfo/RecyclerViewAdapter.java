@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,16 +26,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private int expandedPosition = -1;
     private final FragmentActivity mActivity;
-private List<String> StationInfo;
+    private List<String> StationInfo;
     private static Station station = null;
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
+    private int page;    //pager page ; page에 맞게 수정할 예정
 
 
-    public RecyclerViewAdapter(FragmentActivity mActivity, Station station) {
-        Log.d(TAG,"stationinadapterconstructor"+station.toString());
+    public RecyclerViewAdapter(FragmentActivity mActivity, Station station, int page) {
+        Log.d(TAG, "stationinadapterconstructor" + station.toString());
         this.mActivity = mActivity;
         this.station = station;
+        this.page = page;
     }
 
     @Override
@@ -47,20 +51,33 @@ private List<String> StationInfo;
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-Log.d(TAG,"adapterstinfo"+ station.getPrevStations().get(0).getStationName());
-        Log.d(TAG,"adapterstinfo"+station.getStationName());
-        Log.d(TAG,"adapterstinfo"+station.getNextStations().get(0).getStationName());
-
         switch (position) {
-
             case 0:
-                // 이전역
-                holder.preStation.setText("" + station.getPrevStations().get(0).getStationName());
+                //이전역
+                if (station.getPrevStations().size() !=0) {
+                    holder.preStation.setText("" + station.getPrevStations().get(0).getStationName());
+                    holder.preTime1.setText("00행 00분");
+                    holder.preTime2.setText("00행 00분");
+                } else {
+                    holder.preStation.setText("");
+                    holder.preTime1.setText("-");
+                    holder.preTime2.setText("-");
+                }
 
                 // 현재역
                 holder.curStation.setText("" + station.getStationName());
+
                 // 다음역
-                holder.nextStation.setText("" + station.getNextStations().get(0).getStationName());
+                if (station.getNextStations().size() !=0) {
+                    holder.nextStation.setText("" + station.getNextStations().get(0).getStationName());
+                    holder.nextTime1.setText("00행 00분");
+                    holder.nextTime2.setText("00행 00분");
+                } else {
+                    holder.nextStation.setText("");
+                    holder.nextTime1.setText("-");
+                    holder.nextTime2.setText("-");
+                }
+
                 holder.curInfo.setVisibility(View.VISIBLE);
                 holder.infoName.setVisibility(View.GONE);
                 holder.stationInfo.setVisibility(View.GONE);
@@ -78,7 +95,13 @@ Log.d(TAG,"adapterstinfo"+ station.getPrevStations().get(0).getStationName());
             case 2:
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("역혼잡도");
-                holder.stationInfo.setText("역혼잡도 정보");
+
+                if (station.getPrevStations().size()== 0  || station.getNextStations().size() == 0) {
+
+                    holder.stationInfo.setText("-");
+                } else {
+                    holder.stationInfo.setText("역혼잡도 정보");
+                }
                 break;
 
 
@@ -132,46 +155,52 @@ Log.d(TAG,"adapterstinfo"+ station.getPrevStations().get(0).getStationName());
         return 0;
     }
 
-public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    //현재 역 bottomsheet 처음 뜨는 부분 정보
-    LinearLayout curInfo;
-    //현재 역 상세정보
-    TextView preStation, curStation, nextStation, infoName, stationInfo;
+        //현재 역 bottomsheet 처음 뜨는 부분 정보
+        LinearLayout curInfo;
+        //현재 역 상세정보
+        TextView preStation, curStation, nextStation, infoName, stationInfo;
+        TextView preTime1, preTime2, nextTime1,nextTime2;
 
-    public ViewHolder(View view) {
-        super(view);
+        public ViewHolder(View view) {
+            super(view);
 
 
-        Log.d("station","station"+station.toString());
-        curInfo = (LinearLayout) view.findViewById(R.id.cur_info);
-        preStation = (TextView) view.findViewById(R.id.pre_station);
-        curStation = (TextView) view.findViewById(R.id.cur_station);
-        nextStation = (TextView) view.findViewById(R.id.next_station);
-        infoName = (TextView) view.findViewById(R.id.info_name);
-        stationInfo = (TextView) view.findViewById(R.id.info_stationinfo);
-        view.setOnClickListener(this);
+            Log.d("station", "station" + station.toString());
+            curInfo = (LinearLayout) view.findViewById(R.id.cur_info);
+            preStation = (TextView) view.findViewById(R.id.pre_station);
+            curStation = (TextView) view.findViewById(R.id.cur_station);
+            nextStation = (TextView) view.findViewById(R.id.next_station);
+            infoName = (TextView) view.findViewById(R.id.info_name);
+            stationInfo = (TextView) view.findViewById(R.id.info_stationinfo);
 
-    }
+            preTime1 = (TextView) view.findViewById(R.id.pre_time1);
+            preTime2 = (TextView) view.findViewById(R.id.pre_time2);
+            nextTime1 = (TextView) view.findViewById(R.id.next_time1);
+            nextTime2 = (TextView) view.findViewById(R.id.next_time2);
 
-    @Override
-    public void onClick(View v) {
-        if (mItemClickListener != null) {
-            mItemClickListener.onItemClick(v, getPosition());
+            view.setOnClickListener(this);
+
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getPosition());
+            }
+        }
+
     }
 
-}
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
 
-public interface OnItemClickListener {
-    void onItemClick(View view, int position);
-
-}
+    }
 
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
-
 
 
 }

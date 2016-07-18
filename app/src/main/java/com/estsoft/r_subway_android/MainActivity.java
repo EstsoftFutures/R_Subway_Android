@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity
         setActiveStation( semiStation );
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         list.setVisibility(View.GONE);
-        mapView.moveToMapCenter( semiStation.getPosition() );
+//        mapView.moveToMapCenter( semiStation.getPosition() );
 
         hideSoftKeyboard(mapView);
 

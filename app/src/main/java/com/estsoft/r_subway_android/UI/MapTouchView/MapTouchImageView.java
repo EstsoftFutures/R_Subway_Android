@@ -535,15 +535,6 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         return movedImageY;
     }
 
-    @Override
-    public Matrix getMatrix() {
-        return matrix;
-    }
-
-    public void setMatrix(Matrix matrix) {
-        this.matrix = matrix;
-    }
-
     public int getViewWidth(){
         return this.getWidth();
     }

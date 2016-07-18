@@ -22,7 +22,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 public class StationInfoFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private int mPage;
+    private static int mPage;
 private static Station station= null;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
@@ -64,7 +64,7 @@ private static Station station= null;
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         Log.d("station","station"+station.toString());
-        adapter = new RecyclerViewAdapter(mActivity, station);
+        adapter = new RecyclerViewAdapter(mActivity, station, mPage);
 
         return rootView;
     }
