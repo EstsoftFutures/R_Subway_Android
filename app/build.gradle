@@ -1,29 +1,67 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
+model {
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.3"
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+        defaultConfig {
+            applicationId "com.estsoft.r_subway_android"
+            minSdkVersion.apiLevel 19
+            targetSdkVersion.apiLevel 23
+            versionCode = 1
+            versionName = "1.0"
+        }
 
-    defaultConfig {
-        applicationId "com.estsoft.r_subway_android"
-        minSdkVersion 19
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
     }
-    dexOptions {
+
+    android.dexOptions {
         preDexLibraries false
         incremental true
         javaMaxHeapSize "4g"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
+    android.ndk {
+        moduleName = "BstarShortestPath"
+        cppFlags.add("-DCUSTOM_DEFINE")
+        ldLibs.add("log")
+        stl "stlport_static"
     }
 
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm") {
+            ndk.abiFilters.add("armeabi")
+        }
+        create("arm7") {
+            ndk.abiFilters.add("armeabi-v7a")
+        }
+        create("arm8") {
+            ndk.abiFilters.add("arm64-v8a")
+        }
+        create("x86") {
+            ndk.abiFilters.add("x86")
+        }
+        create("x86-64") {
+            ndk.abiFilters.add("x86_64")
+        }
+        create("mips") {
+            ndk.abiFilters.add("mips")
+        }
+        create("mips-64") {
+            ndk.abiFilters.add("mips64")
+        }
+        // To include all cpu architectures, leaves abiFilters empty
+        create("all")
+    }
+
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles.add(file('proguard-android.pro'));
+        }
+    }
 }
 
 buildscript {
@@ -33,7 +71,8 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        //classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle-experimental:0.7.2'
         // replace with the current version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
@@ -44,19 +83,10 @@ repositories {
     mavenLocal()
 }
 
-apply plugin: 'android-apt'
-def AAVersion = '4.0.0'
-
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-    apt 'com.jakewharton:butterknife-compiler:8.0.1'
-
     // optional
-
 
 
     compile 'com.android.support:appcompat-v7:23.4.0'
@@ -77,18 +107,6 @@ dependencies {
 
 }
 
-apt {
-    arguments {
-        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
-        // if you have multiple outputs (when using splits), you may want to have other index than 0
 
-        // you should set your package name here if you are using different application IDs
-        // resourcePackageName "your.package.name"
-
-        // You can set optional annotation processing options here, like these commented options:
-        // logLevel 'INFO'
-        // logFile '/var/log/aa.log'
-    }
-}
 
 
