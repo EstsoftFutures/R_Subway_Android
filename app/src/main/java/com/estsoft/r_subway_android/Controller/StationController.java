@@ -27,6 +27,8 @@ public class StationController {
 
     private static final String TAG = "StationController";
 
+    private String test = "goni";
+
     private RealmResults<RealmStation> realmStationList = null;
     private Realm mRealm = null;
 
