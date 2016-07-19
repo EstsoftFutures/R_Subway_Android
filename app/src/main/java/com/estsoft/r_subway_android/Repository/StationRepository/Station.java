@@ -73,6 +73,8 @@ public class Station extends TtfNode {
 
         index = realmStation.getIndex();
         stationID = realmStation.getStationID();
+        setStationId1( stationID + "" );
+
         stationName = realmStation.getStationName();
         laneType = realmStation.getLaneType();
         laneName = realmStation.getLaneName();

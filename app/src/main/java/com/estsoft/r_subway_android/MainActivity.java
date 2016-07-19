@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
+import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity
 
     private ExpandableListAdapter expandableListAdapter = null;
 
-    private RouteController routeController = null;
+    private RouteControllerNew routeController = null;
     private StationController stationController = null;
     private Station activeStation = null;
     private Station startStation = null;
@@ -123,7 +125,6 @@ public class MainActivity extends AppCompatActivity
         Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
         mapView.setTtfMapImageViewListener(this);
 
-        routeController = RouteController.getInstance(mapView);
         mapView.setImageResource(R.drawable.linemap_naver);
         mapView.setTtfMapImageViewListener(this);
 
@@ -202,8 +203,15 @@ public class MainActivity extends AppCompatActivity
             Log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
         }
 
+        try {
+            stationController = new StationController(Realm.getInstance(this), getResources().openRawResource(R.raw.station_cost));
+            Log.d(TAG, "initializeAdj: Successfully Finished ");
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
 
-        stationController = new StationController( Realm.getInstance(this) );
+        routeController = new RouteControllerNew( stationController );
+
 //        mapView.setSemiStationLaneNumber( stationController );
     }
 
@@ -381,7 +389,7 @@ public class MainActivity extends AppCompatActivity
 
         if (status != FULL) {
             activeStation = stationController.getStation(semiStation);
-            Log.d(TAG, "setActiveStation: " + activeStation.getStationId1());
+            Log.d(TAG, "setActiveStation: " + activeStation.getStationID());
 
             boolean flag = false;
             List<Station> checkList = new ArrayList<>();
@@ -390,7 +398,8 @@ public class MainActivity extends AppCompatActivity
             for (Station station : checkList) {
                 if (station == null) continue;
                 else {
-                    if (activeStation.getStationId1().equals(station.getStationId1())) {
+                    if ( activeStation.getStationID() == station.getStationID() ) {
+//                    if (activeStation.getStationId1().equals(station.getStationId1())) {
                         activeStation = station;
                         setMarkerVisibility((ImageView) findViewById(R.id.marker), false);
                         flag = true;

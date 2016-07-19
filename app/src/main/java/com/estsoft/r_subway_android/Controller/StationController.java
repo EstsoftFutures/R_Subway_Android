@@ -3,10 +3,17 @@ package com.estsoft.r_subway_android.Controller;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
+import com.estsoft.r_subway_android.Parser.StationTag;
+import com.estsoft.r_subway_android.Parser.TtfXmlParserCost;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,37 +32,63 @@ public class StationController {
 
     private List<Station> deepCopiedStations = null;
 
-    private List<Pair<Station, Integer>> adj[] = null;
+    private ArrayList<Pair<Station, Integer>> adj[] = null;
+    private TtfXmlParserCost costParser;
+    private InputStream inputStream;
 
-    public StationController(Realm mRealm) {
+    public StationController(Realm mRealm, InputStream in) throws IOException , XmlPullParserException {
         this.mRealm = mRealm;
-
+        this.inputStream = in;
         realmStationList = mRealm.where(RealmStation.class).findAll();
 
         deepCopyRealmStation();
 
-        adj = new ArrayList[deepCopiedStations.size()];
+        adj = new ArrayList[ deepCopiedStations.size() ];
         initializeAdj();
-//        for(int i = 0 ; i < adj.length; i ++ ) {
-//            Log.d(TAG, "StationController: " + deepCopiedStations.get(i).getStationName() + " / " + adj[i].size());
-//        }
 
     }
 
-    private void initializeAdj(){
-        int distance = 0;
-        for ( int i = 0; i < adj.length ; i ++ ) {
+    private void initializeAdj() throws IOException , XmlPullParserException {
+        if (costParser == null) {
+            costParser = new TtfXmlParserCost(inputStream);
+//            stationTags = costParser.getStationTags();
+        }
+
+        Log.d(TAG, "initializeAdj: " + adj.length);
+        for (int i = 0; i < adj.length; i++) {
+
             adj[i] = new ArrayList<>();
-            for ( Station st : deepCopiedStations.get(i).getPrevStations() ) {
-                adj[i].add(new Pair<Station, Integer>( st, distance ));
+            Station station = deepCopiedStations.get(i);
+            String laneType = station.getLaneType() + "";
+
+            StationTag stationTag = findMatchedStationTag(station.getStationID(), laneType );
+
+//                Log.d(TAG, "initializeAdj: " + station.getLaneName() + station.getStationName());
+
+            for (int j = 0; j < station.getPrevStations().size(); j++) {
+//                Log.d(TAG, "initializeAdj: PREV " + station.getPrevStations().get(j).getStationName());
+                adj[i].add(new Pair<Station, Integer>(station.getPrevStations().get(j), Integer.parseInt(stationTag.getPrevCost().get(j))));
             }
-            for ( Station st : deepCopiedStations.get(i).getNextStations() ) {
-                adj[i].add(new Pair<Station, Integer>( st, distance ));
+            for (int j = 0; j < station.getNextStations().size(); j++) {
+//                Log.d(TAG, "initializeAdj: NEXT " + station.getNextStations().get(j).getStationName());
+                adj[i].add(new Pair<Station, Integer>(station.getNextStations().get(j), Integer.parseInt(stationTag.getNextCost().get(j))));
             }
-            for ( Station st : deepCopiedStations.get(i).getExStations() ) {
-                adj[i].add(new Pair<Station, Integer>( st, distance ));
+            for (int j = 0; j < station.getExStations().size(); j++) {
+//                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
+                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 0));
             }
         }
+    }
+
+    private StationTag findMatchedStationTag( int stationId, String laneType ) {
+        List<StationTag> boundary = costParser.getStationTags( Integer.parseInt(laneType) );
+        for ( int i = 0; i < boundary.size(); i ++ ) {
+            if (stationId == Integer.parseInt( boundary.get(i).getId() )) {
+                return boundary.get(i);
+            }
+        }
+        Log.d(TAG, "initializeAdj: NULL!! " + stationId );
+        return null;
     }
 
     public Station getStation(SemiStation semiStation) {

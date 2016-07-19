@@ -9,13 +9,14 @@ public class Route extends TtfNode {
 
     List<TtfNode> stationList = null;
 
+    List<String> stationTime = null;
+
+    List<Integer> transferStationIndexs = null;
+
+    List<Station> transferStations = null;
+
     public Route(int conLevel, String stationId1, String stationId2) {
         super(conLevel, stationId1, stationId2);
-    }
-
-    public Route(int conLevel, String stationId1, String stationId2, List<TtfNode> stationList ){
-        this(conLevel, stationId1, stationId2);
-        this.stationList = stationList;
     }
 
     public List<TtfNode> getStationList() {
@@ -25,4 +26,6 @@ public class Route extends TtfNode {
     public void setStationList(List<TtfNode> stationList) {
         this.stationList = stationList;
     }
+
+
 }

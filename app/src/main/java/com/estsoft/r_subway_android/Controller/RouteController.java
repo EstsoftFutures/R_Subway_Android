@@ -82,9 +82,11 @@ public class RouteController {
 //        stationList.add( station02 );
 
         stationList.add( end );
-        Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1(), stationList);
+        Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1());
+
 
         Log.d(TAG, "getRoute: " + stationList.size());
+
 
         return route;
     }
