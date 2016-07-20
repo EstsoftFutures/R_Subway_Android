@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity
         expListView = (ExpandableListView) findViewById(R.id.search_setting);
         expListView.setAdapter(expandableListAdapter);
 
+        expListView.setOnGroupClickListener(interactionListener);
         expListView.setOnChildClickListener(interactionListener);
 
 

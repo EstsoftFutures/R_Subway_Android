@@ -51,6 +51,7 @@ public class SearchSetting {
             childList = new ArrayList<String>();
             if (setting.equals("검색노선 설정")) {
                 loadChild(lines);
+
             }
             settingCollection.put(setting, childList);
         }
