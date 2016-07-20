@@ -100,7 +100,7 @@ public class StationController {
         //Realm
 //        RealmStation matchRealmStation = null;
 //        for ( RealmStation rst : realmStationList ) {
-//            if ( rst.getStationID() == semiStation.getIntId() ) {
+//            if ( rst.getStationName() == semiStation.getIntId() ) {
 //                matchRealmStation = rst;
 //                break;
 //            }
@@ -128,7 +128,7 @@ public class StationController {
 //        //Realm
 //        RealmStation matchRealmStation = null;
 //        for ( RealmStation rst : realmStationList ) {
-//            if ( rst.getStationID() == semiStation.getIntId() ) {
+//            if ( rst.getStationName() == semiStation.getIntId() ) {
 //                matchRealmStation = rst;
 //                break;
 //            }

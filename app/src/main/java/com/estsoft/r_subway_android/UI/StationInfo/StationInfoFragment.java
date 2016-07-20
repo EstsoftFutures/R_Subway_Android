@@ -2,7 +2,9 @@ package com.estsoft.r_subway_android.UI.StationInfo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,30 +18,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class StationInfoFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private int mPage;
-private static Station station= null;
+
+    String TAG = "StationInfoFragment";
+    private static int mPage;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
+    ArrayList<Integer> stationIDs = new ArrayList<>();
     static RecyclerViewAdapter adapter;
-
+    static List<Station> stations;
 
     public StationInfoFragment() {
         // Required empty public constructor
     }
 
 
-    public static StationInfoFragment newInstance(int page, Station station1) {
+    public static StationInfoFragment newInstance(int page, List<Station> stations1) {
         StationInfoFragment fragment = new StationInfoFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         fragment.setArguments(args);
-        station = station1;
+        stations = stations1;
         return fragment;
     }
 
@@ -63,8 +71,7 @@ private static Station station= null;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_station_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        Log.d("station","station"+station.toString());
-        adapter = new RecyclerViewAdapter(mActivity, station);
+        adapter = new RecyclerViewAdapter(mActivity, stations, mPage);
 
         return rootView;
     }
@@ -80,9 +87,32 @@ private static Station station= null;
 
             @Override
             public void onItemClick(View v, int position) {
-             TextView test1 = (TextView) v.findViewById(R.id.info_stationinfo);
+
+/*
+                RecyclerView  test1 = (RecyclerView) getActivity().findViewById(R.id.timetable);
+                test1.setAdapter(new TimetableAdapter(mActivity));
                 // do something with position
+                // timetable
+
+
+ */
+                mPage = getArguments().getInt(ARG_PAGE);
+                Log.d(TAG,""+stations.size());
+                Log.d(TAG,"mPage: "+mPage);
+                for(int i=0;i<stations.size();i++){
+                    Log.d(TAG, ""+stations.get(i).getStationID());
+                }
+
                 if (position == 1) {
+                    for(int i=0;i<stations.size();i++){
+                        stationIDs.add(i,stations.get(i).getStationID());
+                    }
+                    Intent goTimetableIntent = new Intent(getActivity(), TimeTableActivity.class);
+                    goTimetableIntent.putIntegerArrayListExtra("stationIDs", stationIDs);
+                    goTimetableIntent.putExtra("page", mPage);
+                    startActivity(goTimetableIntent);
+
+/*
                     Log.d("child=1","child1");
                     if(test1.getVisibility() == View.VISIBLE){
                         Log.d("child=1","child2&willbegone");
@@ -94,8 +124,10 @@ private static Station station= null;
                         Log.d("child=1","child2&willbeshown");
                         test1.setVisibility(View.VISIBLE);
                     }
+*/
 
                 }
+
             }
 
 
@@ -109,7 +141,7 @@ private static Station station= null;
 
             @Override
             public void onPageSelected(int position) {
-                        mRecyclerView.scrollToPosition(mRecyclerView.getTop());
+                mRecyclerView.scrollToPosition(mRecyclerView.getTop());
             }
 
             @Override
@@ -118,7 +150,6 @@ private static Station station= null;
             }
         });
     }
-
 
 
 }

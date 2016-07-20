@@ -57,7 +57,7 @@ public class RouteController {
 //        // 이하 두줄은 지금 꼭 필요한거 대충 만들어놓은 거임. 필수임.
 //        station.setMapPoint( semiStation.getPosition() );
 //        station.setStationName( semiStation.getName() );
-//        station.setStationID( Integer.parseInt(semiStation.getId()) );
+//        station.setStationName( Integer.parseInt(semiStation.getId()) );
 //
 //        Log.d( TAG, "semiStation pointf hash : " + System.identityHashCode( semiStation.getPosition() )  );
 //        Log.d( TAG, "NewStation pointf hash : " + System.identityHashCode( station.getMapPoint() )  );
