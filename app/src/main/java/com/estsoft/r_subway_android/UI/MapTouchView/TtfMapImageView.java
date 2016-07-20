@@ -76,7 +76,8 @@ public class TtfMapImageView extends MapTouchImageView {
 
         saveStationPosition();
 
-        setMaxMagnification( 5 );
+        //최대 배율 설정
+        setMaxMagnification( 20 );
         svgWidth = parser.getSvgWidth();
         svgHeight = parser.getSvgHeight();
     }

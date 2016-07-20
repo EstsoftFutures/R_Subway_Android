@@ -32,6 +32,8 @@ public class Station extends TtfNode {
     private int bicycleCount;
     private int civilCount;
 
+    private boolean isTransfer;
+
     private List<Station> exStations;
     private List<Station> prevStations;
     private List<Station> nextStations;
@@ -143,11 +145,16 @@ public class Station extends TtfNode {
 
     public void copyExStationLite( ) {
         exStations = new ArrayList<>();
+        boolean flag = false;
         for ( RealmStation lowRst : realmStation.getExStations() ) {
             //LiteCopy
+            flag = true;
             Station copied = new Station( lowRst, conLevel );
             exStations.add(copied);
         }
+
+        isTransfer = flag;
+
     }
 
 

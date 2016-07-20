@@ -75,7 +75,7 @@ public class StationController {
             }
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 0));
+                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 300));
             }
         }
     }

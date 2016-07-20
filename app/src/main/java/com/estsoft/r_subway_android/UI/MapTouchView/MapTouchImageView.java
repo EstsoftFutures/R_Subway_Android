@@ -19,7 +19,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     private static final boolean D = false;
 
     //최대 이미지 배율 상수 (뷰 * maxMagnification = 이미지)
-    private int maxMagnification = 5;
+    // 1 = minMag, 10 = 2 times width
+    private int maxMagnification = 10;
 
     // 드래그, 줌 Sensitivity ; 1 을 기준으로 내려갈수록 적게 움직임
     private float dragSensitivity = 0.8f;
@@ -220,7 +221,11 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
     }
 
     private void setMaxMag ( float minMag, float maxMagnification ){
-        maxMag = minMag * maxMagnification;
+        maxMag = minMag * ( 1 + (0.1f * maxMagnification));
+        Log.d(TAG, "setMaxMag: " + minMag );
+        Log.d(TAG, "setMaxMag: " + maxMag );
+        Log.d(TAG, "setMaxMag: " + 0.1f * maxMagnification);
+        Log.d(TAG, "setMaxMag: " + maxMagnification);
     }
 
 
@@ -457,6 +462,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         movedImageY = (int)value[5];
 
         matrix.setValues( value );
+        Log.d(TAG, "matrixTurning: " + matrix.toString());
         savedMatrix2.set( matrix );
     }
 

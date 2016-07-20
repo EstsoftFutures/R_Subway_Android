@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity
 
     private TtfMapImageView mapView = null;
 
+    private float markerSize = 0;
+
 
     ExpandableListView expListView;
     SearchSetting searchSetting;
@@ -115,6 +117,10 @@ public class MainActivity extends AppCompatActivity
 
         //역이름 텍스트
         markerText = ((TextView) findViewById(R.id.markerText));
+
+        //마커기준 사이즈
+        Drawable image = ((ImageView)findViewById(R.id.marker)).getDrawable();
+        markerSize = (image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2;
 
         // passMarkerMother Relative View reference
         passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
@@ -477,7 +483,8 @@ public class MainActivity extends AppCompatActivity
         float[] values = new float[9];
         matrix.getValues(values);
         Drawable image = view.getDrawable();
-        float magnification = markerRatio / ((image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2);
+//        float magnification = markerRatio / ((image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2);
+        float magnification = markerRatio / markerSize ;
         values[0] = values[4] = magnification;
         float width = image.getIntrinsicWidth() * magnification;
         float height = image.getIntrinsicHeight() * magnification;
@@ -489,7 +496,7 @@ public class MainActivity extends AppCompatActivity
         if (view.getId() == R.id.marker) {
             markerText = (TextView) findViewById(R.id.markerText);
             markerText.setText(activeStation.getStationName());
-            markerText.setTextSize( mapView.getMarkerRatio() / markerText.getTextSize()  );
+            markerText.setTextSize( mapView.getMarkerRatio() / 10  );
             markerText.measure(0, 0);
             markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
             markerText.setY(point.y - markerText.getMeasuredHeight() - height / 3);
