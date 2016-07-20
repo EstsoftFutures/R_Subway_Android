@@ -235,10 +235,23 @@ public class StationController {
         return null;
     }
 
+    public ArrayList<Pair<Station, Integer>>[] getAdj() {
+        return adj;
+    }
+
+
+    public Station getStation( int index ) {
+        return deepCopiedStations.get(index);
+    }
+
+
+
     //Server Communication
     private int getConLevel ( int ID ) {
         // 머신러닝 후 적용!
         return 0;
     }
+
+
 
 }

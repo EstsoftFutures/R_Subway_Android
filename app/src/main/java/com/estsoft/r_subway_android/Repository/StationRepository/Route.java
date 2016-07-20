@@ -1,5 +1,7 @@
 package com.estsoft.r_subway_android.Repository.StationRepository;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -9,14 +11,13 @@ public class Route extends TtfNode {
 
     List<TtfNode> stationList = null;
 
-    List<String> stationTime = null;
+    List<Calendar> stationTime = null;
 
-    List<Integer> transferStationIndexs = null;
-
-    List<Station> transferStations = null;
+    List<TtfNode> transferStations = null;
 
     public Route(int conLevel, String stationId1, String stationId2) {
         super(conLevel, stationId1, stationId2);
+        transferStations = new ArrayList<>();
     }
 
     public List<TtfNode> getStationList() {
@@ -27,5 +28,19 @@ public class Route extends TtfNode {
         this.stationList = stationList;
     }
 
+    public List<TtfNode> getTransferStations() {
+        return transferStations;
+    }
 
+    public void setTransferStations(List<TtfNode> transferStations) {
+        this.transferStations = transferStations;
+    }
+
+    public List<Calendar> getStationTime() {
+        return stationTime;
+    }
+
+    public void setStationTime(List<Calendar> stationTime) {
+        this.stationTime = stationTime;
+    }
 }

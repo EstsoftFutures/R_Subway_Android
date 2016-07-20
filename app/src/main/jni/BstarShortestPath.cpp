@@ -11,7 +11,7 @@
 #include <vector>
 #include "utill/bitQueue.hpp"
 #include "utill/Logger.h"
-#define MAX 600
+#define MAX 700
 
 
 using namespace std;
