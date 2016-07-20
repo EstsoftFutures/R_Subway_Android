@@ -30,4 +30,16 @@ public class TtfNode {
     public String getStationId2() {
         return stationId2;
     }
+
+    public void setConLevel(int conLevel) {
+        this.conLevel = conLevel;
+    }
+
+    public void setStationId1(String stationId1) {
+        this.stationId1 = stationId1;
+    }
+
+    public void setStationId2(String stationId2) {
+        this.stationId2 = stationId2;
+    }
 }

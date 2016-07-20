@@ -74,7 +74,7 @@ public class InteractionListener implements
 
             case endInfoButton:
                 Log.d(TAG, "onClick: endInfoButton");
-                host.onArriveClick(v);
+//                host.onArriveClick(v);
                 host.setMarkerDefault(host.ALL_MARKERS);
                 host.getRouteBottomSheet().dismissSheet();
                 break;

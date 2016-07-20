@@ -26,7 +26,7 @@ public class TtfMapImageView extends MapTouchImageView {
     private static final int TOUCH_RADIUS = 30;
 
     // smaller number, bigger marker.
-    private static final int MARKER_SCALE_RATIO = 20;
+    private static final int MARKER_SCALE_RATIO = 30;
 
     private static final int ALL_MARKERS = 0;
     private static final int ACTI_MARKER = 1;
@@ -76,7 +76,8 @@ public class TtfMapImageView extends MapTouchImageView {
 
         saveStationPosition();
 
-        setMaxMagnification( 5 );
+        //최대 배율 설정
+        setMaxMagnification( 20 );
         svgWidth = parser.getSvgWidth();
         svgHeight = parser.getSvgHeight();
     }
@@ -150,7 +151,7 @@ public class TtfMapImageView extends MapTouchImageView {
         currentImageX = getMovedImageX();
         currentImageY = getMovedImageY();
 
-        Log.e(TAG, currentImageX + " / " + currentImageY);
+//        Log.e(TAG, currentImageX + " / " + currentImageY);
 
         float movedX = 0;
         float movedY = 0;
@@ -199,6 +200,14 @@ public class TtfMapImageView extends MapTouchImageView {
 
     public float getMarkerRatio() {
         return (getWidth() + getHeight()) / MARKER_SCALE_RATIO;
+    }
+
+    public PointF getStationPointByName( String name ) {
+        for (SemiStation sst : semiStationList ) {
+            if (sst.getName().equals(name))
+                return sst.getPosition();
+        }
+        return null;
     }
 
     public PointF getStationPoint ( String stationId ) {

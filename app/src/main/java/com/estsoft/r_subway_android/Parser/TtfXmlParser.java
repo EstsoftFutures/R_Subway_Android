@@ -29,9 +29,6 @@ public class TtfXmlParser {
 
     private List<GTag> gList = new ArrayList<>();
 
-    public List<GTag> getgList() {
-        return gList;
-    }
 
     public List<CircleTag> getCircleList(int laneNumber) {
         List<CircleTag> lane = new ArrayList<>();
@@ -167,16 +164,5 @@ public class TtfXmlParser {
         }
     }
 
-
-//    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
-//        String result = "";
-//        Log.d(TAG, "test2");
-//        if (parser.next() == XmlPullParser.TEXT) {
-//            Log.d(TAG, "test");
-//            result = parser.getText();
-//            parser.nextTag();
-//        }
-//        return result;
-//    }
 
 }

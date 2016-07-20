@@ -9,6 +9,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
+import com.estsoft.r_subway_android.utility.ShortestPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,9 +83,11 @@ public class RouteController {
 //        stationList.add( station02 );
 
         stationList.add( end );
-        Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1(), stationList);
+        Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1());
+
 
         Log.d(TAG, "getRoute: " + stationList.size());
+
 
         return route;
     }
