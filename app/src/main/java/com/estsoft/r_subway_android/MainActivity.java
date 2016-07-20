@@ -46,6 +46,7 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.UI.StationInfo.TimeTableActivity;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity
 
     ExpandableListView expListView;
     SearchSetting searchSetting;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -515,7 +517,7 @@ public class MainActivity extends AppCompatActivity
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
-                LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
+                 LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
             } else {
                 stationBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false));
             }

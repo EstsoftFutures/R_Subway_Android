@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class PagerAdapter extends FragmentStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
     int PAGE_COUNT;
-/*    private String tabTitles[] = new String[]{"Tab1", "Tab2", "Tab3", "Tab4"};*/
     private int[] imageResId = {R.drawable.lane1,R.drawable.lane2,R.drawable.lane3,R.drawable.lane4,R.drawable.lane5,R.drawable.lane6,R.drawable.lane7,R.drawable.lane8,R.drawable.lane9,R.drawable.lane21,R.drawable.lane100,R.drawable.lane101,R.drawable.lane104,R.drawable.lane107, R.drawable.lane108,R.drawable.lane109,R.drawable.lane110,R.drawable.lane111};
     private static List<Station> exStations = null;
 
@@ -36,23 +35,11 @@ public class PagerAdapter extends FragmentStatePagerAdapter implements PagerSlid
         //page 개수 넘기기_ 환승역 line수+1(자기자신)+(다음정류장수-1) 다음정류장이 2개인곳, 성수
         PAGE_COUNT = exStations.size();
 
-
-        //신도림 !!!!!!!!!!!!!!!!!!!!!!해결필요함
-/*        if(station.getExStations().size()>0) {
-            for (Station s : station.getExStations()) {
-                if (s.getNextStations().size() > 1) {
-                    PAGE_COUNT += 1;
-                }
-            }
-        }*/
-
-
         return PAGE_COUNT;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Log.d("",""+exStations.get(position).getStationName());
         return StationInfoFragment.newInstance(position, exStations);
     }
 

@@ -124,7 +124,7 @@ public class InitializeRealm {
                     for (JsonElement ex : exStations) {
                         int exStationID = ex.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation exStation = realm.where(RealmStation.class).equalTo("stationID", exStationID).findFirst();
-//                        Log.d("\\\\", String.valueOf(exStation.getStationID()));
+//                        Log.d("\\\\", String.valueOf(exStation.getStationName()));
 
                         realm.beginTransaction();
                         station.getExStations().add(exStation);

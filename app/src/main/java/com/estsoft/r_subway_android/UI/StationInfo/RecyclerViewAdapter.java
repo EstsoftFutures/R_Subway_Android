@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -81,13 +82,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.curInfo.setVisibility(View.VISIBLE);
                 holder.infoName.setVisibility(View.GONE);
                 holder.stationInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
                 break;
 
 
             case 1:
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("시간표");
-                holder.stationInfo.setText("시간표정보");
+                holder.goToTimetable.setVisibility(View.VISIBLE);
 
                 holder.stationInfo.setVisibility(View.GONE);
                 break;
@@ -102,12 +104,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 } else {
                     holder.stationInfo.setText("역혼잡도 정보");
                 }
+                holder.goToTimetable.setVisibility(View.GONE);
                 break;
 
 
             case 3:
                 if (stations.get(page).getExStations() != null) {
                     holder.curInfo.setVisibility(View.GONE);
+                    holder.goToTimetable.setVisibility(View.GONE);
                     holder.infoName.setText("환승구역");
                     switch (stations.get(page).getOffDoor()) {
                         case 0:
@@ -127,18 +131,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             case 4:
                 holder.curInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
                 holder.infoName.setText("역내 시설정보");
                 holder.stationInfo.setText("" + stations.get(page).getTel() + stations.get(page).getBicycleCount() + stations.get(page).getHandicapCount() + stations.get(page).getParkingCount() +stations.get(page).getRestroom() +stations.get(page).getPlatform() +stations.get(page).getMeetingPlace() + stations.get(page).getOffDoor() + stations.get(page).getCivilCount());
                 break;
 
             case 5:
                 holder.curInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
                 holder.infoName.setText("급행열차");
                 holder.stationInfo.setText("급행열차정보");
                 break;
 
             case 6:
                 holder.curInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
                 holder.infoName.setText("현재 역 정보");
                 holder.stationInfo.setText("역 내 정보 알림 필요시 남길 것 _ CRAWLING");
                 break;
@@ -162,6 +169,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //현재 역 상세정보
         TextView preStation, curStation, nextStation, infoName, stationInfo;
         TextView preTime1, preTime2, nextTime1, nextTime2;
+        ImageView goToTimetable;
 
         public ViewHolder(View view) {
             super(view);
@@ -179,6 +187,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             preTime2 = (TextView) view.findViewById(R.id.pre_time2);
             nextTime1 = (TextView) view.findViewById(R.id.next_time1);
             nextTime2 = (TextView) view.findViewById(R.id.next_time2);
+
+
+            goToTimetable = (ImageView) view.findViewById(R.id.timetable_next);
 
             view.setOnClickListener(this);
 
