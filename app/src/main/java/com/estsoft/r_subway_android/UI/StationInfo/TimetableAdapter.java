@@ -16,6 +16,7 @@ import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,16 +27,16 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Time
     private static final String TAG = "TimeTableAdapter";
 
     private Context context;
-    private StationTimetable stationTimetable;
-    private int ordSatSun;
+    private List<String> stationTimetable;
+
     OnItemClickListener mItemClickListener;
     View.OnClickListener mClickListener;
 
-    // 0 : ord, 1 : sat, 2 : sun
-    public TimetableAdapter(Context context, StationTimetable stationTimetable, int ordSatSun) {
+    // default : ord, 1 : sat, 2 : sun
+    public TimetableAdapter(Context context, List<String> stationTimetable) {
         this.context = context;
         this.stationTimetable = stationTimetable;
-        this.ordSatSun = ordSatSun;
+
     }
 
     @Override
@@ -48,100 +49,25 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableAdapter.Time
 
     @Override
     public void onBindViewHolder(TimetableViewHolder holder, int position) {
-//        holder.upWay.setText(stationTimetable.getUpWay());
-//        holder.downWay.setText(stationTimetable.getDownWay());
-        switch (this.ordSatSun) {
 
-            case 0:
-                int upSize = stationTimetable.getOrdUpWayLdx()[position].size();
-                int downSize = stationTimetable.getOrdDownWayLdx()[position].size();
-                try {
+        holder.time1.setText(stationTimetable.get(position));
 
-                    holder.time1.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(0));
-                    holder.time2.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(1));
-                    holder.time3.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(2));
-                    holder.time4.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(3));
-                    holder.time5.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(4));
-                    holder.time6.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(5));
-                    holder.time7.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(6));
-                    holder.time8.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(7));
-                    holder.time9.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(8));
-                    holder.time10.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(9));
-                    holder.time11.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(10));
-                    holder.time12.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(11));
-                    holder.time13.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(12));
-                    holder.time14.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(13));
-                } catch (NullPointerException ex) {
-
-                } finally {
-                    break;
-
-                }
-            case 1:
-                try {
-                    holder.time1.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(0));
-                    holder.time2.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(1));
-                    holder.time3.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(2));
-                    holder.time4.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(3));
-                    holder.time5.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(4));
-                    holder.time6.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(5));
-                    holder.time7.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(6));
-                    holder.time8.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(7));
-                    holder.time9.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(8));
-                    holder.time10.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(9));
-                    holder.time11.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(10));
-                    holder.time12.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(11));
-                    holder.time13.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(12));
-                } catch (NullPointerException ex) {
-
-                } finally {
-                    break;
-
-                }
-            case 2:
-                holder.time1.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatUpWayLdx()[position].get(0));
-                holder.time2.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getSatDownWayLdx()[position].get(0));
-                break;
-
-            default:
-                holder.time1.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdUpWayLdx()[position].get(0));
-                holder.time2.setText("" + stationTimetable.getStationHour().get(position) + ":" + stationTimetable.getOrdDownWayLdx()[position].get(0));
-                break;
-        }
-
-    }
+}
 
 
     @Override
     public int getItemCount() {
-        return 20;
+        return stationTimetable.size();
     }
 
     public class TimetableViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView time1, time2, time3, time4, time5, time6, time7, time8, time9, time10, time11, time12, time13, time14;
-        TextView upWay, downWay;
+        TextView time1;
 
         public TimetableViewHolder(View view) {
             super(view);
 
             time1 = (TextView) view.findViewById(R.id.time1);
-            time2 = (TextView) view.findViewById(R.id.time2);
-            time3 = (TextView) view.findViewById(R.id.time3);
-            time4 = (TextView) view.findViewById(R.id.time4);
-            time5 = (TextView) view.findViewById(R.id.time5);
-            time6 = (TextView) view.findViewById(R.id.time6);
-            time7 = (TextView) view.findViewById(R.id.time7);
-            time8 = (TextView) view.findViewById(R.id.time8);
-            time9 = (TextView) view.findViewById(R.id.time9);
-            time10 = (TextView) view.findViewById(R.id.time10);
-            time11 = (TextView) view.findViewById(R.id.time11);
-            time12 = (TextView) view.findViewById(R.id.time12);
-            time13 = (TextView) view.findViewById(R.id.time13);
-            time14 = (TextView) view.findViewById(R.id.time14);
-
-            upWay = (TextView) view.findViewById(R.id.upway);
-            downWay = (TextView) view.findViewById(R.id.downway);
 
             view.setOnClickListener(this);
         }

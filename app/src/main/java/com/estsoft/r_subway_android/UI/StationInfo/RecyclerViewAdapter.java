@@ -35,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     public RecyclerViewAdapter(FragmentActivity mActivity, List<Station> stations1, int page) {
-        Log.d(TAG, "stationinadapterconstructor" + stations1.toString());
+//        Log.d(TAG, "stationinadapterconstructor" + stations1.toString());
         this.mActivity = mActivity;
         stations = stations1;
         this.page = page;
