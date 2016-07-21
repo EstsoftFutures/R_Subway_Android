@@ -1,10 +1,11 @@
 package com.estsoft.r_subway_android.utility;
 
-import android.support.v4.util.Pair;
 
+import android.support.v4.util.Pair;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 import java.util.ArrayList;
+
 
 /**
  * Created by gangGongUi on 2016. 7. 19..
