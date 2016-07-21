@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -39,6 +40,7 @@ import com.estsoft.r_subway_android.Controller.StationController;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
+import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
@@ -97,12 +99,12 @@ public class MainActivity extends AppCompatActivity
     private Station startStation = null;
     private Station endStation = null;
 
-    private Route normalRoute = null;
+    private RouteNew normalRoute = null;
     private RelativeLayout passMarkerMother = null;
     private List<ImageView> routeMarkers = null;
     private List<ImageView> transferMarkers = null;
     private TextView markerText = null;
-    private List<ImageView> markerList = null;
+    private List<View> markerList = null;
 
     private TtfMapImageView mapView = null;
 
@@ -349,7 +351,6 @@ public class MainActivity extends AppCompatActivity
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         list.setVisibility(View.GONE);
 //        mapView.moveToMapCenter( semiStation.getPosition() );
-
         hideSoftKeyboard(mapView);
 
         Log.d(TAG, "itemClick: ");
@@ -368,9 +369,10 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.marker));
             markerList.add((ImageView) findViewById(R.id.startMarker));
             markerList.add((ImageView) findViewById(R.id.endMarker));
+            markerList.add((TextView) findViewById(R.id.markerText));
         }
         if (markerMode == ALL_MARKERS) {
-            for (ImageView marker : markerList) {
+            for (View marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
 //            setMarkerVisibility( (ImageView)findViewById(R.id.route_image_source), false);
@@ -418,7 +420,8 @@ public class MainActivity extends AppCompatActivity
                     if ( activeStation.getStationID() == station.getStationID() ) {
 //                    if (activeStation.getStationId1().equals(station.getStationId1())) {
                         activeStation = station;
-                        setMarkerVisibility((ImageView) findViewById(R.id.marker), false);
+                        ImageView activeMarker = (ImageView)findViewById(R.id.marker);
+                        setMarkerVisibility(activeMarker, false);
                         flag = true;
                         break;
                     }
@@ -426,8 +429,10 @@ public class MainActivity extends AppCompatActivity
             }
 
             if (flag == false) {
-                setMarkerVisibility((ImageView) findViewById(R.id.marker), true);
+                ImageView activeMarker = (ImageView)findViewById(R.id.marker);
+                setMarkerVisibility(activeMarker, true);
                 setMarkerPosition(0, null, null);
+
             }
 
 
@@ -437,11 +442,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void setMarkerVisibility(ImageView marker, boolean visible) {
+    private void setMarkerVisibility(View marker, boolean visible) {
         int visibility = visible ? View.VISIBLE : View.INVISIBLE;
-        marker.setVisibility(visibility);
-        if (marker.getId() == R.id.marker)
+        if (marker.getId() == R.id.marker) {
             markerText.setVisibility(visibility);
+            // marker ImageView 삭제해야함! 임시방편
+            visibility = View.INVISIBLE;
+        }
+        marker.setVisibility(visibility);
 
     }
 
@@ -460,7 +468,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setMarkerPosition(float markerRatio, PointF markerPosition1, String stationName1) {
 
-        for (ImageView marker : markerList) {
+        for (View marker : markerList) {
             if (marker.getVisibility() == View.VISIBLE) {
 
                 PointF markerPosition;
@@ -474,11 +482,22 @@ public class MainActivity extends AppCompatActivity
                     case R.id.endMarker:
                         markerPosition = endStation.getMapPoint();
                         break;
+                    case R.id.markerText:
+                        markerPosition = activeStation.getMapPoint();
+                        markerText = (TextView) findViewById(R.id.markerText);
+                        markerText.setText(activeStation.getStationName());
+                        markerText.setTextSize( mapView.getMarkerRatio() / 10  );
+                        markerText.measure(0, 0);
+                        markerText.setX(markerPosition.x - markerText.getMeasuredWidth() / 2);
+                        markerText.setY(markerPosition.y - markerText.getMeasuredHeight());
+                        break;
                     default:
                         markerPosition = new PointF(0, 0);
                 }
                 Log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
-                setImageMatrix(marker, mapView.getMarkerRatio(), markerPosition);
+                if (marker instanceof ImageView ) {
+                    setImageMatrix((ImageView)marker, mapView.getMarkerRatio(), markerPosition);
+                }
 
             }
 
@@ -495,7 +514,7 @@ public class MainActivity extends AppCompatActivity
 //                    routeMarkers.get(i - 1),
                     routeMarkers.get(i),
                     mapView.getMarkerRatio(),
-                    ((Station) normalRoute.getStationList().get(i)).getMapPoint()
+                    normalRoute.getStationByOrder(i).getMapPoint()
             );
 
         }
@@ -513,7 +532,7 @@ public class MainActivity extends AppCompatActivity
         float magnification ;
         float width = image.getIntrinsicWidth();
         float height = image.getIntrinsicHeight();
-        if (view.getId()/1000 == 3){
+        if (view.getId() / 1000 == 3){
             magnification = markerRatio / routeMarkerSize;
             width = width * magnification;
             height = height * magnification;
@@ -528,19 +547,18 @@ public class MainActivity extends AppCompatActivity
             values[2] = point.x - width / 2;
             values[5] = point.y - height;
         }
+
+//        if (view.getId() == R.id.marker) {
+//            markerText = (TextView) findViewById(R.id.markerText);
+//            markerText.setText(activeStation.getStationName());
+//            markerText.setTextSize( mapView.getMarkerRatio() / 10  );
+//            markerText.measure(0, 0);
+//            markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
+//            markerText.setY(point.y - markerText.getMeasuredHeight());
+//        }
+
         matrix.setValues(values);
         view.setImageMatrix(matrix);
-
-        if (view.getId() == R.id.marker) {
-            markerText = (TextView) findViewById(R.id.markerText);
-            markerText.setText(activeStation.getStationName());
-            markerText.setTextSize( mapView.getMarkerRatio() / 10  );
-            markerText.measure(0, 0);
-            markerText.setX(point.x - markerText.getMeasuredWidth() / 2);
-            markerText.setY(point.y - markerText.getMeasuredHeight() - height / 3);
-        }
-
-
     }
 
 
@@ -643,7 +661,7 @@ public class MainActivity extends AppCompatActivity
         startStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
-        ImageView startMarker = markerList.get(1);
+        ImageView startMarker = (ImageView)markerList.get(1);
         setMarkerVisibility(startMarker, true);
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
@@ -655,7 +673,7 @@ public class MainActivity extends AppCompatActivity
         endStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
-        ImageView startMarker = markerList.get(2);
+        ImageView startMarker = (ImageView)markerList.get(2);
         setMarkerVisibility(startMarker, true);
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
@@ -669,12 +687,12 @@ public class MainActivity extends AppCompatActivity
 //            runBottomSheet(null, Route);
             runBottomSheet(null, null);
             //MainActivity make Route Drawing
-            normalRoute = routeController.getRoute(startStation, endStation);
-            for (TtfNode station : normalRoute.getStationList()) {
-                Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
-                Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
-            }
+
+//            normalRoute = routeController.getRoute(startStation, endStation);
+            normalRoute = routeController.getRouteNew(startStation, endStation);
+
             inflateRouteNew(normalRoute);
+            routeController.getRouteNew(startStation, endStation);
 
         } else {
             status = WAIT;
@@ -682,77 +700,44 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void inflateRouteNew(Route route) {
+    private void inflateRouteNew(RouteNew route) {
+
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // RouteMarker Inflate
-        for (int i = 0; i < route.getStationList().size(); i++) {
-            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
-            if ( i != 0 && i != route.getStationList().size() -1 ) {
-                for ( TtfNode st : normalRoute.getTransferStations() ) {
-                    if (!(((Station) st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()))) {
-                        marker.setImageResource(R.drawable.blue_route_icon);
-                        marker.setAlpha(0.5f);
-                        marker.setId(3000 + i);
-                    } else {
-                        marker.setImageResource(R.drawable.transfer_marker);
-                        marker.setAlpha(1f);
-                        marker.setId(4000 + i);
-                    }
+        int count = 0;
+        for ( List<Station> section : route.getSections() ) {
+            for ( int i = 0 ; i < section.size(); i ++ ) {
+                ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
+                if ( count == 0 ) {
+                    marker.setImageResource( R.drawable.start_marker );
+                    marker.setId( 5000 + count );
+                    marker.setAlpha( 1f );
+                } else if ( i == 0 ){
+                    marker.setImageResource( R.drawable.transfer_marker );
+                    marker.setId( 4000 + count );
+                    marker.setAlpha( 1f );
+                } else if (count == route.getTotalSize() - 1){
+                    marker.setImageResource( R.drawable.end_marker );
+                    marker.setId( 5000 + count );
+                    marker.setAlpha( 1f );
+                } else if ( i != section.size() - 1 ) {
+                    marker.setImageResource(R.drawable.blue_route_icon);
+                    marker.setId( 3000 + count );
+                    marker.setAlpha(0.8f);
                 }
-            } else {
-                if ( i == 0 ) {
-                    marker.setImageResource(R.drawable.start_marker);
-                    marker.setId(5000 + i);
-                }
-                else {
-                    marker.setImageResource(R.drawable.end_marker);
-                    marker.setId(5000 + i);
-                }
-                marker.setAlpha(1f);
-
-                Log.d(TAG, "inflateRouteNew: " + marker.getId());
-
+                routeMarkers.add(marker);
+                count ++;
             }
-            routeMarkers.add(marker);
-            marker.setLayoutParams(markerList.get(0).getLayoutParams());
-
-//            if (passMarkerMother != null) {
-//                passMarkerMother.addView(marker);
-//                marker.setVisibility(View.VISIBLE);
-//                routeMarkers.add(marker);
-//                //marker set Layout width, height using startMarker's LayoutParam
-//                marker.setLayoutParams(markerList.get(0).getLayoutParams());
-//
-//            }
-//
-//            Log.d(TAG, "inflateRoute: marker inflated." );
-//            // Route Circle Inflate
-//            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
-//            marker.setId(3000 + i);
-//            for ( TtfNode st : normalRoute.getTransferStations() ) {
-//                if ( ((Station)st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()) ) {
-//                    marker.setImageResource(R.drawable.transfer_marker);
-//                    marker.setId(4000 + i);
-//                }
-//            }
-//            if (passMarkerMother != null) {
-//                passMarkerMother.addView(marker);
-//                marker.setVisibility(View.VISIBLE);
-//                routeMarkers.add(marker);
-//                //marker set Layout width, height using startMarker's LayoutParam
-//                marker.setLayoutParams(markerList.get(0).getLayoutParams());
-//
-//            }
         }
 
-        for ( int i = 3; i < 6; i ++ ) {
+        for (int i = 3; i < 6; i++) {
             for ( ImageView mark : routeMarkers ) {
                 if (mark.getId() / 1000 == i) {
                     Log.d(TAG, "inflateRouteNew: " + mark.getId());
                     passMarkerMother.addView(mark);
                     mark.setVisibility(View.VISIBLE);
+                    // marker set Layout width, height using startMarker's LayoutParam
+                    mark.setLayoutParams(markerList.get(0).getLayoutParams());
                 }
             }
         }
@@ -761,7 +746,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void inflateRoute(Route route) {
+
+   /* private void inflateRoute(Route route) {
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
 
         for (int i = 0; i < route.getStationList().size(); i++) {
@@ -794,7 +780,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         setRouteMarkerPosition();
-    }
+    }*/
 
 
 
