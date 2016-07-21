@@ -2,12 +2,11 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.estsoft.r_subway_android.MainActivity"
-    android:id="@+id/layout_main">
-
+    tools:context="com.estsoft.r_subway_android.MainActivity">
 
     <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -75,14 +74,12 @@
                 android:groupIndicator="@null" />
 
         </android.support.design.widget.NavigationView>
+
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_test_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF"
-            android:id="@+id/list_test_view"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </android.support.v4.widget.DrawerLayout>
-
-
-
 </android.support.design.widget.CoordinatorLayout>

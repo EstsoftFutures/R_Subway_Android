@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.estsoft.r_subway_android.MainActivity;
@@ -33,7 +34,7 @@ public class InteractionListener implements
         View.OnClickListener,
         SearchView.OnQueryTextListener,
         ExpandableListView.OnChildClickListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener {
 
     public InteractionListener(Context context, List<SemiStation> list) {
 
@@ -124,19 +125,45 @@ public class InteractionListener implements
 //        for ( SemiStation ss : searchResult ) {
 //            ss.setLaneNumbers( host.getStationController().getExNumbers(ss) );
 //        }
-        SearchListAdapter sla = new SearchListAdapter( searchResult, host.getLayoutInflater() );
+        SearchListAdapter sla = new SearchListAdapter(searchResult, host.getLayoutInflater());
         sla.setmSearchListAdapterListener(host);
         sla.SetOnItemClickListener(sla.getmItemClickListener());
 
-        list.setAdapter( sla );
+        list.setAdapter(sla);
 
         return true;
+    }
+
+
+    //setting창 click listener
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+
+        ImageView check = (ImageView) v.findViewById(R.id.setting_group_check);
+
+        //검색노선 설정은 CHECK안되도록
+        if (check.getVisibility() == View.INVISIBLE && groupPosition != 3) {
+            check.setVisibility(View.VISIBLE);
+
+        } else {
+            check.setVisibility(View.INVISIBLE);
+        }
+        return false;
     }
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
         Toast.makeText(host, "item selected", Toast.LENGTH_SHORT).show();
+
+        ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
+
+        if (check.getVisibility() == View.VISIBLE) {
+            check.setVisibility(View.INVISIBLE);
+        } else {
+            check.setVisibility(View.VISIBLE);
+        }
+
         return true;
     }
 
@@ -163,7 +190,6 @@ public class InteractionListener implements
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
-
 
 
 }

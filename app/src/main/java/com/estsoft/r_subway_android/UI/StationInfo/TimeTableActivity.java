@@ -2,12 +2,15 @@ package com.estsoft.r_subway_android.UI.StationInfo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
@@ -17,6 +20,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetabl
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TimeTableActivity extends AppCompatActivity {
     String TAG = "TimeTableActivity";
@@ -26,7 +30,9 @@ public class TimeTableActivity extends AppCompatActivity {
     int curStationID;
     TimetableAdapter timetableAdapter;
     RecyclerView timetableRecyclerView;
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    //   Staggered
+    GridLayoutManager timetableGridLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,50 +42,61 @@ public class TimeTableActivity extends AppCompatActivity {
 
         // StationInfoFragment로부터 stationID와 현재 page받기
         stationIDs = getIntent().getIntegerArrayListExtra("stationIDs");
-        Log.d(TAG,"stationIDs: "+stationIDs.toString());
+        Log.d(TAG, "stationIDs: " + stationIDs.toString());
         page = getIntent().getIntExtra("page", 0);
-        Log.d(TAG,"page: "+page);
+        Log.d(TAG, "page: " + page);
 
         //현재 page의 id 받기
         curStationID = stationIDs.get(page);
-        Log.d(TAG,"curStationID: "+curStationID);
+        Log.d(TAG, "curStationID: " + curStationID);
 
         //timetable 정보 받기
-        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(this,curStationID);
+        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(this, curStationID);
         stationTimetable = jsonTimetableParser.getStationTimetable();
-        Log.d(TAG,"stationTimetable_stationName: "+stationTimetable.getStationName());
-        Log.d(TAG,"stationTimetable_Upway: "+stationTimetable.getUpWay());
-        Log.d(TAG,"stationTimetable_Downway: "+stationTimetable.getDownWay());
-        Log.d(TAG,"stationTimetable_OrdUp: "+stationTimetable.getOrdUpWayLdx()[0]);
-        Log.d(TAG,"stationTimetable_OrdDown: "+stationTimetable.getOrdDownWayLdx().length);
-        Log.d(TAG,"stationTimetable_SatUp: "+stationTimetable.getSatUpWayLdx().length);
-        Log.d(TAG,"stationTimetable_SatDown: "+stationTimetable.getSatDownWayLdx().length);
-        Log.d(TAG,"stationTimetable_SunUp: "+stationTimetable.getSunUpWayLdx().length);
-        Log.d(TAG,"stationTimetable_SunDown: "+stationTimetable.getSunDownWayLdx().length);
-        Log.d(TAG,"stationTimetable_stationhour"+stationTimetable.getStationHour().size());
-        Log.d(TAG,"stationTimetable_stationminute"+":"+stationTimetable.getOrdUpWayLdx().length);
+        Log.d(TAG, "stationTimetable_stationName: " + stationTimetable.getStationName());
+        Log.d(TAG, "stationTimetable_Upway: " + stationTimetable.getUpWay());
+        Log.d(TAG, "stationTimetable_Downway: " + stationTimetable.getDownWay());
+        Log.d(TAG, "stationTimetable_OrdUp: " + stationTimetable.getOrdUpWayLdx()[0]);
+        Log.d(TAG, "stationTimetable_OrdDown: " + stationTimetable.getOrdDownWayLdx().length);
+        Log.d(TAG, "stationTimetable_SatUp: " + stationTimetable.getSatUpWayLdx().length);
+        Log.d(TAG, "stationTimetable_SatDown: " + stationTimetable.getSatDownWayLdx().length);
+        Log.d(TAG, "stationTimetable_SunUp: " + stationTimetable.getSunUpWayLdx().length);
+        Log.d(TAG, "stationTimetable_SunDown: " + stationTimetable.getSunDownWayLdx().length);
+        Log.d(TAG, "stationTimetable_stationhour" + stationTimetable.getStationHour().size());
+        Log.d(TAG, "stationTimetable_stationminute" + ":" + stationTimetable.getOrdUpWayLdx().length);
 
 
-        TextView ord = (TextView) findViewById(R.id.ord);
-        TextView sat = (TextView) findViewById(R.id.sat);
-        TextView sun = (TextView) findViewById(R.id.sun);
-        final ImageView ordUnCheck =(ImageView) findViewById(R.id.ord_unchecked);
+        ImageView timetableFinish = (ImageView) findViewById(R.id.timetable_finish);
+        LinearLayout ord = (LinearLayout) findViewById(R.id.ord_layout);
+        LinearLayout sat = (LinearLayout) findViewById(R.id.sat_layout);
+        LinearLayout sun = (LinearLayout) findViewById(R.id.sun_layout);
+        final ImageView ordUnCheck = (ImageView) findViewById(R.id.ord_unchecked);
         final ImageView ordCheck = (ImageView) findViewById(R.id.ord_checked);
-        final ImageView satUnCheck =(ImageView) findViewById(R.id.sat_unchecked);
+        final ImageView satUnCheck = (ImageView) findViewById(R.id.sat_unchecked);
         final ImageView satCheck = (ImageView) findViewById(R.id.sat_checked);
-        final ImageView sunUnCheck =(ImageView) findViewById(R.id.sun_unchecked);
+        final ImageView sunUnCheck = (ImageView) findViewById(R.id.sun_unchecked);
         final ImageView sunCheck = (ImageView) findViewById(R.id.sun_checked);
 
         //default: ord
+        TextView upWay = (TextView) findViewById(R.id.upway);
+        TextView downWay = (TextView) findViewById(R.id.downway);
 
-        timetableAdapter = new TimetableAdapter(getApplicationContext(),stationTimetable,0);
+        upWay.setText(stationTimetable.getUpWay());
+        downWay.setText(stationTimetable.getDownWay());
+
+
         timetableRecyclerView = (RecyclerView) findViewById(R.id.timetable);
+        //staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,1);
+        timetableGridLayoutManager = new GridLayoutManager(this, 2);
+        timetableRecyclerView.setLayoutManager(timetableGridLayoutManager);
 
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,1);
-        timetableRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        ArrayList<String> timeOrd = timetable(stationTimetable, 0);
 
+        Log.d(TAG, "last_upway:" + stationTimetable.getUpWay());
+        Log.d(TAG, "last_downway:" + stationTimetable.getDownWay());
+
+        timetableAdapter = new TimetableAdapter(getApplicationContext(), timeOrd);
         timetableRecyclerView.setAdapter(timetableAdapter);
-
 
         ordUnCheck.setVisibility(View.GONE);
         ordCheck.setVisibility(View.VISIBLE);
@@ -87,6 +104,7 @@ public class TimeTableActivity extends AppCompatActivity {
         satCheck.setVisibility(View.GONE);
         sunUnCheck.setVisibility(View.VISIBLE);
         sunCheck.setVisibility(View.GONE);
+
 
         ord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +115,11 @@ public class TimeTableActivity extends AppCompatActivity {
                 satCheck.setVisibility(View.GONE);
                 sunUnCheck.setVisibility(View.VISIBLE);
                 sunCheck.setVisibility(View.GONE);
-                timetableAdapter = new TimetableAdapter(getApplicationContext(),stationTimetable,0);
+
+
+                ArrayList<String> timeOrd = timetable(stationTimetable, 0);
+
+                timetableAdapter = new TimetableAdapter(getApplicationContext(), timeOrd);
                 timetableRecyclerView.setAdapter(timetableAdapter);
             }
         });
@@ -110,7 +132,11 @@ public class TimeTableActivity extends AppCompatActivity {
                 satCheck.setVisibility(View.VISIBLE);
                 sunUnCheck.setVisibility(View.VISIBLE);
                 sunCheck.setVisibility(View.GONE);
-                timetableAdapter = new TimetableAdapter(getApplicationContext(),stationTimetable,1);
+
+                ArrayList<String> timeSat = timetable(stationTimetable, 1);
+
+
+                timetableAdapter = new TimetableAdapter(getApplicationContext(), timeSat);
                 timetableRecyclerView.setAdapter(timetableAdapter);
             }
         });
@@ -123,10 +149,128 @@ public class TimeTableActivity extends AppCompatActivity {
                 satCheck.setVisibility(View.GONE);
                 sunUnCheck.setVisibility(View.GONE);
                 sunCheck.setVisibility(View.VISIBLE);
-                timetableAdapter = new TimetableAdapter(getApplicationContext(),stationTimetable,2);
+
+
+                ArrayList<String> timeSun = timetable(stationTimetable, 2);
+
+                timetableAdapter = new TimetableAdapter(getApplicationContext(), timeSun);
                 timetableRecyclerView.setAdapter(timetableAdapter);
             }
         });
 
+
+        timetableFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
+
+    public ArrayList<String> timetable(StationTimetable stationTimetable, int ordSatSun) {
+        String upMinute = "";
+        String downMinute = "";
+        ArrayList<String> time = new ArrayList<>();
+
+        switch (ordSatSun) {
+            //sat
+            case 1:
+                for (int j = 0; j < 39; j++) {
+//Up
+                    if (upMinute != null) upMinute = "";
+                    if (downMinute != null) downMinute = "";
+                    if (j % 2 == 0) {
+                        for (int i = 0; i < stationTimetable.getSatUpWayLdx()[j / 2].size(); i++) {
+                            if (i == stationTimetable.getSatUpWayLdx()[j / 2].size() - 1) {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSatUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+
+                            } else {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSatUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+
+                        time.add(upMinute);
+                    }
+                    //         Down
+                    else {
+                        for (int i = 0; i < stationTimetable.getSatDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            if (i == stationTimetable.getSatDownWayLdx()[(j - 1) / 2].size() - 1) {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                            } else {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+                        time.add(downMinute);
+                    }
+                }
+                break;
+            //sun
+            case 2:
+                for (int j = 0; j < 39; j++) {
+
+                    if (upMinute != null) upMinute = "";
+                    if (downMinute != null) downMinute = "";
+
+//Up
+                    if (j % 2 == 0) {
+                        for (int i = 0; i < stationTimetable.getSunUpWayLdx()[j / 2].size(); i++) {
+                            if (i == stationTimetable.getSunUpWayLdx()[j / 2].size() - 1) {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSunUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+                            } else {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSunUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+
+                        time.add(upMinute);
+                    }
+                    //         Down
+                    else {
+                        for (int i = 0; i < stationTimetable.getSunDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            if (i == stationTimetable.getSunDownWayLdx()[(j - 1) / 2].size() - 1) {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                            } else {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+                        time.add(downMinute);
+                    }
+                }
+                break;
+            //ord
+            default:
+                for (int j = 0; j < 39; j++) {
+                    if (upMinute != null) upMinute = "";
+                    if (downMinute != null) downMinute = "";
+
+//Up
+                    if (j % 2 == 0) {
+                        for (int i = 0; i < stationTimetable.getOrdUpWayLdx()[j / 2].size(); i++) {
+                            if (i == stationTimetable.getOrdUpWayLdx()[j / 2].size() - 1) {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getOrdUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+                            } else {
+                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getOrdUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+
+                        time.add(upMinute);
+                    }
+                    //         Down
+                    else {
+                        for (int i = 0; i < stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            if (i == stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].size() - 1) {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                            } else {
+                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                            }
+                        }
+                        time.add(downMinute);
+                    }
+                }
+                break;
+        }
+        return time;
+    }
+
+
 }
