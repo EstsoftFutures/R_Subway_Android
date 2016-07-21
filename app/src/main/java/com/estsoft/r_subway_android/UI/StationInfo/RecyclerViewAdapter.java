@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         switch (position) {
             case 0:
+
                 //이전역
                 if (stations.get(page).getPrevStations().size() != 0) {
                     holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
@@ -83,10 +85,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.infoName.setVisibility(View.GONE);
                 holder.stationInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
+                holder.useInfo.setVisibility(View.GONE);
                 break;
 
 
             case 1:
+                holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("시간표");
                 holder.goToTimetable.setVisibility(View.VISIBLE);
@@ -95,6 +99,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 break;
 
             case 2:
+                holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.infoName.setText("역혼잡도");
 
@@ -109,6 +114,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
             case 3:
+                holder.useInfo.setVisibility(View.GONE);
                 if (stations.get(page).getExStations() != null) {
                     holder.curInfo.setVisibility(View.GONE);
                     holder.goToTimetable.setVisibility(View.GONE);
@@ -128,15 +134,104 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 break;
 
-
             case 4:
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
+                holder.stationInfo.setVisibility(View.GONE);
+
                 holder.infoName.setText("역내 시설정보");
-                holder.stationInfo.setText("" + stations.get(page).getTel() + stations.get(page).getBicycleCount() + stations.get(page).getHandicapCount() + stations.get(page).getParkingCount() +stations.get(page).getRestroom() +stations.get(page).getPlatform() +stations.get(page).getMeetingPlace() + stations.get(page).getOffDoor() + stations.get(page).getCivilCount());
+
+
+                switch (stations.get(page).getRestroom()) {
+                    case 1:
+                        holder.Restroom.setText("화장실: 안쪽");
+                        break;
+                    case 2:
+                        holder.Restroom.setText("화장실: 바깥쪽");
+                        break;
+                    case 3:
+                        holder.Restroom.setText("화장실: 환승역 연결");
+                        break;
+                    case 4:
+                        holder.Restroom.setText("화장실: 안쪽, 바깥쪽");
+                        break;
+                    default:
+                        holder.Restroom.setText("화장실: 없음");
+                        break;
+                }
+                switch (stations.get(page).getPlatform()) {
+                    case 1:
+                        holder.Platform.setText("플랫폼 위치: 중앙");
+                        break;
+                    case 2:
+                        holder.Platform.setText("플랫폼 위치: 양쪽");
+                        break;
+                    case 3:
+                        holder.Platform.setText("플랫폼 위치: 복선(국철)");
+                        break;
+                    case 4:
+                        holder.Platform.setText("플랫폼 위치: 일방향");
+                        break;
+                    default:
+                        holder.Platform.setText("플랫폼 위치: 기타");
+                        break;
+                }
+                switch (stations.get(page).getOffDoor()) {
+                    case 1:
+                        holder.OffDoor.setText("내리는 문: 오른쪽");
+                        break;
+                    case 2:
+                        holder.OffDoor.setText("내리는 문: 양쪽");
+                        break;
+                    default:
+                        holder.OffDoor.setText("내리는 문: 왼쪽");
+                        break;
+                }
+
+                if (stations.get(page).getBicycleCount() == 0) {
+                    holder.BicycleCount.setText("자전거 보관소: 없음");
+                } else {
+                    holder.BicycleCount.setText("자전거 보관소: 있음");
+                }
+                if (stations.get(page).getHandicapCount() == 0) {
+                    holder.HandicapCount.setText("장애인 편의시설: 없음");
+                } else {
+                    holder.HandicapCount.setText("장애인 편의시설: 있음");
+                }
+                if (stations.get(page).getParkingCount() == 0) {
+                    holder.ParkingCount.setText("환승 주차장: 없음");
+
+                } else {
+                    holder.ParkingCount.setText("환승 주차장: 있음");
+
+                }
+                if (stations.get(page).getMeetingPlace() == 0) {
+                    holder.MeetingPlace.setText("만남의 장소: 없음 ");
+                } else {
+                    holder.MeetingPlace.setText("만남의 장소: 있음");
+                }
+                if (stations.get(page).getCivilCount() == 0) {
+                    holder.CivilCount.setText("민원 안내: 없음");
+                } else {
+                    holder.CivilCount.setText("민원 안내: 있음");
+                }
+                if (stations.get(page).getCrossOver() == 0) {
+                    holder.CrossOver.setText("반대편 횡단: 불가능");
+
+                } else {
+                    holder.CrossOver.setText("반대편 횡단: 가능");
+
+                }
+
+                holder.Tel.setText(stations.get(page).getTel());
+                holder.Address.setText(stations.get(page).getAddress());
+
+                holder.useInfo.setVisibility(View.VISIBLE);
                 break;
 
             case 5:
+
+                holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.infoName.setText("급행열차");
@@ -170,6 +265,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView preStation, curStation, nextStation, infoName, stationInfo;
         TextView preTime1, preTime2, nextTime1, nextTime2;
         ImageView goToTimetable;
+        GridLayout useInfo;
+        TextView Platform, MeetingPlace, Restroom, OffDoor, CrossOver, HandicapCount, ParkingCount, BicycleCount, CivilCount, Tel, Address;
 
         public ViewHolder(View view) {
             super(view);
@@ -190,6 +287,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
             goToTimetable = (ImageView) view.findViewById(R.id.timetable_next);
+
+            useInfo = (GridLayout) view.findViewById(R.id.station_useinfo);
+            Platform = (TextView) view.findViewById(R.id.platform);
+            MeetingPlace = (TextView) view.findViewById(R.id.meeting_place);
+            Restroom = (TextView) view.findViewById(R.id.restroom);
+            OffDoor = (TextView) view.findViewById(R.id.offdoor);
+            CrossOver = (TextView) view.findViewById(R.id.crossover);
+            HandicapCount = (TextView) view.findViewById(R.id.handicap_count);
+            ParkingCount = (TextView) view.findViewById(R.id.parking_count);
+            BicycleCount = (TextView) view.findViewById(R.id.bicycle_count);
+            CivilCount = (TextView) view.findViewById(R.id.civil_count);
+            Tel = (TextView) view.findViewById(R.id.tel);
+            Address = (TextView) view.findViewById(R.id.address);
+
 
             view.setOnClickListener(this);
 

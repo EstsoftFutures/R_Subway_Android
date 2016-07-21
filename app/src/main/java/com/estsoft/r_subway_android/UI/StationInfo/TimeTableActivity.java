@@ -4,11 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,10 +14,7 @@ import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class TimeTableActivity extends AppCompatActivity {
     String TAG = "TimeTableActivity";
@@ -182,11 +176,13 @@ public class TimeTableActivity extends AppCompatActivity {
                     if (downMinute != null) downMinute = "";
                     if (j % 2 == 0) {
                         for (int i = 0; i < stationTimetable.getSatUpWayLdx()[j / 2].size(); i++) {
+                            upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSatUpWayLdx()[j / 2].get(i).get("satUpWayLdx");
+                            if((boolean)stationTimetable.getSatUpWayLdx()[j / 2].get(i).get("isExpress") == true) upMinute+="  급행";
                             if (i == stationTimetable.getSatUpWayLdx()[j / 2].size() - 1) {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSatUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+                                upMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
 
                             } else {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSatUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                upMinute +=  System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
 
@@ -195,10 +191,12 @@ public class TimeTableActivity extends AppCompatActivity {
                     //         Down
                     else {
                         for (int i = 0; i < stationTimetable.getSatDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i).get("satDownWayLdx");
+                            if((boolean)stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i).get("isExpress") == true) downMinute+="  급행";
                             if (i == stationTimetable.getSatDownWayLdx()[(j - 1) / 2].size() - 1) {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                                downMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
                             } else {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSatDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                downMinute += System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
                         time.add(downMinute);
@@ -211,14 +209,15 @@ public class TimeTableActivity extends AppCompatActivity {
 
                     if (upMinute != null) upMinute = "";
                     if (downMinute != null) downMinute = "";
-
-//Up
                     if (j % 2 == 0) {
                         for (int i = 0; i < stationTimetable.getSunUpWayLdx()[j / 2].size(); i++) {
+                            upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSunUpWayLdx()[j / 2].get(i).get("sunUpWayLdx");
+                            if((boolean)stationTimetable.getSunUpWayLdx()[j / 2].get(i).get("isExpress") == true) upMinute+="  급행";
                             if (i == stationTimetable.getSunUpWayLdx()[j / 2].size() - 1) {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSunUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+                                upMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
+
                             } else {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getSunUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                upMinute +=  System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
 
@@ -227,10 +226,12 @@ public class TimeTableActivity extends AppCompatActivity {
                     //         Down
                     else {
                         for (int i = 0; i < stationTimetable.getSunDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i).get("sunDownWayLdx");
+                            if((boolean)stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i).get("isExpress") == true) downMinute+="  급행";
                             if (i == stationTimetable.getSunDownWayLdx()[(j - 1) / 2].size() - 1) {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                                downMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
                             } else {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getSunDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                downMinute += System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
                         time.add(downMinute);
@@ -243,13 +244,15 @@ public class TimeTableActivity extends AppCompatActivity {
                     if (upMinute != null) upMinute = "";
                     if (downMinute != null) downMinute = "";
 
-//Up
                     if (j % 2 == 0) {
                         for (int i = 0; i < stationTimetable.getOrdUpWayLdx()[j / 2].size(); i++) {
+                            upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getOrdUpWayLdx()[j / 2].get(i).get("ordUpWayLdx");
+                            if((boolean)stationTimetable.getOrdUpWayLdx()[j / 2].get(i).get("isExpress") == true) upMinute+="  급행";
                             if (i == stationTimetable.getOrdUpWayLdx()[j / 2].size() - 1) {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getOrdUpWayLdx()[j / 2].get(i) + System.lineSeparator();
+                                upMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
+
                             } else {
-                                upMinute += stationTimetable.getStationHour().get(j / 2) + ":" + stationTimetable.getOrdUpWayLdx()[j / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                upMinute +=  System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
 
@@ -258,10 +261,12 @@ public class TimeTableActivity extends AppCompatActivity {
                     //         Down
                     else {
                         for (int i = 0; i < stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].size(); i++) {
+                            downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i).get("ordDownWayLdx");
+                            if((boolean)stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i).get("isExpress") == true) downMinute+="  급행";
                             if (i == stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].size() - 1) {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator();
+                                downMinute +=  System.lineSeparator() + System.lineSeparator() + System.lineSeparator();
                             } else {
-                                downMinute += stationTimetable.getStationHour().get((j - 1) / 2) + ":" + stationTimetable.getOrdDownWayLdx()[(j - 1) / 2].get(i) + System.lineSeparator() + System.lineSeparator();
+                                downMinute += System.lineSeparator()+ System.lineSeparator() ;
                             }
                         }
                         time.add(downMinute);

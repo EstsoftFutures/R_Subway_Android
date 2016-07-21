@@ -2,10 +2,8 @@ package com.estsoft.r_subway_android.Repository.StationRepository;
 
 import android.content.Context;
 
-import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by Administrator on 2016-07-18.
@@ -18,15 +16,16 @@ public class StationTimetable {
     private String DownWay;
     // 시간(5~25시)
     private ArrayList<Integer> stationHour = new ArrayList<>();
-    private ArrayList<String>[] ordUpWayLdx = new ArrayList[20];
-    private ArrayList<String>[] ordDownWayLdx = new ArrayList[20];
-    private ArrayList<String>[] satUpWayLdx = new ArrayList[20];
-    private ArrayList<String>[] satDownWayLdx = new ArrayList[20];
-    private ArrayList<String>[] sunUpWayLdx = new ArrayList[20];
-    private ArrayList<String>[] sunDownWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] ordUpWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] ordDownWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] satUpWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] satDownWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] sunUpWayLdx = new ArrayList[20];
+    private ArrayList<HashMap<String, Object>>[] sunDownWayLdx = new ArrayList[20];
 
     // 시간(00행)
-    private ArrayList<String> list = new ArrayList<>();
+    private HashMap<String, Object> list = new HashMap<>();
+
 
     public StationTimetable() {
         for (int i = 0; i < 20; i++) {
@@ -69,59 +68,59 @@ public class StationTimetable {
     }
 
 
-    public ArrayList<String> getList() {
+    public HashMap<String, Object> getList() {
         return list;
     }
 
-    public void setList(ArrayList<String> list) {
+    public void setList(HashMap<String, Object> list) {
         this.list = list;
     }
 
-    public ArrayList<String>[] getOrdUpWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getOrdUpWayLdx() {
         return ordUpWayLdx;
     }
 
-    public void setOrdUpWayLdx(ArrayList<String>[] ordUpWayLdx) {
+    public void setOrdUpWayLdx(ArrayList<HashMap<String, Object>>[] ordUpWayLdx) {
         this.ordUpWayLdx = ordUpWayLdx;
     }
 
-    public List<String>[] getOrdDownWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getOrdDownWayLdx() {
         return ordDownWayLdx;
     }
 
-    public void setOrdDownWayLdx(ArrayList<String>[] ordDownWayLdx) {
+    public void setOrdDownWayLdx(ArrayList<HashMap<String, Object>>[] ordDownWayLdx) {
         this.ordDownWayLdx = ordDownWayLdx;
     }
 
-    public List<String>[] getSatUpWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getSatUpWayLdx() {
         return satUpWayLdx;
     }
 
-    public void setSatUpWayLdx(ArrayList<String>[] satUpWayLdx) {
+    public void setSatUpWayLdx(ArrayList<HashMap<String, Object>>[] satUpWayLdx) {
         this.satUpWayLdx = satUpWayLdx;
     }
 
-    public List<String>[] getSatDownWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getSatDownWayLdx() {
         return satDownWayLdx;
     }
 
-    public void setSatDownWayLdx(ArrayList<String>[] satDownWayLdx) {
+    public void setSatDownWayLdx(ArrayList<HashMap<String, Object>>[] satDownWayLdx) {
         this.satDownWayLdx = satDownWayLdx;
     }
 
-    public List<String>[] getSunUpWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getSunUpWayLdx() {
         return sunUpWayLdx;
     }
 
-    public void setSunUpWayLdx(ArrayList<String>[] sunUpWayLdx) {
+    public void setSunUpWayLdx(ArrayList<HashMap<String, Object>>[] sunUpWayLdx) {
         this.sunUpWayLdx = sunUpWayLdx;
     }
 
-    public List<String>[] getSunDownWayLdx() {
+    public ArrayList<HashMap<String, Object>>[] getSunDownWayLdx() {
         return sunDownWayLdx;
     }
 
-    public void setSunDownWayLdx(ArrayList<String>[] sunDownWayLdx) {
+    public void setSunDownWayLdx(ArrayList<HashMap<String, Object>>[] sunDownWayLdx) {
         this.sunDownWayLdx = sunDownWayLdx;
     }
 
