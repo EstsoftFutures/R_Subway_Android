@@ -47,6 +47,9 @@ public class RouteControllerNew {
 
         //route Station Adding...
 
+
+
+
         int[] path = ShortestPath.getShortestPathByIntArray( stationController.getAdj(), start, end );
 
         Log.d(TAG, "getRoute123: " + start.getIndex() + " / " + end.getIndex());
