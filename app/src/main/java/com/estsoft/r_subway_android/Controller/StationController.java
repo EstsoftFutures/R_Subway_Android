@@ -67,15 +67,21 @@ public class StationController {
 
             for (int j = 0; j < station.getPrevStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: PREV " + station.getPrevStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getPrevStations().get(j), Integer.parseInt(stationTag.getPrevCost().get(j))));
+                int cost = Integer.parseInt(stationTag.getPrevCost().get(j));
+                if ( !(cost < 0) ){
+                    adj[i].add(new Pair<Station, Integer>(station.getPrevStations().get(j), cost));
+                }
             }
             for (int j = 0; j < station.getNextStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: NEXT " + station.getNextStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getNextStations().get(j), Integer.parseInt(stationTag.getNextCost().get(j))));
+                int cost = Integer.parseInt(stationTag.getNextCost().get(j));
+                if (!(cost < 0) ) {
+                    adj[i].add(new Pair<Station, Integer>(station.getNextStations().get(j), cost));
+                }
             }
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 300));
+                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 30));
             }
         }
     }

@@ -26,7 +26,7 @@ public class TtfMapImageView extends MapTouchImageView {
     private static final int TOUCH_RADIUS = 30;
 
     // smaller number, bigger marker.
-    private static final int MARKER_SCALE_RATIO = 30;
+    private static final int MARKER_SCALE_RATIO = 20;
 
     private static final int ALL_MARKERS = 0;
     private static final int ACTI_MARKER = 1;

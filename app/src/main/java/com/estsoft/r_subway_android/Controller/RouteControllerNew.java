@@ -49,6 +49,8 @@ public class RouteControllerNew {
 
         int[] path = ShortestPath.getShortestPathByIntArray( stationController.getAdj(), start, end );
 
+        Log.d(TAG, "getRoute123: " + start.getIndex() + " / " + end.getIndex());
+
         for (int i = 0; i < path.length; i ++ ) {
             Station station = stationController.getStation(path[i]);
             if (station.getMapPoint() == null ) {
@@ -57,22 +59,25 @@ public class RouteControllerNew {
 
             if ( lastStation == null
                     || station.getStationName().equals(lastStation.getStationName())) {
-                transList.add( station );
 
                 if ( lastStation == null ) calendar =  getRealTimeAPI( calendar, true );
                 else calendar = getRealTimeAPI( calendar, false);
 
-                timeList.add( calendar );
+                if (i != path.length -1) {
+                    transList.add( station );
+                    timeList.add( calendar );
+                }
 
             } else {
-                calendar = getAddedTime( calendar, stationController.getStation(path[i-1]), station );
-                timeList.add( calendar);
+                if (i != path.length -1) {
+                    calendar = getAddedTime(calendar, stationController.getStation(path[i - 1]), station);
+                    timeList.add(calendar);
+                }
             }
 
             if ( lastStation != null
                     && station.getStationName().equals(lastStation.getStationName())
-                    && i == path.length - 1 ) {
-
+                    && i == path.length - 1  ) {
             } else {
                 routeList.add(station);
             }
@@ -122,7 +127,7 @@ public class RouteControllerNew {
             if ( pair.first.getStationID() == next.getStationID() ) {
                 Log.d(TAG, "getAddedTime: before " + newCal.get( Calendar.MINUTE ));
                 int edgeCost = pair.second;
-                newCal.set(Calendar.MINUTE, newCal.get(Calendar.MINUTE) +  Math.round(edgeCost / 60) );
+                newCal.set(Calendar.MINUTE, newCal.get(Calendar.MINUTE) +  Math.round(edgeCost / 6) );
                 Log.d(TAG, "getAddedTime: after " + newCal.get( Calendar.MINUTE ));
                 return newCal;
             }

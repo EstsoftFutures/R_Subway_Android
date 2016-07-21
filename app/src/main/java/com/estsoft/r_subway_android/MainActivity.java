@@ -100,13 +100,16 @@ public class MainActivity extends AppCompatActivity
     private Route normalRoute = null;
     private RelativeLayout passMarkerMother = null;
     private List<ImageView> routeMarkers = null;
+    private List<ImageView> transferMarkers = null;
     private TextView markerText = null;
     private List<ImageView> markerList = null;
 
     private TtfMapImageView mapView = null;
 
-    private float markerSize = 0;
+    private float normalMarkerSize = -1;
+    private float routeMarkerSize = -1;
 
+    LayoutInflater inflater = null;
 
     ExpandableListView expListView;
     SearchSetting searchSetting;
@@ -117,12 +120,16 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         //역이름 텍스트
         markerText = ((TextView) findViewById(R.id.markerText));
 
         //마커기준 사이즈
         Drawable image = ((ImageView)findViewById(R.id.marker)).getDrawable();
-        markerSize = (image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2;
+        normalMarkerSize = (image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2;
+        // f 값 작을수록 작아짐
+        routeMarkerSize = normalMarkerSize / 0.5f;
 
         // passMarkerMother Relative View reference
         passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
@@ -478,6 +485,22 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void setRouteMarkerPosition() {
+
+        if (routeMarkers == null || normalRoute == null) return;
+        for (int i = 0; i < routeMarkers.size(); i++) {
+//            if (i == 0 || i == routeMarkers.size() - 1) continue;
+            setImageMatrix(
+//                    routeMarkers.get(i - 1),
+                    routeMarkers.get(i),
+                    mapView.getMarkerRatio(),
+                    ((Station) normalRoute.getStationList().get(i)).getMapPoint()
+            );
+
+        }
+
+    }
+
     private void setImageMatrix(ImageView view, float markerRatio, PointF point) {
         if (view.getScaleType() != ImageView.ScaleType.MATRIX)
             view.setScaleType(ImageView.ScaleType.MATRIX);
@@ -486,12 +509,24 @@ public class MainActivity extends AppCompatActivity
         matrix.getValues(values);
         Drawable image = view.getDrawable();
 //        float magnification = markerRatio / ((image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2);
-        float magnification = markerRatio / markerSize ;
-        values[0] = values[4] = magnification;
-        float width = image.getIntrinsicWidth() * magnification;
-        float height = image.getIntrinsicHeight() * magnification;
-        values[2] = point.x - width / 2;
-        values[5] = point.y - height;
+        float magnification ;
+        float width = image.getIntrinsicWidth();
+        float height = image.getIntrinsicHeight();
+        if (view.getId()/1000 == 3){
+            magnification = markerRatio / routeMarkerSize;
+            width = width * magnification;
+            height = height * magnification;
+            values[0] = values[4] = magnification;
+            values[2] = point.x - width / 2;
+            values[5] = point.y - height / 2;
+        } else {
+            magnification = markerRatio / normalMarkerSize;
+            width = width * magnification;
+            height = height * magnification;
+            values[0] = values[4] = magnification;
+            values[2] = point.x - width / 2;
+            values[5] = point.y - height;
+        }
         matrix.setValues(values);
         view.setImageMatrix(matrix);
 
@@ -638,16 +673,95 @@ public class MainActivity extends AppCompatActivity
                 Log.d("RouteTest", "getRoute: " + ((Station) station).getStationName());
                 Log.d("RouteTest", "getRoute: " + ((Station) station).getMapPoint().toString());
             }
-            inflateRoute(normalRoute);
+            inflateRouteNew(normalRoute);
 
         } else {
             status = WAIT;
         }
     }
 
-    private void inflateRoute(Route route) {
+
+    private void inflateRouteNew(Route route) {
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        // RouteMarker Inflate
+        for (int i = 0; i < route.getStationList().size(); i++) {
+            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
+            if ( i != 0 && i != route.getStationList().size() -1 ) {
+                for ( TtfNode st : normalRoute.getTransferStations() ) {
+                    if (!(((Station) st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()))) {
+                        marker.setImageResource(R.drawable.blue_route_icon);
+                        marker.setAlpha(0.5f);
+                        marker.setId(3000 + i);
+                    } else {
+                        marker.setImageResource(R.drawable.transfer_marker);
+                        marker.setAlpha(1f);
+                        marker.setId(4000 + i);
+                    }
+                }
+            } else {
+                if ( i == 0 ) {
+                    marker.setImageResource(R.drawable.start_marker);
+                    marker.setId(5000 + i);
+                }
+                else {
+                    marker.setImageResource(R.drawable.end_marker);
+                    marker.setId(5000 + i);
+                }
+                marker.setAlpha(1f);
+
+                Log.d(TAG, "inflateRouteNew: " + marker.getId());
+
+            }
+            routeMarkers.add(marker);
+            marker.setLayoutParams(markerList.get(0).getLayoutParams());
+
+//            if (passMarkerMother != null) {
+//                passMarkerMother.addView(marker);
+//                marker.setVisibility(View.VISIBLE);
+//                routeMarkers.add(marker);
+//                //marker set Layout width, height using startMarker's LayoutParam
+//                marker.setLayoutParams(markerList.get(0).getLayoutParams());
+//
+//            }
+//
+//            Log.d(TAG, "inflateRoute: marker inflated." );
+//            // Route Circle Inflate
+//            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
+//            marker.setId(3000 + i);
+//            for ( TtfNode st : normalRoute.getTransferStations() ) {
+//                if ( ((Station)st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()) ) {
+//                    marker.setImageResource(R.drawable.transfer_marker);
+//                    marker.setId(4000 + i);
+//                }
+//            }
+//            if (passMarkerMother != null) {
+//                passMarkerMother.addView(marker);
+//                marker.setVisibility(View.VISIBLE);
+//                routeMarkers.add(marker);
+//                //marker set Layout width, height using startMarker's LayoutParam
+//                marker.setLayoutParams(markerList.get(0).getLayoutParams());
+//
+//            }
+        }
+
+        for ( int i = 3; i < 6; i ++ ) {
+            for ( ImageView mark : routeMarkers ) {
+                if (mark.getId() / 1000 == i) {
+                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                    passMarkerMother.addView(mark);
+                    mark.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        setRouteMarkerPosition();
+
+    }
+
+    private void inflateRoute(Route route) {
+        if (routeMarkers == null) routeMarkers = new ArrayList<>();
 
         for (int i = 0; i < route.getStationList().size(); i++) {
             Log.d(TAG, "inflateRoute: " + ((Station)route.getStationList().get(i)).getStationName());
@@ -660,12 +774,15 @@ public class MainActivity extends AppCompatActivity
 //            }
 
             Log.d(TAG, "inflateRoute: marker inflated." );
+            // Route Circle Inflate
             ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
-            for ( TtfNode st : normalRoute.getTransferStations() ) {
-                if (((Station)st).getStationID() == ((Station) route.getStationList().get(i)).getStationID())
-                    marker.setImageResource(R.drawable.transfer_marker);
-            }
             marker.setId(3000 + i);
+            for ( TtfNode st : normalRoute.getTransferStations() ) {
+                if ( ((Station)st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()) ) {
+                    marker.setImageResource(R.drawable.transfer_marker);
+                    marker.setId(4000 + i);
+                }
+            }
             if (passMarkerMother != null) {
                 passMarkerMother.addView(marker);
                 marker.setVisibility(View.VISIBLE);
@@ -676,24 +793,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
         setRouteMarkerPosition();
-
     }
 
-    private void setRouteMarkerPosition() {
 
-        if (routeMarkers == null || normalRoute == null) return;
-        for (int i = 0; i < routeMarkers.size(); i++) {
-//            if (i == 0 || i == routeMarkers.size() - 1) continue;
-            setImageMatrix(
-//                    routeMarkers.get(i - 1),
-                    routeMarkers.get(i),
-                    mapView.getMarkerRatio(),
-                    ((Station) normalRoute.getStationList().get(i + 1)).getMapPoint()
-            );
-
-        }
-
-    }
 
 
 

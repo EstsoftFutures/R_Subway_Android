@@ -2,5 +2,6 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:src="@drawable/pass_marker"
-    android:scaleType="matrix"/>
+    android:src="@drawable/blue_route_icon"
+    android:scaleType="matrix"
+    android:id="@+id/route_icon"/>
