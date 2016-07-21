@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -47,6 +48,9 @@ public class Station extends TtfNode {
     private List<Integer> exLaneNumbers;
 
     private RealmStation realmStation;
+
+    private Calendar arriveTime;
+    private boolean isExpress;
 
 
     public Station( RealmStation rst, PointF mapPoint, int conLevel ) {
@@ -359,6 +363,22 @@ public class Station extends TtfNode {
 
     public void setMapPoint(PointF mapPoint) {
         this.mapPoint = mapPoint;
+    }
+
+    public Calendar getArriveTime() {
+        return arriveTime;
+    }
+
+    public void setArriveTime(Calendar arriveTime) {
+        this.arriveTime = arriveTime;
+    }
+
+    public boolean isExpress() {
+        return isExpress;
+    }
+
+    public void setExpress(boolean express) {
+        isExpress = express;
     }
 
     @Override
