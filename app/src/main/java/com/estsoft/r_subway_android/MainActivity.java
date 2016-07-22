@@ -567,7 +567,7 @@ public class MainActivity extends AppCompatActivity
     /*
     BottomSheets
     */
-    public void runBottomSheet(List<Station> exStations, Route route) {
+    public void runBottomSheet(List<Station> exStations, RouteNew route) {
 //    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
@@ -687,15 +687,13 @@ public class MainActivity extends AppCompatActivity
             status = FULL;
             //RouteBottomSheet Call
 //            runBottomSheet(null, Route);
-            runBottomSheet(null, null);
             //MainActivity make Route Drawing
 
 //            normalRoute = routeController.getRoute(startStation, endStation);
             normalRoute = routeController.getRouteNew(startStation, endStation);
 
             inflateRouteNew(normalRoute);
-            routeController.getRouteNew(startStation, endStation);
-
+            runBottomSheet(null, routeController.getRouteNew(startStation, endStation));
         } else {
             status = WAIT;
         }
