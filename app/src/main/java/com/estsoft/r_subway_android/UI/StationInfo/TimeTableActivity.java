@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +89,7 @@ public class TimeTableActivity extends AppCompatActivity {
 
         Log.d(TAG, "last_upway:" + stationTimetable.getUpWay());
         Log.d(TAG, "last_downway:" + stationTimetable.getDownWay());
+
 
         timetableAdapter = new TimetableAdapter(getApplicationContext(), timeOrd);
         timetableRecyclerView.setAdapter(timetableAdapter);
