@@ -1,5 +1,6 @@
 package com.estsoft.r_subway_android.UI.StationInfo;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -278,6 +279,5 @@ public class TimeTableActivity extends AppCompatActivity {
         }
         return time;
     }
-
 
 }

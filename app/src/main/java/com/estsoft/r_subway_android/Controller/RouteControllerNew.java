@@ -1,20 +1,26 @@
 package com.estsoft.r_subway_android.Controller;
 
+import android.content.Context;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
+import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
+import com.estsoft.r_subway_android.UI.StationInfo.TimeTableActivity;
 import com.estsoft.r_subway_android.utility.ShortestPath;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by estsoft on 2016-07-18.
@@ -33,9 +39,12 @@ public class RouteControllerNew {
     private RouteNew lastRouteNew;
     private Calendar calendar;
 
-    public RouteControllerNew(StationController stationController, TtfMapImageView mapView) {
+    private Context context;
+
+    public RouteControllerNew(StationController stationController, TtfMapImageView mapView, Context context) {
         this.stationController = stationController;
         this.mapView = mapView;
+        this.context = context;
     }
 
     public RouteNew getRouteNew( Station start, Station end ) {
@@ -48,7 +57,9 @@ public class RouteControllerNew {
         List<Boolean> expressSectionIndex = new ArrayList<>();
 
         for ( List<Station> list : totalList ) {
-            if ( checkExpressLane(list) ) { // && checkFastestTimeIsExpress
+//            if ( checkExpressLane(list)
+//                    && checkFastestTimeIsExpress(list) ) {
+            if ( checkExpressLane(list) ) {
                 processedList.add(removeNotExpressStation(list));
                 expressSectionIndex.add(true);
             } else {
@@ -98,6 +109,7 @@ public class RouteControllerNew {
             Station st = stationController.getStation(path[i]);
             // setting times...
             if ( i == start ) {
+
                 calendar = getRealTimeAPI(st.getStationID());
             } else {
                 calendar = getTimeGap(path[i - 1], path[i]);
@@ -147,6 +159,82 @@ public class RouteControllerNew {
             if ( RouteNew.isExpressStation(st.getStationID()) ) removed.add( st );
         }
         return removed;
+    }
+
+    private boolean checkFastestTimeIsExpress( List<Station> list ) {
+
+        Station st = list.get(0);
+        Station next = list.get(list.size() - 1);
+
+        boolean isUpWay = false;
+        for ( Station link : st.getPrevStations() ) {
+            if (link.getStationID() == next.getStationID()) {
+                isUpWay = true;
+                break;
+            }
+        }
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        Object[] objs = getTimeTable(day, isUpWay, st);
+        ArrayList<HashMap<String, Object>>[] timeTable = (ArrayList<HashMap<String, Object>>[])objs[0];
+        String key = (String)objs[1];
+        hour = hour - 5;
+        if (hour < 0) hour = hour + 19;
+        ArrayList<HashMap<String, Object>> times = timeTable[hour];
+
+        for ( HashMap<String, Object> map :times ) {
+            String[] splt01 = ((String)map.get( key )).split("\\(");
+            if (Integer.parseInt(splt01[0]) > minute) {
+                return (Boolean)map.get("isExpress");
+            }
+        }
+        return false;
+    }
+    private Object[] getTimeTable(int day, boolean isUpWay, Station st) {
+        Object[] objs = new Object[2];
+        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(context , st.getStationID());
+        StationTimetable stt = jsonTimetableParser.getStationTimetable();
+        ArrayList<HashMap<String, Object>>[] timeTable;
+        String key;
+        switch ( day ) {
+            case 1 :
+                if (isUpWay) {
+                    timeTable = stt.getSunUpWayLdx();
+                    key = "sunUpWayLdx";
+                }
+                else {
+                    timeTable = stt.getSunDownWayLdx();
+                    key = "sunDownWayLdx";
+                }
+                break;
+            case 7 :
+                if (isUpWay) {
+                    timeTable = stt.getSatUpWayLdx();
+                    key = "satUpWayLdx";
+                }
+                else{
+                    timeTable = stt.getSatDownWayLdx();
+                    key = "satDownWayLdx";
+                }
+                break;
+            default:
+                if (isUpWay){
+                    timeTable = stt.getOrdUpWayLdx();
+                    key = "ordUpWayLdx";
+                }
+                else {
+                    timeTable = stt.getOrdDownWayLdx();
+                    key = "ordDownWayLdx";
+                }
+                break;
+        }
+        objs[0] = timeTable;
+        objs[1] = key;
+
+        Log.d(TAG, "getTimeTable: " + timeTable.getClass());
+        Log.d(TAG, "getTimeTable: " + key.getClass());
+        return timeTable;
     }
 
     private void setMapPoint( List<Station> list ) {

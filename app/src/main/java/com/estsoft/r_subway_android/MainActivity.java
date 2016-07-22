@@ -38,6 +38,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
+import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Route;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity
         }
 
 //        routeController = new RouteControllerNew( stationController, mapView );
-        routeController = new RouteControllerNew( stationController, mapView);
+        routeController = new RouteControllerNew( stationController, mapView, this );
 
 //        mapView.setSemiStationLaneNumber( stationController );
     }
@@ -782,8 +783,6 @@ public class MainActivity extends AppCompatActivity
         }
         setRouteMarkerPosition();
     }*/
-
-
 
 
 
