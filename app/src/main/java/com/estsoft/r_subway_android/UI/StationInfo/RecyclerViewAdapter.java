@@ -86,21 +86,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.stationInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 break;
 
 
             case 1:
-                holder.useInfo.setVisibility(View.GONE);
-                holder.curInfo.setVisibility(View.GONE);
+
                 holder.infoName.setText("시간표");
                 holder.goToTimetable.setVisibility(View.VISIBLE);
 
+                holder.useInfo.setVisibility(View.GONE);
+                holder.curInfo.setVisibility(View.GONE);
                 holder.stationInfo.setVisibility(View.GONE);
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 break;
 
             case 2:
-                holder.useInfo.setVisibility(View.GONE);
-                holder.curInfo.setVisibility(View.GONE);
+
                 holder.infoName.setText("역혼잡도");
 
                 if (stations.get(page).getPrevStations().size() == 0 || stations.get(page).getNextStations().size() == 0) {
@@ -110,55 +112,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     holder.stationInfo.setText("역혼잡도 정보");
                 }
                 holder.goToTimetable.setVisibility(View.GONE);
+                holder.useInfo.setVisibility(View.GONE);
+                holder.curInfo.setVisibility(View.GONE);
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 break;
 
 
             case 3:
-                holder.useInfo.setVisibility(View.GONE);
-                if (stations.get(page).getExStations() != null) {
-                    holder.curInfo.setVisibility(View.GONE);
-                    holder.goToTimetable.setVisibility(View.GONE);
-                    holder.infoName.setText("환승구역");
-                    switch (stations.get(page).getOffDoor()) {
-                        case 0:
-                            holder.stationInfo.setText("출입문 왼쪽");
-                            break;
-                        case 1:
-                            holder.stationInfo.setText("출입문 오른쪽");
-                            break;
-                        case 2:
-                            holder.stationInfo.setText("출입문 양쪽");
-                            break;
-                    }
-                }
 
-                break;
+                holder.infoName.setText("역 기본 정보");
 
-            case 4:
-                holder.curInfo.setVisibility(View.GONE);
-                holder.goToTimetable.setVisibility(View.GONE);
-                holder.stationInfo.setVisibility(View.GONE);
-
-                holder.infoName.setText("역내 시설정보");
-
-
-                switch (stations.get(page).getRestroom()) {
-                    case 1:
-                        holder.Restroom.setText("화장실: 안쪽");
-                        break;
-                    case 2:
-                        holder.Restroom.setText("화장실: 바깥쪽");
-                        break;
-                    case 3:
-                        holder.Restroom.setText("화장실: 환승역 연결");
-                        break;
-                    case 4:
-                        holder.Restroom.setText("화장실: 안쪽, 바깥쪽");
-                        break;
-                    default:
-                        holder.Restroom.setText("화장실: 없음");
-                        break;
-                }
                 switch (stations.get(page).getPlatform()) {
                     case 1:
                         holder.Platform.setText("플랫폼 위치: 중앙");
@@ -188,23 +151,49 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         break;
                 }
 
-                if (stations.get(page).getBicycleCount() == 0) {
-                    holder.BicycleCount.setText("자전거 보관소: 없음");
+
+                if (stations.get(page).getCrossOver() == 0) {
+                    holder.CrossOver.setText("반대편 횡단: 불가능");
+
                 } else {
-                    holder.BicycleCount.setText("자전거 보관소: 있음");
+                    holder.CrossOver.setText("반대편 횡단: 가능");
+
                 }
+
+                holder.stationDefaultInfo.setVisibility(View.VISIBLE);
+                holder.useInfo.setVisibility(View.GONE);
+                holder.curInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
+                break;
+
+            case 4:
+
+                holder.infoName.setText("역내 시설정보");
+
+                switch (stations.get(page).getRestroom()) {
+                    case 1:
+                        holder.Restroom.setText("화장실: 안쪽");
+                        break;
+                    case 2:
+                        holder.Restroom.setText("화장실: 바깥쪽");
+                        break;
+                    case 3:
+                        holder.Restroom.setText("화장실: 환승역 연결");
+                        break;
+                    case 4:
+                        holder.Restroom.setText("화장실: 안쪽, 바깥쪽");
+                        break;
+                    default:
+                        holder.Restroom.setText("화장실: 없음");
+                        break;
+                }
+
                 if (stations.get(page).getHandicapCount() == 0) {
                     holder.HandicapCount.setText("장애인 편의시설: 없음");
                 } else {
                     holder.HandicapCount.setText("장애인 편의시설: 있음");
                 }
-                if (stations.get(page).getParkingCount() == 0) {
-                    holder.ParkingCount.setText("환승 주차장: 없음");
 
-                } else {
-                    holder.ParkingCount.setText("환승 주차장: 있음");
-
-                }
                 if (stations.get(page).getMeetingPlace() == 0) {
                     holder.MeetingPlace.setText("만남의 장소: 없음 ");
                 } else {
@@ -215,34 +204,51 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 } else {
                     holder.CivilCount.setText("민원 안내: 있음");
                 }
-                if (stations.get(page).getCrossOver() == 0) {
-                    holder.CrossOver.setText("반대편 횡단: 불가능");
+
+                if (stations.get(page).getBicycleCount() == 0) {
+                    holder.BicycleCount.setText("자전거 보관소: 없음");
+                } else {
+                    holder.BicycleCount.setText("자전거 보관소: 있음");
+                }
+                if (stations.get(page).getParkingCount() == 0) {
+                    holder.ParkingCount.setText("환승 주차장: 없음");
 
                 } else {
-                    holder.CrossOver.setText("반대편 횡단: 가능");
+                    holder.ParkingCount.setText("환승 주차장: 있음");
 
                 }
 
+                if (stations.get(page).getPublicPlace() == 0) {
+                    holder.PublicPlace.setText("현장사무소: 없음");
+                } else {
+                    holder.PublicPlace.setText("현장사무소: 있음");
+                }
                 holder.Tel.setText(stations.get(page).getTel());
                 holder.Address.setText(stations.get(page).getAddress());
 
+                holder.curInfo.setVisibility(View.GONE);
+                holder.goToTimetable.setVisibility(View.GONE);
+                holder.stationInfo.setVisibility(View.GONE);
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.VISIBLE);
                 break;
 
             case 5:
 
+                holder.infoName.setText("급행열차");
+                holder.stationInfo.setText("급행열차정보");
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
-                holder.infoName.setText("급행열차");
-                holder.stationInfo.setText("급행열차정보");
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 break;
 
             case 6:
+                holder.infoName.setText("실시간 현재 역 정보");
+                holder.stationInfo.setText("역 내 정보 알림 필요시 남길 것 _ CRAWLING");
+                holder.stationDefaultInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
-                holder.infoName.setText("현재 역 정보");
-                holder.stationInfo.setText("역 내 정보 알림 필요시 남길 것 _ CRAWLING");
                 break;
 
         }
@@ -265,8 +271,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView preStation, curStation, nextStation, infoName, stationInfo;
         TextView preTime1, preTime2, nextTime1, nextTime2;
         ImageView goToTimetable;
-        GridLayout useInfo;
-        TextView Platform, MeetingPlace, Restroom, OffDoor, CrossOver, HandicapCount, ParkingCount, BicycleCount, CivilCount, Tel, Address;
+        GridLayout useInfo, stationDefaultInfo;
+        TextView Platform, MeetingPlace, Restroom, OffDoor, CrossOver, HandicapCount, ParkingCount, BicycleCount, CivilCount, Tel, Address, PublicPlace;
 
         public ViewHolder(View view) {
             super(view);
@@ -288,17 +294,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             goToTimetable = (ImageView) view.findViewById(R.id.timetable_next);
 
-            useInfo = (GridLayout) view.findViewById(R.id.station_useinfo);
+            stationDefaultInfo = (GridLayout) view.findViewById(R.id.station_default_info);
             Platform = (TextView) view.findViewById(R.id.platform);
-            MeetingPlace = (TextView) view.findViewById(R.id.meeting_place);
-            Restroom = (TextView) view.findViewById(R.id.restroom);
             OffDoor = (TextView) view.findViewById(R.id.offdoor);
             CrossOver = (TextView) view.findViewById(R.id.crossover);
+
+            useInfo = (GridLayout) view.findViewById(R.id.station_useinfo);
+            Restroom = (TextView) view.findViewById(R.id.restroom);
             HandicapCount = (TextView) view.findViewById(R.id.handicap_count);
+            MeetingPlace = (TextView) view.findViewById(R.id.meeting_place);
+            CivilCount = (TextView) view.findViewById(R.id.civil_count);
             ParkingCount = (TextView) view.findViewById(R.id.parking_count);
             BicycleCount = (TextView) view.findViewById(R.id.bicycle_count);
-            CivilCount = (TextView) view.findViewById(R.id.civil_count);
             Tel = (TextView) view.findViewById(R.id.tel);
+            PublicPlace = (TextView) view.findViewById(R.id.public_place);
             Address = (TextView) view.findViewById(R.id.address);
 
 

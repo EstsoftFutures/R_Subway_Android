@@ -52,7 +52,6 @@ public class JSONTimetableParser {
 
         this.stationTimetable = loadJSONTOVariable(json);
 
-        Log.d(TAG, "" + stationTimetable.getOrdDownWayLdx().toString());
 
 
     }
@@ -93,9 +92,6 @@ public class JSONTimetableParser {
         JsonPrimitive UpWay = result.getAsJsonPrimitive("UpWay");
         JsonPrimitive DownWay = result.getAsJsonPrimitive("DownWay");
 
-        Log.d(TAG, "Upway" + UpWay.toString());
-        Log.d(TAG, "Upway" + UpWay.getAsString());
-
         tempStationTimetable.setUpWay(UpWay.getAsString());
         tempStationTimetable.setDownWay(DownWay.getAsString());
         tempStationTimetable.setStationName(Name.getAsString());
@@ -125,7 +121,6 @@ public class JSONTimetableParser {
 
                 JsonPrimitive ordUpTimeValue = ordUpListValue.get(j).getAsJsonPrimitive();
                 Log.d(TAG, "ordListValue" + ordUpTimeValue.getAsString());
-//                Log.d("newone",""+ordUpWayLdx[i].toString());
                 Log.d("newone", "" + ordUpWayLdx[i]);
                 ordUpWayLdx[i].add(new HashMap<String, Object>());
                 ordUpWayLdx[i].get(j).put("ordUpWayLdx", ordUpTimeValue.getAsString());
@@ -164,14 +159,11 @@ public class JSONTimetableParser {
 
             }
 
-            Log.d(TAG, "ordupwayLDX: " + ordUpWayLdx[i].toString());
 
         }
 
-        Log.d(TAG, " " + ordUpWayLdx.toString());
         tempStationTimetable.setOrdUpWayLdx(ordUpWayLdx);
         tempStationTimetable.setOrdDownWayLdx(ordDownWayLdx);
-        Log.d(TAG, "upwayldxinstation: " + tempStationTimetable.getOrdUpWayLdx()[0].toString());
 
 
         //토요일
