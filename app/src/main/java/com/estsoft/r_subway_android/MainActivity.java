@@ -693,7 +693,7 @@ public class MainActivity extends AppCompatActivity
             normalRoute = routeController.getRouteNew(startStation, endStation);
 
             inflateRouteNew(normalRoute);
-            runBottomSheet(null, routeController.getRouteNew(startStation, endStation));
+            runBottomSheet(null, normalRoute);
         } else {
             status = WAIT;
         }

@@ -553,7 +553,7 @@
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1526.126" cy="1472.336" r="8.125"id="1531"name="미금"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1476.332" cy="1472.336" r="8.125"id="1532"name="오리"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1392.999" cy="1472.336" r="8.125"id="1533"name="보정"/>
-		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1435.666" cy="1472.336" r="8.125"id="1534"name="죽전"/>
+		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="0" cx="1435.666" cy="1472.336" r="8.125"id="1534"name="죽전"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1350.998" cy="1472.336" r="8.125"id="1535"name="구성"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1308.998" cy="1472.336" r="8.125"id="1536"name="신갈"/>
 		<circle fill="none" stroke="#FFCE36" stroke-miterlimit="10" cx="1265.751" cy="1479.461" r="8.125"id="1537"name="기흥"/>

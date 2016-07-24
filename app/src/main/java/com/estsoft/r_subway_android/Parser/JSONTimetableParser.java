@@ -39,7 +39,7 @@ public class JSONTimetableParser {
         this.context = context;
         this.stationID = stationID;
         String json = getJSONFromAsset(stationID);
-        Log.d(TAG, "" + json);
+//        Log.d(TAG, "" + json);
 
         for (int i = 0; i < 20; i++) {
             ordUpWayLdx[i] = new ArrayList<>();
@@ -63,8 +63,8 @@ public class JSONTimetableParser {
 
     public String getJSONFromAsset(int stationID) {
         String json = null;
-        Log.d(TAG, "stationID: " + stationID);
-        Log.d(TAG, "Location: " + "stationTimeList/" + String.valueOf(stationID) + ".json");
+//        Log.d(TAG, "stationID: " + stationID);
+//        Log.d(TAG, "Location: " + "stationTimeList/" + String.valueOf(stationID) + ".json");
         try {
             InputStream is = context.getAssets().open("stationTimeList/" + String.valueOf(stationID) + ".json");
             int size = is.available();
@@ -82,7 +82,7 @@ public class JSONTimetableParser {
     public StationTimetable loadJSONTOVariable(String json) {
 
         StationTimetable tempStationTimetable = new StationTimetable();
-        Log.d(TAG, "LoadMethod: " + json);
+//        Log.d(TAG, "LoadMethod: " + json);
         JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
 
 
@@ -105,7 +105,7 @@ public class JSONTimetableParser {
             JsonObject ordTimeTableObject = ordTimetable.get(i).getAsJsonObject();
             // 00시
             JsonObject ordUpList = ordTimeTableObject.get("UPList").getAsJsonObject();
-            Log.d(TAG, "ordUpList:trueisnull " + ordUpList.isJsonNull());
+//            Log.d(TAG, "ordUpList:trueisnull " + ordUpList.isJsonNull());
             JsonArray ordUpListValue = ordUpList.get("Value").getAsJsonArray();
             JsonObject ordDownList = ordTimeTableObject.get("DOWNList").getAsJsonObject();
             JsonArray ordDownListValue = ordDownList.get("Value").getAsJsonArray();
@@ -120,7 +120,7 @@ public class JSONTimetableParser {
             for (int j = 0; j < ordUpListValue.size(); j++) {
 
                 JsonPrimitive ordUpTimeValue = ordUpListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "ordListValue" + ordUpTimeValue.getAsString());
+//                Log.d(TAG, "ordListValue" + ordUpTimeValue.getAsString());
                 Log.d("newone", "" + ordUpWayLdx[i]);
                 ordUpWayLdx[i].add(new HashMap<String, Object>());
                 ordUpWayLdx[i].get(j).put("ordUpWayLdx", ordUpTimeValue.getAsString());
@@ -135,13 +135,13 @@ public class JSONTimetableParser {
                     }
 
                 }
-                Log.d(TAG, "OrdExpressIsTrue: " + ordUpWayLdx[i].get(j).get("isExpress"));
+//                Log.d(TAG, "OrdExpressIsTrue: " + ordUpWayLdx[i].get(j).get("isExpress"));
             }
 
             for (int j = 0; j < ordDownListValue.size(); j++) {
 //급행 찾기
                 JsonPrimitive ordDownTimeValue = ordDownListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "ordListValue" + ordDownTimeValue.getAsString());
+//                Log.d(TAG, "ordListValue" + ordDownTimeValue.getAsString());
 
                 ordDownWayLdx[i].add(new HashMap<String, Object>());
                 ordDownWayLdx[i].get(j).put("ordDownWayLdx", ordDownTimeValue.getAsString());
@@ -187,7 +187,7 @@ public class JSONTimetableParser {
             // 00분
             for (int j = 0; j < satUpListValue.size(); j++) {
                 JsonPrimitive satUpTimeValue = satUpListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "satListValue" + satUpTimeValue.getAsString());
+//                Log.d(TAG, "satListValue" + satUpTimeValue.getAsString());
 
                 satUpWayLdx[i].add(new HashMap<String, Object>());
                 satUpWayLdx[i].get(j).put("satUpWayLdx", satUpTimeValue.getAsString());
@@ -206,7 +206,7 @@ public class JSONTimetableParser {
 
             for (int j = 0; j < satDownListValue.size(); j++) {
                 JsonPrimitive satDownTimeValue = satDownListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "satListValue" + satDownTimeValue.getAsString());
+//                Log.d(TAG, "satListValue" + satDownTimeValue.getAsString());
 
                 satDownWayLdx[i].add(new HashMap<String, Object>());
                 satDownWayLdx[i].get(j).put("satDownWayLdx", satDownTimeValue.getAsString());
@@ -248,7 +248,7 @@ public class JSONTimetableParser {
             // 00분
             for (int j = 0; j < sunUpListValue.size(); j++) {
                 JsonPrimitive sunUpTimeValue = sunUpListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "sunListValue" + sunUpTimeValue.getAsString());
+//                Log.d(TAG, "sunListValue" + sunUpTimeValue.getAsString());
                 sunUpWayLdx[i].add(new HashMap<String, Object>());
                 sunUpWayLdx[i].get(j).put("sunUpWayLdx", sunUpTimeValue.getAsString());
                 sunUpWayLdx[i].get(j).put("isExpress", false);
@@ -268,7 +268,7 @@ public class JSONTimetableParser {
 
             for (int j = 0; j < sunDownListValue.size(); j++) {
                 JsonPrimitive sunDownTimeValue = sunDownListValue.get(j).getAsJsonPrimitive();
-                Log.d(TAG, "sunDownListValue" + sunDownTimeValue.getAsString());
+//                Log.d(TAG, "sunDownListValue" + sunDownTimeValue.getAsString());
                 sunDownWayLdx[i].add(new HashMap<String, Object>());
                 sunDownWayLdx[i].get(j).put("sunDownWayLdx", sunDownTimeValue.getAsString());
                 sunDownWayLdx[i].get(j).put("isExpress", false);
