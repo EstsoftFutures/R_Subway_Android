@@ -85,7 +85,7 @@ public class RouteControllerNew {
         Log.d(TAG, "debugSectionCalendars: _________________________________________________________");
     }
     private void debugGetNoneExRemovedSection(List<Station> section ) {
-        Log.d(TAG, "debugTerminals: " + section.get(0).getStationName() + " to " + section.get(section.size() - 1).getStationName() );
+        Log.d(TAG, "debugGetNoneExRemovedSection: " + section.get(0).getStationName() + " to " + section.get(section.size() - 1).getStationName() );
         for ( int i = 0; i < section.size(); i ++ ) {
             Log.d(TAG, "debugGetNoneExRemovedSection: " + section.get(i).getStationName());
         }
@@ -228,7 +228,7 @@ public class RouteControllerNew {
                 // adding done
                 newCal = getTimeTable( station, terminals, isPrevWay, sharedTime );
             } else {
-                newCal =  getTimeGap( section.get( i - 1).getIndex(), section.get(i).getIndex(), sharedTime ) ;
+                newCal =  getTimeGap( section.get( i - 1 ).getIndex(), section.get(i).getIndex(), sharedTime ) ;
             }
             sectionCalendars.add( newCal );
             sharedTime = newCal;
@@ -300,11 +300,15 @@ public class RouteControllerNew {
 
         int minute = newCal.get(Calendar.MINUTE);
 
+//        Log.d(TAG, "getTimeTable: " + timeList.size());
         for ( int i = 0; i < timeList.size(); i ++ ) {
             HashMap<String, Object> timeMap = timeList.get(i);
             String timeString[] = ((String)timeMap.get( key )).split("\\(");
             int timeMinute = Integer.parseInt(timeString[0]);
+            Log.d(TAG, "getTimeTable: " + timeMinute);
             String terminalName = timeString[1].replace(")", "");
+            Log.d(TAG, "getTimeTable: " + terminalName );
+            Log.d(TAG, "checkTerminalName: " + station.getStationName());
             if ( timeMinute >= minute && checkTerminalName(terminals, terminalName)) {
                 newCal.set(Calendar.MINUTE, timeMinute);
                 // 전역변수 isExpress
@@ -322,7 +326,10 @@ public class RouteControllerNew {
     }
     private Boolean checkTerminalName ( List<Station> terminals, String timeTerminalName ) {
         for ( int i = 0; i < terminals.size(); i ++ ) {
+            Log.d(TAG, "checkTerminalName: " + timeTerminalName + " finding " + terminals.get(i).getStationName());
             String terminalName = terminals.get(i).getStationName();
+            String[] tmp = terminalName.split("\\(");
+            terminalName = tmp[0];
             if (terminalName.equals(timeTerminalName)) return true;
         }
         return false;
