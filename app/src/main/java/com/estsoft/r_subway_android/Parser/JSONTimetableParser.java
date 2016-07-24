@@ -92,8 +92,17 @@ public class JSONTimetableParser {
         JsonPrimitive UpWay = result.getAsJsonPrimitive("UpWay");
         JsonPrimitive DownWay = result.getAsJsonPrimitive("DownWay");
 
-        tempStationTimetable.setUpWay(UpWay.getAsString());
-        tempStationTimetable.setDownWay(DownWay.getAsString());
+        if (UpWay != null) {
+            tempStationTimetable.setUpWay(UpWay.getAsString()+" 방향");
+        } else {
+            tempStationTimetable.setUpWay(" ");
+        }
+        if (DownWay != null) {
+            tempStationTimetable.setDownWay(DownWay.getAsString()+" 방향");
+        } else {
+            tempStationTimetable.setDownWay(" ");
+        }
+
         tempStationTimetable.setStationName(Name.getAsString());
 
         //평일
