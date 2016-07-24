@@ -10,6 +10,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
+import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.utility.ShortestPath;
 
 import java.text.SimpleDateFormat;
@@ -32,21 +33,15 @@ public class RouteControllerNew {
     StationController stationController = null;
     TtfMapImageView mapView = null;
 
-    private Route lastRoute ;
-    private Station lastStation;
-
     private RouteNew lastRouteNew;
-    private Calendar calendar;
-
-    private List<String> tailStationNames;
-    private List<Station> tailStations;
-//    private List<List<Station>> sectionTerminals;
 
     private Context context;
 
     private Calendar inputCalendar;
 
     private Boolean isExpress;
+
+    private boolean[] activeLaneArr = null;
 
 
     public RouteControllerNew(StationController stationController, TtfMapImageView mapView, Context context) {
@@ -104,8 +99,19 @@ public class RouteControllerNew {
         }
         Log.d(TAG, "debugMapPoints: _______________________________________________________");
     }
+    private void debugActiveLanes () {
+        for ( int i = 0; i < SearchSetting.getActiveLanes().size(); i ++ ) {
+            Log.d(TAG, "debugActiveLanes: " + SearchSetting.getActiveLanes().get(i).getName() +
+                    " /active? " + activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()]);
+        }
+    }
 
     public RouteNew getRouteNew( Station start, Station end ) {
+
+        //SearchSetting
+        initActiveLaneArr();
+        debugActiveLanes();
+        //SearchSetting done
 
         // raw section making
         int[] path = ShortestPath.getShortestPathByIntArray(stationController.getAdj(), start, end);
@@ -449,245 +455,13 @@ public class RouteControllerNew {
         return listPath;
     }
 
+    private void initActiveLaneArr() {
+        if ( activeLaneArr == null )  activeLaneArr = new boolean[112]; // false init
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private Object[] checkNextTrainByTimeTable( List<Station> section, List<Station> sectionTerminals, boolean isUpWay ) {
-
-        Object[] objects = new Object[2];
-        Station curStation = section.get(0);
-        Calendar stationTime = curStation.getArriveTime();
-        int day = stationTime.get(Calendar.DAY_OF_WEEK);
-        int hour = stationTime.get(Calendar.HOUR_OF_DAY);
-
-        int minute = stationTime.get(Calendar.MINUTE);
-
-        Object[] objs = getTimeTable(day, isUpWay, curStation);
-        ArrayList<HashMap<String, Object>>[] timeTable = (ArrayList<HashMap<String, Object>>[])objs[0];
-        String key = (String)objs[1];
-
-        Calendar scheduledTime ;
-        int hourIndex = 0;
-        do {
-            hourIndex = hour - 5;
-            if (hourIndex < 0) hourIndex = hourIndex + 19;
-            ArrayList<HashMap<String, Object>> times = timeTable[hourIndex];
-
-            scheduledTime = getFastestSchedule(times, key, curStation.getArriveTime(), sectionTerminals );
-//            if (hour == 24) hour = 0;
-//            else hour = hour + 1;
-            hour = hour + 1;
-            if (hour == 25) hour = 5;
-            curStation.getArriveTime().set( Calendar.HOUR_OF_DAY, hour );
-            curStation.getArriveTime().set( Calendar.MINUTE, 0 );
-            Log.d(TAG, "checkNextTrainByTimeTable: hour = " + hour + " /hourIndex = " + hourIndex );
-        } while (hour < 25 && scheduledTime == null );
-
-        objects[0] = scheduledTime;
-        if (scheduledTime == null) Log.d(TAG, "checkNextTrainByTimeTable: NULL ");
-        objects[1] = isExpress;
-
-        return objects;
-    }
-    private Calendar getFastestSchedule( ArrayList<HashMap<String, Object>> times, String key, Calendar stationArrTime, List<Station> sectionTerminals  ) {
-
-        int minute = stationArrTime.get(Calendar.MINUTE);
-
-        boolean quitFlag = false;
-        for ( HashMap<String, Object> map : times ) {
-            String[] splt01 = ((String) map.get(key)).split("\\(");
-            splt01[1] = splt01[1].replace(")", "");
-            Log.d(TAG, "checkNextTrainByTimeTable: " + splt01[1] + splt01[0] + " /curTime = " + minute + " /isEx ? " + (Boolean) map.get("isExpress"));
-            if (Integer.parseInt(splt01[0]) > minute) {
-                for (Station terminal : sectionTerminals) {
-                    if (splt01[1].equals(terminal.getStationName())) {
-                        minute = Integer.parseInt(splt01[0]);
-                        isExpress = (Boolean) map.get("isExpress");
-                        Calendar cal ;
-                        cal = (Calendar)stationArrTime.clone();
-                        cal.set( Calendar.MINUTE, minute );
-                        return  cal;
-                    }
-                }
-            }
+        for (int i = 0; i < SearchSetting.getActiveLanes().size(); i ++) {
+            activeLaneArr[ SearchSetting.getActiveLanes().get(i).getNumber() ] =
+                    SearchSetting.getActiveLanes().get(i).isActive();
         }
-        return null;
-    }
-
-    // Section Station init... first time setting and listing
-    private List<List<Station>> getListOfStationList( int[] path ) {
-        List<List<Station>> returnList = new ArrayList<>();
-        int startIndex = 0;
-        for ( int i = 0; i < path.length - 1; i ++ ) {
-            Station curSt = stationController.getStation( path[i] );
-            Station nextSt = stationController.getStation( path[i + 1] );
-            if ( i != 0 && curSt.getStationName().equals( nextSt.getStationName() )) {
-                returnList.add( getStationListBeforeTransfer( path, startIndex, i ) );
-                startIndex = i + 1;
-            } else if ( i == 0 && curSt.getStationName().equals( nextSt.getStationName() ) ){
-                startIndex = i + 1;
-            } else if ( i == path.length - 2 && curSt.getStationName().equals( nextSt.getStationName() )){
-                returnList.add( getStationListBeforeTransfer(path, startIndex, path.length - 2 ) );
-                return returnList;
-            } else if ( i == path.length - 2 ){
-                returnList.add( getStationListBeforeTransfer(path, startIndex, path.length - 1) );
-                return returnList;
-            }
-        }
-        return returnList;
-    }
-    private List<Station> getStationListBeforeTransfer( int[] path, int start, int end ) {
-        List<Station> list = new ArrayList<>();
-        for (int i = start; i <= end; i ++ ) {
-            Station st = stationController.getStation(path[i]);
-            // setting times...
-            if ( i == start ) {
-                calendar = getRealTimeAPI(st.getStationID());
-            } else {
-//                calendar = getTimeGap(path[i - 1], path[i]);
-            }
-            st.setArriveTime(calendar);
-            // end of setting times..
-            list.add( st );
-        }
-        // adding Transfer time..
-        calendar = getTransferTime( end );
-
-        return list;
-    }
-//    private Calendar getTimeGap( int stationIndex, int nextStationIndex ) {
-//        ArrayList<Pair<Station, Integer>>[] adj = stationController.getAdj();
-//        ArrayList<Pair<Station, Integer>> pairs = adj[stationIndex];
-//
-//        Calendar cal = (Calendar)calendar.clone();
-//        for ( Pair<Station, Integer> pair : pairs ) {
-//            if (pair.first.getIndex() == nextStationIndex ) {
-//                int edgeCost = pair.second;
-//                cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) +  Math.round(edgeCost / 6) );
-//                return cal;
-//            }
-//        }
-//        return cal;
-//    }
-    private Calendar getTransferTime( int stationIndex ) {
-        Calendar cal = (Calendar)calendar.clone();
-        cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + 5);
-        return cal;
-    }
-    private Calendar getRealTimeAPI( int stationID ) {
-        return (Calendar)calendar.clone();
-    }
-
-    private boolean checkExpressLane( List<Station> list ) {
-        if (RouteNew.isExpressStation(list.get(0).getStationID())
-                && RouteNew.isExpressStation(list.get(list.size() - 1).getStationID())) {
-            return true;
-        }
-        return false;
-    }
-    private List<Station> removeNotExpressStation( List<Station> list ) {
-        List<Station> removed = new ArrayList<>();
-        for ( Station st : list ) {
-            if ( RouteNew.isExpressStation(st.getStationID()) ) removed.add( st );
-        }
-        return removed;
-    }
-
-    // Tail Stations adding to class member tailStations
-    private void addTailStationsName ( List<Station> list, boolean isPrevWay ) {
-        //New init.
-        tailStationNames = new ArrayList<>();
-        tailStations = new ArrayList<>();
-        if ( list.size() == 2 ) recursiveAdd( list.get( list.size() - 2 ), isPrevWay ); // Current Station 의 바로 다음역도 체크
-        else recursiveAdd( list.get( list.size() - 1 ), isPrevWay );
-
-    }
-    private void recursiveAdd( Station st, boolean isPrevWay ) {
-        List<Station> nextPrevStations = isPrevWay ? st.getPrevStations() : st.getNextStations();
-        for ( Station npStation : nextPrevStations ) {
-            tailStationNames.add(npStation.getStationName());
-            tailStations.add(npStation);
-            Station deepStation = stationController.getStation(npStation.getIndex());
-
-            if ( npStation.getStationID() == 211 ) return; // 성수역에서는 prev 로 바꿔줌
-            if ( npStation.getStationID() == 615 ) return; // 응암역 제거 ? 6호선 구산 역 제거
-            recursiveAdd( deepStation, isPrevWay );
-        }
-    }
-
-    private boolean getIsPrevWay(List<Station> list ) {
-        Station st = list.get(0);
-        Station next;
-        if ( list.size() == 1 ) {
-            return false;
-        } else {
-            next = list.get(1);
-        }
-        for ( Station link : st.getPrevStations() ) {
-            if (link.getStationID() == next.getStationID()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Object[] getTimeTable(int day, boolean isUpWay, Station st) {
-        Object[] objs = new Object[2];
-        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(context , st.getStationID());
-        StationTimetable stt = jsonTimetableParser.getStationTimetable();
-        ArrayList<HashMap<String, Object>>[] timeTable;
-        String key;
-        switch ( day ) {
-            case 1 :
-                if (isUpWay) {
-                    timeTable = stt.getSunUpWayLdx();
-                    key = "sunUpWayLdx";
-                }
-                else {
-                    timeTable = stt.getSunDownWayLdx();
-                    key = "sunDownWayLdx";
-                }
-                break;
-            case 7 :
-                if (isUpWay) {
-                    timeTable = stt.getSatUpWayLdx();
-                    key = "satUpWayLdx";
-                }
-                else{
-                    timeTable = stt.getSatDownWayLdx();
-                    key = "satDownWayLdx";
-                }
-                break;
-            default:
-                if (isUpWay){
-                    timeTable = stt.getOrdUpWayLdx();
-                    key = "ordUpWayLdx";
-                }
-                else {
-                    timeTable = stt.getOrdDownWayLdx();
-                    key = "ordDownWayLdx";
-                }
-                break;
-        }
-        objs[0] = timeTable;
-        objs[1] = key;
-
-        Log.d(TAG, "getTimeTable: " + timeTable);
-        Log.d(TAG, "getTimeTable: " + key);
-        return objs;
     }
 
 }

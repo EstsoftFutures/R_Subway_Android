@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
+import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.SearchListAdapter;
 import com.estsoft.r_subway_android.localization.KoreanTextMatcher;
 
@@ -148,6 +149,21 @@ public class InteractionListener implements
         } else {
             check.setVisibility(View.INVISIBLE);
         }
+
+        switch ( groupPosition ) {
+            case 0 :
+                SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
+                break;
+            case 1 :
+                SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
+                break;
+            case 2 :
+                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
+                break;
+            default:
+                break;
+        }
+        SearchSetting.checkSettings();
         return false;
     }
 
@@ -163,6 +179,12 @@ public class InteractionListener implements
         } else {
             check.setVisibility(View.VISIBLE);
         }
+
+
+        SearchSetting.getActiveLanes().get(childPosition).setActive( !SearchSetting.getActiveLanes().get(childPosition).isActive()  );
+
+        SearchSetting.checkSettings();
+
 
         return true;
     }
