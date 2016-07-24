@@ -1,8 +1,11 @@
 package com.estsoft.r_subway_android.UI.Settings;
 
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +18,14 @@ public class SearchSetting {
     List<String> childList;
     Map<String, List<String>> settingCollection;
 
-
     public SearchSetting() {
         createGroupList();
         createCollection();
+
+        avoidCongestStations = false;
+        avoidDangerStations = false;
+        activeExpressOnly = false;
+        activeLanes = makeTmpLaneList();
 
     }
 
@@ -62,6 +69,76 @@ public class SearchSetting {
 
         for (String settingcontent : settingChild) {
             childList.add(settingcontent);
+        }
+    }
+
+
+
+    //Inkiu
+    // 역별 혼잡도
+    // ?
+    static boolean avoidCongestStations ;
+
+    // 위험역 ?
+    static  boolean avoidDangerStations ;
+
+    // 급행열차만
+    static boolean activeExpressOnly ;
+
+    // 검색노선 설정
+    static List< Lane > activeLanes ;
+
+    private static List< Lane > makeTmpLaneList(){
+        List< Lane > tmp = new ArrayList<>();
+
+        tmp.add( new Lane("1호선", 1, true) );
+        tmp.add( new Lane("2호선", 2, true) );
+        tmp.add( new Lane("3호선", 3, true) );
+        tmp.add( new Lane("4호선", 4, true) );
+        tmp.add( new Lane("5호선", 5, true) );
+        tmp.add( new Lane("6호선", 6, true) );
+        tmp.add( new Lane("7호선", 7, true) );
+        tmp.add( new Lane("8호선", 8, true) );
+        tmp.add( new Lane("9호선", 9, true) );
+        tmp.add( new Lane("분당선", 100, true) ); // 분당선
+        tmp.add( new Lane("공항", 101, true) ); // 공항철도
+        tmp.add( new Lane("자기부상", 102, true) ); // 자기부상
+        tmp.add( new Lane("경의중앙선", 104, true) ); // 경의중앙
+        tmp.add( new Lane("에버라인", 107, true) ); // 에버라인
+        tmp.add( new Lane("경춘선", 108, true) ); // 경춘선
+        tmp.add( new Lane("신분당선", 109, true) ); // 신분당선
+        tmp.add( new Lane("의정부", 110, true) ); // 의정부경전철
+        tmp.add( new Lane("수인선", 111, true) ); // 수인선
+        tmp.add( new Lane("인천", 21, true) ); // 인천1호선
+
+        return  tmp;
+    }
+
+    static class Lane {
+        String name;
+        int number;
+        boolean active;
+
+        public Lane(String name, int number, boolean active) {
+            this.name = name;
+            this.number = number;
+            this.active = active;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
         }
     }
 
