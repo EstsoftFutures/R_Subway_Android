@@ -109,7 +109,7 @@ public class RouteControllerNew {
     public RouteNew getRouteNew( Station start, Station end ) {
 
         //SearchSetting
-        initActiveLaneArr();
+        initializeSettings();
         debugActiveLanes();
         //SearchSetting done
 
@@ -191,6 +191,7 @@ public class RouteControllerNew {
 
 //        return new RouteNew( new ArrayList<List<Station>>(), null );
     }
+
 
     private void setMapPoint( List<Station> section ) {
         for ( Station st : section ) {
@@ -469,6 +470,10 @@ public class RouteControllerNew {
             activeLaneArr[ SearchSetting.getActiveLanes().get(i).getNumber() ] =
                     SearchSetting.getActiveLanes().get(i).isActive();
         }
+    }
+
+    private void initializeSettings(){
+        initActiveLaneArr();
     }
 
 }
