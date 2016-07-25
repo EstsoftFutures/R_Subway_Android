@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
@@ -29,6 +30,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     public ViewHolder onCreateViewHolder(ViewGroup parent , int viewType) {
         final LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
         final View sView = mInflater.inflate(R.layout.route_info_item, parent, false);
+
+        LinearLayout ll = (LinearLayout)sView.findViewById( R.id.mother01 );
+        LayoutInflater sInflater = LayoutInflater.from( sView.getContext() );
+        sInflater.inflate( R.layout.test01, ll, true );
+//        sInflater.inflate( R.layout.search_list_item_transfer, ll, false );
+
         return new ViewHolder(sView);
     }
 
@@ -46,11 +53,15 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView vName, vSex, vId, vAge;
-
+        LinearLayout ll;
         public ViewHolder(View view) {
             super(view);
             vId = (TextView) view.findViewById(R.id.route_list_id);
             vName = (TextView) view.findViewById(R.id.route_list_name);
+            ll = (LinearLayout) view.findViewById(R.id.tmp);
+
+            ((TextView)ll.findViewById(R.id.textView09)).setText("TEST!!!!!!!");
+
             view.setOnClickListener(this);
         }
 
