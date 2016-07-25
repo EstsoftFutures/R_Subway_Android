@@ -623,7 +623,7 @@ public class MainActivity extends AppCompatActivity
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
-            viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager()));
+            viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager(),route));
 //        viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager

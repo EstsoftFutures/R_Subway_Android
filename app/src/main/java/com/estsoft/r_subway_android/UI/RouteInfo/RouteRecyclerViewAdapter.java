@@ -1,16 +1,22 @@
 package com.estsoft.r_subway_android.UI.RouteInfo;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
+import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -18,49 +24,182 @@ import java.util.List;
  */
 public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecyclerViewAdapter.ViewHolder> {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+
     private final FragmentActivity mActivity;
     private final List<Car> mUserDetails = new ArrayList<>();
     OnItemClickListener mItemClickListener;
-    public RouteRecyclerViewAdapter(FragmentActivity mActivity) {
+    RouteNew route;
+
+    public RouteRecyclerViewAdapter(FragmentActivity mActivity, RouteNew route) {
         this.mActivity = mActivity;
-        createUserDetails();
+        this.route = route;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent , int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
         final View sView = mInflater.inflate(R.layout.route_info_item, parent, false);
 
-        LinearLayout ll = (LinearLayout)sView.findViewById( R.id.mother01 );
-        LayoutInflater sInflater = LayoutInflater.from( sView.getContext() );
-        sInflater.inflate( R.layout.test01, ll, true );
-//        sInflater.inflate( R.layout.search_list_item_transfer, ll, false );
+        LinearLayout ll1 = (LinearLayout) sView.findViewById(R.id.mother01);
+        LayoutInflater sInflater1 = LayoutInflater.from(sView.getContext());
+        sInflater1.inflate(R.layout.layout_route_first, ll1, true);
 
         return new ViewHolder(sView);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder , int position) {
-        holder.vId.setText("ID: Route" + mUserDetails.get(position).getId());
-        holder.vName.setText("Name: Route" + mUserDetails.get(position).getName());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        switch (position) {
+            case 0:
+                holder.routeStartStation.setText("wowwow case 0");
+                break;
+            case 1:
+                holder.routeStartStation.setText("wowwow case 1");
+                break;
+            case 2:
+                if (position > 1 && route.getSections().size() > position - 2) {
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    params.setMargins(10, 10, 10, 10);
+
+
+                    LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
+                    LayoutInflater sInflater1 = LayoutInflater.from(holder.itemView.getContext());
+                    sInflater1.inflate(R.layout.layout_route_first, ll1, true);
+                    for (int i = 0; i < route.getSections().size(); i++) {
+
+                        LinearLayout llchild1 = new LinearLayout(mActivity);
+                        llchild1.setOrientation(LinearLayout.VERTICAL);
+
+                        LinearLayout llchild2 = new LinearLayout(mActivity);
+                        llchild2.setOrientation(LinearLayout.HORIZONTAL);
+
+                        ImageView routeLaneStart = new ImageView(mActivity);
+                        routeLaneStart.setImageResource(R.drawable.lane1);
+                        routeLaneStart.setLayoutParams(params);
+
+                        TextView routeStartStation = new TextView(mActivity);
+                        routeStartStation.setTextColor(Color.BLACK);
+                        routeStartStation.setText("" + route.getSections().get(i).get(0).getStationName());
+                        routeLaneStart.setLayoutParams(params);
+                        TextView routeNumStations = new TextView(mActivity);
+                        routeNumStations.setTextColor(Color.BLACK);
+                        routeNumStations.setText("" + route.getSections().get(i).size() + "개 역");
+                        Calendar startTime = route.getSections().get(i).get(0).getArriveTime();
+                        routeNumStations.setLayoutParams(params);
+                        TextView routeStartTime = new TextView(mActivity);
+                        routeStartTime.setTextColor(Color.BLACK);
+                        routeStartTime.setText(sdf.format(startTime.getTime()));
+                        routeStartTime.setLayoutParams(params);
+
+
+                        llchild2.addView(routeLaneStart);
+                        llchild1.addView(routeStartStation);
+                        llchild1.addView(routeNumStations);
+                        llchild2.addView(llchild1);
+                        llchild2.addView(routeStartTime);
+                        ll1.addView(llchild2);
+                        for (int j = 1; j < route.getSections().get(i).size() - 1; j++) {
+                            LinearLayout llchild = new LinearLayout(mActivity);
+                            llchild.setOrientation(LinearLayout.HORIZONTAL);
+
+
+                            ImageView throughImg = new ImageView(mActivity);
+                            throughImg.setImageResource(R.drawable.lane1);
+                            throughImg.setLayoutParams(params);
+
+                            TextView throughStationName = new TextView(mActivity);
+                            throughStationName.setText("" + route.getSections().get(i).get(j).getStationName());
+                            throughStationName.setTextColor(Color.BLACK);
+                            throughStationName.setLayoutParams(params);
+                            TextView throughStationTime = new TextView(mActivity);
+                            Calendar throughStationArrive = route.getSections().get(i).get(j).getArriveTime();
+                            throughStationTime.setTextColor(Color.BLACK);
+                            Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
+                            throughStationTime.setText(sdf.format(throughStationArrive.getTime()));
+                            throughStationTime.setLayoutParams(params);
+                            llchild.addView(throughImg);
+                            llchild.addView(throughStationName);
+                            llchild.addView(throughStationTime);
+
+
+                            ll1.addView(llchild);
+                            //holder.routeThroughStation.setText(holder.routeThroughStation.getText()+route.getSections().get(position).get(i).getStationName());
+
+                        }
+                        LinearLayout llchild3 = new LinearLayout(mActivity);
+                        llchild3.setOrientation(LinearLayout.HORIZONTAL);
+                        params.setMargins(10, 10, 10, 20);
+
+                        TextView routeArriveStationName = new TextView(mActivity);
+                        routeArriveStationName.setText("" + route.getSections().get(i).get(route.getSections().get(i).size() - 1).getStationName());
+                        routeArriveStationName.setTextColor(Color.BLACK);
+                        routeArriveStationName.setLayoutParams(params);
+
+                        Calendar arriveTime = route.getSections().get(i).get(route.getSections().get(i).size() - 1).getArriveTime();
+                        TextView routeArriveTime = new TextView(mActivity);
+                        routeArriveTime.setTextColor(Color.BLACK);
+                        routeArriveTime.setText(sdf.format(arriveTime.getTime()));
+                        routeArriveTime.setLayoutParams(params);
+                        ImageView routeArriveImageView = new ImageView(mActivity);
+                        routeArriveImageView.setImageResource(R.drawable.lane1);
+                        routeArriveImageView.setLayoutParams(params);
+
+                        llchild3.addView(routeArriveImageView);
+                        llchild3.addView(routeArriveStationName);
+                        llchild3.addView(routeArriveTime);
+                        ll1.addView(llchild3);
+
+                    }
+                }
+                break;
+            case 3:
+                holder.routeStartStation.setText("wowwow case 3");
+                break;
+
+        }
+
+
     }
 
     @Override
     public int getItemCount() {
-        return mUserDetails.size();
+        return 4;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView vName, vSex, vId, vAge;
         LinearLayout ll;
+        ImageView routeLaneStart, routeShrinked, routeExpanded;
+        TextView routeStartStation, routeNumStations, routeStartTime;
+
+        ImageView routeThroughLane;
+        TextView routeThroughStation, routeThroughTime;
+
+        ImageView routeLaneArrive;
+        TextView routeArriveStation, routeArriveTime;
+
         public ViewHolder(View view) {
             super(view);
-            vId = (TextView) view.findViewById(R.id.route_list_id);
-            vName = (TextView) view.findViewById(R.id.route_list_name);
-            ll = (LinearLayout) view.findViewById(R.id.tmp);
 
-            ((TextView)ll.findViewById(R.id.textView09)).setText("TEST!!!!!!!");
+            ll = (LinearLayout) view.findViewById(R.id.route_info_linear);
+            routeLaneStart = (ImageView) view.findViewById(R.id.route_lane);
+            routeShrinked = (ImageView) view.findViewById(R.id.route_shrinked_img);
+            routeExpanded = (ImageView) view.findViewById(R.id.route_expanded_img);
+            routeStartStation = (TextView) view.findViewById(R.id.route_start_station);
+            routeNumStations = (TextView) view.findViewById(R.id.route_num_stations);
+            routeStartTime = (TextView) view.findViewById(R.id.route_start_time);
+
+            routeThroughLane = (ImageView) view.findViewById(R.id.route_through_lane);
+            routeThroughStation = (TextView) view.findViewById(R.id.route_through_station);
+            routeThroughTime = (TextView) view.findViewById(R.id.route_through_time);
+
+            routeLaneArrive = (ImageView) view.findViewById(R.id.route_arrive_lane);
+            routeArriveStation = (TextView) view.findViewById(R.id.route_arrive_station);
+            routeArriveTime = (TextView) view.findViewById(R.id.route_arrive_time);
+
 
             view.setOnClickListener(this);
         }
@@ -82,19 +221,4 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         this.mItemClickListener = mItemClickListener;
     }
 
-    /* ==========This Part is not necessary========= */
-
-    /**
-     * Create Random Users
-     */
-    private void createUserDetails() {
-
-        for (int i = 0; i < 5; i++) {
-            Car mDetails = new Car(i,"name"+i);
-            mUserDetails.add(mDetails);
-        }
-    }
-
-
-    /* ==========This Part is not necessary========= */
 }
