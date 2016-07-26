@@ -352,7 +352,6 @@ public class MainActivity extends AppCompatActivity
         setActiveStation( semiStation );
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         list.setVisibility(View.GONE);
-//        mapView.moveToMapCenter( semiStation.getPosition() );
         hideSoftKeyboard(mapView);
 
         Log.d(TAG, "itemClick: ");
@@ -411,6 +410,8 @@ public class MainActivity extends AppCompatActivity
         if (status != FULL) {
             activeStation = stationController.getStation(semiStation);
             Log.d(TAG, "setActiveStation: " + activeStation.getStationID());
+
+            mapView.moveToMapCenter( semiStation.getPosition() );
 
             boolean flag = false;
             List<Station> checkList = new ArrayList<>();
