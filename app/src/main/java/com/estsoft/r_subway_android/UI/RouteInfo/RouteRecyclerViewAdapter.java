@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecyclerViewAdapter.ViewHolder> {
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
 
     private final FragmentActivity mActivity;
     private final List<Car> mUserDetails = new ArrayList<>();
@@ -62,7 +63,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 if (position > 1 && route.getSections().size() > position - 2) {
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                    params.setMargins(10, 10, 10, 10);
+                    params.setMargins(4, 4, 4, 4);
 
 
                     LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
@@ -72,27 +73,24 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         LinearLayout llchild1 = new LinearLayout(mActivity);
                         llchild1.setOrientation(LinearLayout.VERTICAL);
+                        RelativeLayout llchild2 = new RelativeLayout(mActivity);
 
-                        LinearLayout llchild2 = new LinearLayout(mActivity);
-                        llchild2.setOrientation(LinearLayout.HORIZONTAL);
 
                         ImageView routeLaneStart = new ImageView(mActivity);
                         routeLaneStart.setImageResource(R.drawable.lane1);
-                        routeLaneStart.setLayoutParams(params);
 
                         TextView routeStartStation = new TextView(mActivity);
                         routeStartStation.setTextColor(Color.BLACK);
                         routeStartStation.setText("" + route.getSections().get(i).get(0).getStationName());
-                        routeLaneStart.setLayoutParams(params);
+
                         TextView routeNumStations = new TextView(mActivity);
                         routeNumStations.setTextColor(Color.BLACK);
                         routeNumStations.setText("" + route.getSections().get(i).size() + "개 역");
+
                         Calendar startTime = route.getSections().get(i).get(0).getArriveTime();
-                        routeNumStations.setLayoutParams(params);
                         TextView routeStartTime = new TextView(mActivity);
                         routeStartTime.setTextColor(Color.BLACK);
                         routeStartTime.setText(sdf.format(startTime.getTime()));
-                        routeStartTime.setLayoutParams(params);
 
 
                         llchild2.addView(routeLaneStart);
@@ -100,43 +98,45 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         llchild1.addView(routeNumStations);
                         llchild2.addView(llchild1);
                         llchild2.addView(routeStartTime);
+                        RelativeLayout.LayoutParams paramsRouteStartTime = (RelativeLayout.LayoutParams) routeStartTime.getLayoutParams();
+                        paramsRouteStartTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+                        routeStartStation.setLayoutParams(params);
+                        routeNumStations.setLayoutParams(params);
                         ll1.addView(llchild2);
                         for (int j = 1; j < route.getSections().get(i).size() - 1; j++) {
-                            LinearLayout llchild = new LinearLayout(mActivity);
-                            llchild.setOrientation(LinearLayout.HORIZONTAL);
+                            RelativeLayout llchild = new RelativeLayout(mActivity);
 
 
                             ImageView throughImg = new ImageView(mActivity);
                             throughImg.setImageResource(R.drawable.lane1);
-                            throughImg.setLayoutParams(params);
+
 
                             TextView throughStationName = new TextView(mActivity);
                             throughStationName.setText("" + route.getSections().get(i).get(j).getStationName());
                             throughStationName.setTextColor(Color.BLACK);
-                            throughStationName.setLayoutParams(params);
+
                             TextView throughStationTime = new TextView(mActivity);
                             Calendar throughStationArrive = route.getSections().get(i).get(j).getArriveTime();
                             throughStationTime.setTextColor(Color.BLACK);
                             Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
                             throughStationTime.setText(sdf.format(throughStationArrive.getTime()));
-                            throughStationTime.setLayoutParams(params);
+
                             llchild.addView(throughImg);
                             llchild.addView(throughStationName);
                             llchild.addView(throughStationTime);
-
+                            RelativeLayout.LayoutParams params2 = (RelativeLayout.LayoutParams) throughStationTime.getLayoutParams();
+                            params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
                             ll1.addView(llchild);
                             //holder.routeThroughStation.setText(holder.routeThroughStation.getText()+route.getSections().get(position).get(i).getStationName());
 
                         }
-                        LinearLayout llchild3 = new LinearLayout(mActivity);
-                        llchild3.setOrientation(LinearLayout.HORIZONTAL);
-                        params.setMargins(10, 10, 10, 20);
+                        RelativeLayout llchild3 = new RelativeLayout(mActivity);
 
                         TextView routeArriveStationName = new TextView(mActivity);
                         routeArriveStationName.setText("" + route.getSections().get(i).get(route.getSections().get(i).size() - 1).getStationName());
                         routeArriveStationName.setTextColor(Color.BLACK);
-                        routeArriveStationName.setLayoutParams(params);
 
                         Calendar arriveTime = route.getSections().get(i).get(route.getSections().get(i).size() - 1).getArriveTime();
                         TextView routeArriveTime = new TextView(mActivity);
@@ -145,11 +145,13 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         routeArriveTime.setLayoutParams(params);
                         ImageView routeArriveImageView = new ImageView(mActivity);
                         routeArriveImageView.setImageResource(R.drawable.lane1);
-                        routeArriveImageView.setLayoutParams(params);
+
 
                         llchild3.addView(routeArriveImageView);
                         llchild3.addView(routeArriveStationName);
                         llchild3.addView(routeArriveTime);
+                        RelativeLayout.LayoutParams params3 = (RelativeLayout.LayoutParams) routeArriveTime.getLayoutParams();
+                        params3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         ll1.addView(llchild3);
 
                     }
