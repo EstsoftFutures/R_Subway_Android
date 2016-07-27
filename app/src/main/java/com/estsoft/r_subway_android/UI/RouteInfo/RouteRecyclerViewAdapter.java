@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
+import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,9 +55,19 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         switch (position) {
             case 0:
                 holder.routeStartStation.setText("소요시간");
-                holder.routeStationTo.setText(route.getSections().get(0).get(0).getStationName()+"~"+route.getSections().get(route.getSections().size()-1).get(route.getSections().get(route.getSections().size()-1).size()-1).getStationName());
-                holder.routeNumStations.setText("1시간21분");
-                holder.routeStartTime.setText("환승"+route.getSections().size()+"회");
+                Station start = route.getSections().get(0).get(0);
+                Station end = route.getSections().get(route.getSections().size()-1).get(route.getSections().get(route.getSections().size()-1).size()-1);
+                holder.routeStationTo.setText(start.getStationName()+"~"+end.getStationName());
+                Log.d("TEST", "onBindViewHolder: " + start.getStationName());
+
+                holder.routeNumStations.setText( convertCalendar(start.getArriveTime(), end.getArriveTime()));
+                holder.routeStartTime.setText("환승"+(route.getSections().size() - 1) +"회");
+
+
+                holder.routeStartStation.setVisibility(View.VISIBLE);
+                holder.routeNumStations.setVisibility(View.VISIBLE);
+                holder.routeStationTo.setVisibility(View.VISIBLE);
+                holder.routeStartTime.setVisibility(View.VISIBLE);
                 holder.routeFirstMom.setVisibility(View.VISIBLE);
                 break;
             case 1:
@@ -74,9 +85,9 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                     LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
 
                     for (int i = 0; i < route.getSections().size(); i++) {
-                        LinearLayout.LayoutParams llpImgTime = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        llpImgTime.topMargin = 50;
+
                         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        llp.topMargin = 20;
                         llp.leftMargin = 70;
                         llp.bottomMargin =15;
 
@@ -87,7 +98,6 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         ImageView routeLaneStart = new ImageView(mActivity);
                         routeLaneStart.setImageResource(R.drawable.lane1);
-                        routeLaneStart.setLayoutParams(llpImgTime);
 
                         TextView routeStartStation = new TextView(mActivity);
                         routeStartStation.setTextColor(Color.BLACK);
@@ -109,18 +119,19 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         routeStartTime.setTextColor(Color.BLACK);
                         routeStartTime.setTextSize(18);
                         routeStartTime.setText(sdf.format(startTime.getTime()));
-                        routeStartTime.setLayoutParams(llpImgTime);
 
                         llchild1.addView(routeStartStation);
                         llchild1.addView(routeNumStations);
 
                         llchild2.addView(routeLaneStart);
                         RelativeLayout.LayoutParams paramRouteLaneStart = (RelativeLayout.LayoutParams) routeLaneStart.getLayoutParams();
+                        paramRouteLaneStart.setMargins(0,20,20,0);
                         paramRouteLaneStart.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                        llchild2.addView(llchild1);
+                                               llchild2.addView(llchild1);
                         llchild2.addView(routeStartTime);
 
                         RelativeLayout.LayoutParams paramsRouteStartTime = (RelativeLayout.LayoutParams) routeStartTime.getLayoutParams();
+                        paramsRouteStartTime.setMargins(0,20,0,0);
                         paramsRouteStartTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
                         ll1.addView(llchild2);
@@ -249,5 +260,17 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
+
+
+    private String convertCalendar( Calendar start, Calendar end ) {
+
+        long diff = end.getTimeInMillis() - start.getTimeInMillis();
+        long parsedMinute = diff / 1000 / 60 ;
+        int hour = (int)parsedMinute / 60;
+        int minute = (int)parsedMinute - hour * 60;
+
+        return hour + "시간 " + minute + "분";
+    }
+
 
 }
