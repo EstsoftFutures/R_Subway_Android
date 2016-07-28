@@ -587,6 +587,7 @@ public class MainActivity extends AppCompatActivity
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
             tabsStrip.setTabPaddingLeftRight(25);
+            tabsStrip.setIndicatorHeight(5);
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
@@ -630,6 +631,7 @@ public class MainActivity extends AppCompatActivity
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
             tabsStrip.setTabPaddingLeftRight(25);
+            tabsStrip.setIndicatorHeight(5);
 
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
@@ -647,7 +649,6 @@ public class MainActivity extends AppCompatActivity
 
             routeBottomSheet.setShouldDimContentView(false);
             routeBottomSheet.setInterceptContentTouch(false);
-
             stationBottomSheet.dismissSheet();
 
         }

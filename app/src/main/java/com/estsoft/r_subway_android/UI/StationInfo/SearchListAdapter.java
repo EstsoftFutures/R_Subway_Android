@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,28 +29,30 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
     private OnItemClickListener mItemClickListener;
 
-    private RelativeLayout mTransferRelativeLayout;
 
     private LayoutInflater inflater;
 
-    private ImageView transferStandard = null;
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private RelativeLayout mTransferRelativeLayout;
+
+        private ImageView transferStandard;
+
         // each data item is just a string in this case
         public ImageView mImageView;
         public TextView mTextView;
-//        public List<Integer> laneNumbers;
+        //        public List<Integer> laneNumbers;
         public SemiStation station;
 
         public ViewHolder(View view) {
             super(view);
 
-            transferStandard = (ImageView)view.findViewById(R.id.transfer_standard);
+            transferStandard = (ImageView) view.findViewById(R.id.transfer_standard);
 
             mImageView = (ImageView) view.findViewById(R.id.search_list_image);
             mTextView = (TextView) view.findViewById(R.id.search_list_text);
 
-            mTransferRelativeLayout = (RelativeLayout)view.findViewById(R.id.search_transfer_Layout);
+            mTransferRelativeLayout = (RelativeLayout) view.findViewById(R.id.search_transfer_Layout);
 
             view.setOnClickListener(this);
         }
@@ -82,7 +85,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
                 @Override
                 public void onItemClick(View view, int position) {
                     Log.d(TAG, "make new itemclick" + position);
-                    mSearchListAdapterListener.itemClick( stationList.get(position) );
+                    mSearchListAdapterListener.itemClick(stationList.get(position));
 
                 }
             };
@@ -95,6 +98,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_item, parent, false);
         ViewHolder vh = new ViewHolder(view);
+
+
         return vh;
 
     }
@@ -104,6 +109,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
+        holder.mTransferRelativeLayout.removeAllViews();
         holder.mTextView.setText(stationList.get(position).getName());
 
         // 수정
@@ -118,25 +124,29 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
         int transferX = 0;
 
-        for (int i = 0; i < holder.station.getLaneNumbers().size(); i ++ ) {
+        for (int i = 0; i < holder.station.getLaneNumbers().size(); i++) {
 //            for (int i = 0; i < 2; i ++ ) {
-            ImageView transfer = (ImageView)inflater.inflate( R.layout.search_list_item_transfer, null );
-            transfer.setImageResource( getResouceIdByLaneNumber( holder.station.getLaneNumbers().get(i) ) );
+            ImageView transfer = (ImageView) inflater.inflate(R.layout.search_list_item_transfer, null);
+
+            transfer.setImageResource(getResouceIdByLaneNumber(holder.station.getLaneNumbers().get(i)));
 //            transfer.setImageResource(  );
 //                RelativeLayout.LayoutParams rParam = new RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT );
+     //       rParam.setMargins(10,10,10,10);
+            if (holder.mTransferRelativeLayout != null) {
 
-            if ( mTransferRelativeLayout != null ) {
-                mTransferRelativeLayout.addView(transfer);
-                transfer.setLayoutParams(transferStandard.getLayoutParams());
+                RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+               param.topMargin = 4;
+                param.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                transfer.setLayoutParams(param);
                 transfer.setVisibility(View.VISIBLE);
 
-                transfer.setX(transferX);
-                transferX -= transferStandard.getDrawable().getIntrinsicWidth() + transferStandard.getDrawable().getIntrinsicWidth() / 4 ;
-            }
+                holder.mTransferRelativeLayout.addView(transfer);
 
+                transfer.setX(transferX);
+                transferX -= transfer.getDrawable().getIntrinsicWidth() + holder.transferStandard.getDrawable().getIntrinsicWidth() / 4;
+            }
         }
     }
-
 
 
     @Override
@@ -149,49 +159,49 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         void onItemClick(View view, int position);
     }
 
-    void onItemClick2(View view, int position){
+    void onItemClick2(View view, int position) {
 
 
     }
 
 
-    public int getResouceIdByLaneNumber( int laneNumber ) {
-        switch ( laneNumber ) {
-            case 1 :
+    public int getResouceIdByLaneNumber(int laneNumber) {
+        switch (laneNumber) {
+            case 1:
                 return R.drawable.lane1;
-            case 2 :
+            case 2:
                 return R.drawable.lane2;
-            case 3 :
+            case 3:
                 return R.drawable.lane3;
-            case 4 :
+            case 4:
                 return R.drawable.lane4;
-            case 5 :
+            case 5:
                 return R.drawable.lane5;
-            case 6 :
+            case 6:
                 return R.drawable.lane6;
-            case 7 :
+            case 7:
                 return R.drawable.lane7;
-            case 8 :
+            case 8:
                 return R.drawable.lane8;
-            case 9 :
+            case 9:
                 return R.drawable.lane9;
-            case 21 :
+            case 21:
                 return R.drawable.lane21;
-            case 100 :
+            case 100:
                 return R.drawable.lane100;
-            case 101 :
+            case 101:
                 return R.drawable.lane101;
-            case 104 :
+            case 104:
                 return R.drawable.lane104;
-            case 107 :
+            case 107:
                 return R.drawable.lane107;
-            case 108 :
+            case 108:
                 return R.drawable.lane108;
-            case 109 :
+            case 109:
                 return R.drawable.lane109;
-            case 110 :
+            case 110:
                 return R.drawable.lane110;
-            case 111 :
+            case 111:
                 return R.drawable.lane111;
             default:
                 return R.drawable.recycle_image;
