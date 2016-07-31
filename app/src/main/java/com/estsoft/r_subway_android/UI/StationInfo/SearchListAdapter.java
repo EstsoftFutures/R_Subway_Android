@@ -168,23 +168,23 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
     public int getResouceIdByLaneNumber(int laneNumber) {
         switch (laneNumber) {
             case 1:
-                return R.drawable.lane1;
+                return R.drawable.route_lane1;
             case 2:
-                return R.drawable.lane2;
+                return R.drawable.route_lane2;
             case 3:
-                return R.drawable.lane3;
+                return R.drawable.route_lane3;
             case 4:
-                return R.drawable.lane4;
+                return R.drawable.route_lane4;
             case 5:
-                return R.drawable.lane5;
+                return R.drawable.route_lane5;
             case 6:
-                return R.drawable.lane6;
+                return R.drawable.route_lane6;
             case 7:
-                return R.drawable.lane7;
+                return R.drawable.route_lane7;
             case 8:
-                return R.drawable.lane8;
+                return R.drawable.route_lane8;
             case 9:
-                return R.drawable.lane9;
+                return R.drawable.route_lane9;
             case 21:
                 return R.drawable.lane21;
             case 100:
