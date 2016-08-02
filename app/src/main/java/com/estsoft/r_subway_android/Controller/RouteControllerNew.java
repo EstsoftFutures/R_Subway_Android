@@ -108,13 +108,17 @@ public class RouteControllerNew {
 
     public RouteNew getRouteNew( Station start, Station end ) {
 
+        inputCalendar = null;
+
         //SearchSetting
         initializeSettings();
+        ShortestPath.setLineRange( activeLaneArr );
         debugActiveLanes();
         //SearchSetting done
 
         // raw section making
         int[] path = ShortestPath.getShortestPathByIntArray(stationController.getAdj(), start, end);
+        Log.d(TAG, "getRouteNew: " + path.length);
         // listing path[]
         List<Integer> listPath = getListPath(path);
         // listing path[] end

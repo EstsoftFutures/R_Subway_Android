@@ -81,7 +81,7 @@ public class StationController {
             }
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 50));
+                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 30));
             }
         }
     }
@@ -211,6 +211,7 @@ public class StationController {
         for ( RealmStation rst : realmStationList ) {
             Station st = new Station( rst, null, getConLevel( rst.getStationID()) );
             deepCopiedStations.add( st );
+            Log.e(TAG, "deepCopyRealmStation: ," + st.getStationID() +", " +st.getStationName() + ", " + st.getAddress() );
         }
 //        for ( Station st : deepCopiedStations ) {
 //            Log.d(TAG, "deepCopyRealmStation: " + st.getIndex());
