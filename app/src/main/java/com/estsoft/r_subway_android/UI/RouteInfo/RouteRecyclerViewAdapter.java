@@ -56,12 +56,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
             case 0:
                 holder.routeStartStation.setText("소요시간");
                 Station start = route.getSections().get(0).get(0);
-                Station end = route.getSections().get(route.getSections().size()-1).get(route.getSections().get(route.getSections().size()-1).size()-1);
-                holder.routeStationTo.setText(start.getStationName()+"~"+end.getStationName());
+                Station end = route.getSections().get(route.getSections().size() - 1).get(route.getSections().get(route.getSections().size() - 1).size() - 1);
+                holder.routeStationTo.setText(start.getStationName() + "~" + end.getStationName());
                 Log.d("TEST", "onBindViewHolder: " + start.getStationName());
 
-                holder.routeNumStations.setText( convertCalendar(start.getArriveTime(), end.getArriveTime()));
-                holder.routeStartTime.setText("환승"+(route.getSections().size() - 1) +"회");
+                holder.routeNumStations.setText(convertCalendar(start.getArriveTime(), end.getArriveTime()));
+                holder.routeStartTime.setText("환승" + (route.getSections().size() - 1) + "회");
 
 
                 holder.routeStartStation.setVisibility(View.VISIBLE);
@@ -87,9 +87,14 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                     for (int i = 0; i < route.getSections().size(); i++) {
 
                         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        llp.topMargin = 20;
-                        llp.leftMargin = 70;
-                        llp.bottomMargin =15;
+                        llp.topMargin = 10;
+                        llp.leftMargin = 90;
+                        llp.bottomMargin = 10;
+
+
+                        LinearLayout.LayoutParams llp6 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        llp6.leftMargin = 100;
+                        llp6.bottomMargin = 10;
 
                         LinearLayout llchild1 = new LinearLayout(mActivity);
                         llchild1.setOrientation(LinearLayout.VERTICAL);
@@ -97,7 +102,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         RelativeLayout llchild2 = new RelativeLayout(mActivity);
 
                         ImageView routeLaneStart = new ImageView(mActivity);
-                        routeLaneStart.setImageResource(R.drawable.lane1);
+                        routeLaneStart.setImageResource(getStartEndLane(route.getSections().get(i).get(0).getLaneType()));
 
                         TextView routeStartStation = new TextView(mActivity);
                         routeStartStation.setTextColor(Color.BLACK);
@@ -111,7 +116,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         routeNumStations.setTextColor(Color.BLACK);
                         routeNumStations.setText("" + route.getSections().get(i).size() + "개 역");
                         routeNumStations.setTextSize(16);
-                        routeNumStations.setLayoutParams(llp);
+                        routeNumStations.setLayoutParams(llp6);
 
 
                         Calendar startTime = route.getSections().get(i).get(0).getArriveTime();
@@ -125,25 +130,24 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         llchild2.addView(routeLaneStart);
                         RelativeLayout.LayoutParams paramRouteLaneStart = (RelativeLayout.LayoutParams) routeLaneStart.getLayoutParams();
-                        paramRouteLaneStart.setMargins(0,20,20,0);
+                        paramRouteLaneStart.setMargins(0, 20, 20, 0);
                         paramRouteLaneStart.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                                               llchild2.addView(llchild1);
+                        llchild2.addView(llchild1);
                         llchild2.addView(routeStartTime);
 
                         RelativeLayout.LayoutParams paramsRouteStartTime = (RelativeLayout.LayoutParams) routeStartTime.getLayoutParams();
-                        paramsRouteStartTime.setMargins(0,20,0,0);
+                        paramsRouteStartTime.setMargins(0, 20, 0, 0);
                         paramsRouteStartTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
                         ll1.addView(llchild2);
                         for (int j = 1; j < route.getSections().get(i).size() - 1; j++) {
                             RelativeLayout.LayoutParams llp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            llp2.leftMargin = 80;
+                            llp2.leftMargin = 100;
+
 
                             RelativeLayout llchild = new RelativeLayout(mActivity);
-
-                            llp2.topMargin = 3;
                             ImageView throughImg = new ImageView(mActivity);
-                            throughImg.setImageResource(R.drawable.lane1);
+                            throughImg.setImageResource(getRouteLane(route.getSections().get(i).get(j).getLaneType()));
 
 
                             TextView throughStationName = new TextView(mActivity);
@@ -170,8 +174,10 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         }
                         RelativeLayout.LayoutParams llp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        llp3.setMargins(70,10,15,15); // llp.setMargins(left, top, right, bottom);
+                        llp3.setMargins(90, 0, 15, 15); // llp.setMargins(left, top, right, bottom);
 
+//                        RelativeLayout.LayoutParams llpImg3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                        llpImg3.topMargin = 20; // llp.setMargins(left, top, right, bottom);
 
                         RelativeLayout llchild3 = new RelativeLayout(mActivity);
 
@@ -189,7 +195,8 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
 
                         ImageView routeArriveImageView = new ImageView(mActivity);
-                        routeArriveImageView.setImageResource(R.drawable.lane1);
+                        routeArriveImageView.setImageResource(getStartEndLane(route.getSections().get(i).get(route.getSections().get(i).size() - 1).getLaneType()));
+                        //                       routeArriveImageView.setLayoutParams(llpImg3);
 
                         llchild3.addView(routeArriveImageView);
                         llchild3.addView(routeArriveStationName);
@@ -230,7 +237,6 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         TextView routeStationTo;
 
 
-
         public ViewHolder(View view) {
             super(view);
 
@@ -262,15 +268,105 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     }
 
 
-    private String convertCalendar( Calendar start, Calendar end ) {
+    private String convertCalendar(Calendar start, Calendar end) {
 
         long diff = end.getTimeInMillis() - start.getTimeInMillis();
-        long parsedMinute = diff / 1000 / 60 ;
-        int hour = (int)parsedMinute / 60;
-        int minute = (int)parsedMinute - hour * 60;
+        long parsedMinute = diff / 1000 / 60;
+        int hour = (int) parsedMinute / 60;
+        int minute = (int) parsedMinute - hour * 60;
 
+        if(hour == 0 ) return minute+"분";
         return hour + "시간 " + minute + "분";
     }
 
+    private int getStartEndLane(int laneType) {
+        switch (laneType) {
+            case 1:
+                return R.drawable.route_lane1;
+            case 2:
+                return R.drawable.route_lane2;
+            case 3:
+                return R.drawable.route_lane3;
+            case 4:
+                return R.drawable.route_lane4;
+            case 5:
+                return R.drawable.route_lane5;
+            case 6:
+                return R.drawable.route_lane6;
+            case 7:
+                return R.drawable.route_lane7;
+            case 8:
+                return R.drawable.route_lane8;
+            case 9:
+                return R.drawable.route_lane9;
+            case 102:
+                return R.drawable.lane102;
+            case 109:
+                return R.drawable.lane109;
+            case 100:
+                return R.drawable.lane100;
+            case 111:
+                return R.drawable.lane111;
+            case 21:
+                return R.drawable.lane21;
+            case 108:
+                return R.drawable.lane108;
+            case 104:
+                return R.drawable.lane104;
+            case 101:
+                return R.drawable.lane101;
+            case 110:
+                return R.drawable.lane110;
+            case 107:
+                return R.drawable.lane107;
+            default:
+                return R.drawable.route_lane1;
+        }
+    }
+
+    private int getRouteLane(int laneType) {
+        switch (laneType) {
+            case 1:
+                return R.drawable.lane_1_mid;
+            case 2:
+                return R.drawable.lane_2_mid;
+            case 3:
+                return R.drawable.lane_3_mid;
+            case 4:
+                return R.drawable.lane_4_mid;
+            case 5:
+                return R.drawable.lane_5_mid;
+            case 6:
+                return R.drawable.lane_6_mid;
+            case 7:
+                return R.drawable.lane_7_mid;
+            case 8:
+                return R.drawable.lane_8_mid;
+            case 9:
+                return R.drawable.lane_9_mid;
+            case 102:
+                return R.drawable.lane_102_mid;
+            case 109:
+                return R.drawable.lane_109_mid;
+            case 100:
+                return R.drawable.lane_100_mid;
+            case 111:
+                return R.drawable.lane_111_mid;
+            case 21:
+                return R.drawable.lane_21_mid;
+            case 108:
+                return R.drawable.lane_108_mid;
+            case 104:
+                return R.drawable.lane_104_mid;
+            case 101:
+                return R.drawable.lane_101_mid;
+            case 110:
+                return R.drawable.lane_110_mid;
+            case 107:
+                return R.drawable.lane_107_mid;
+            default:
+                return R.drawable.lane_1_mid;
+        }
+    }
 
 }
