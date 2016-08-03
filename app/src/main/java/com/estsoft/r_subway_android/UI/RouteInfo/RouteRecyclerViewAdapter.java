@@ -88,12 +88,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         llp.topMargin = 10;
-                        llp.leftMargin = 90;
+                        llp.leftMargin = 140;
                         llp.bottomMargin = 10;
 
 
                         LinearLayout.LayoutParams llp6 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        llp6.leftMargin = 100;
+                        llp6.leftMargin = 150;
                         llp6.bottomMargin = 10;
 
                         LinearLayout llchild1 = new LinearLayout(mActivity);
@@ -142,7 +142,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         ll1.addView(llchild2);
                         for (int j = 1; j < route.getSections().get(i).size() - 1; j++) {
                             RelativeLayout.LayoutParams llp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            llp2.leftMargin = 100;
+                            llp2.leftMargin = 150;
 
 
                             RelativeLayout llchild = new RelativeLayout(mActivity);
@@ -174,7 +174,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         }
                         RelativeLayout.LayoutParams llp3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        llp3.setMargins(90, 0, 15, 15); // llp.setMargins(left, top, right, bottom);
+                        llp3.setMargins(140, 0, 15, 15); // llp.setMargins(left, top, right, bottom);
 
 //                        RelativeLayout.LayoutParams llpImg3 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //                        llpImg3.topMargin = 20; // llp.setMargins(left, top, right, bottom);

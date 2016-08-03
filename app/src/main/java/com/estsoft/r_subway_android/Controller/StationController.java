@@ -95,7 +95,7 @@ public class StationController {
             if ( adj[i].size() == 0 ) {
                 Log.d(TAG, "StationController: " + station.getStationName() );
             }
-            Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
+//            Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
         }
         return adj;
     }

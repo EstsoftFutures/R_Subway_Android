@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
     ExpandableListView expListView;
     SearchSetting searchSetting;
 
-
+    private static int curPage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -620,6 +620,8 @@ public class MainActivity extends AppCompatActivity
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
             viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager(),route));
+
+
 //        viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
@@ -632,6 +634,8 @@ public class MainActivity extends AppCompatActivity
 
 
             routeBottomSheet.findViewById(R.id.end_info).setOnClickListener(interactionListener);
+
+            viewPager.addOnPageChangeListener(interactionListener);
             // 리스너로 감
             /*routeBottomSheet.findViewById(R.id.endinfo).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -774,5 +778,13 @@ public class MainActivity extends AppCompatActivity
 
     public StationController getStationController() {
         return stationController;
+    }
+
+    public static int getCurPage() {
+        return curPage;
+    }
+
+    public static void setCurPage(int curPage) {
+        MainActivity.curPage = curPage;
     }
 }

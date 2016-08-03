@@ -4,6 +4,7 @@ package com.estsoft.r_subway_android.listener;
 import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,7 @@ public class InteractionListener implements
         View.OnClickListener,
         SearchView.OnQueryTextListener,
         ExpandableListView.OnChildClickListener,
-        NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener {
+        NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener, ViewPager.OnPageChangeListener {
 
     public InteractionListener(Context context, List<SemiStation> list) {
 
@@ -213,5 +214,19 @@ public class InteractionListener implements
         this.menu = menu;
     }
 
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            host.setCurPage(position);
+            Log.d("pager","====================>"+host.getCurPage());
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
 }
