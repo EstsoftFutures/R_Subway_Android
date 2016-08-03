@@ -30,11 +30,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
     private final FragmentActivity mActivity;
     OnItemClickListener mItemClickListener;
-    RouteNew route;
-
-    public RouteRecyclerViewAdapter(FragmentActivity mActivity, RouteNew route) {
+    RouteNew[] route;
+    private int mPage;
+    public RouteRecyclerViewAdapter(FragmentActivity mActivity, RouteNew[] route, int mPage) {
         this.mActivity = mActivity;
         this.route = route;
+        this.mPage = mPage;
     }
 
     @Override
@@ -55,13 +56,13 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         switch (position) {
             case 0:
                 holder.routeStartStation.setText("소요시간");
-                Station start = route.getSections().get(0).get(0);
-                Station end = route.getSections().get(route.getSections().size() - 1).get(route.getSections().get(route.getSections().size() - 1).size() - 1);
+                Station start = route[mPage].getSections().get(0).get(0);
+                Station end = route[mPage].getSections().get(route[mPage].getSections().size() - 1).get(route[mPage].getSections().get(route[mPage].getSections().size() - 1).size() - 1);
                 holder.routeStationTo.setText(start.getStationName() + "~" + end.getStationName());
                 Log.d("TEST", "onBindViewHolder: " + start.getStationName());
 
                 holder.routeNumStations.setText(convertCalendar(start.getArriveTime(), end.getArriveTime()));
-                holder.routeStartTime.setText("환승" + (route.getSections().size() - 1) + "회");
+                holder.routeStartTime.setText("환승" + (route[mPage].getSections().size() - 1) + "회");
 
 
                 holder.routeStartStation.setVisibility(View.VISIBLE);
@@ -80,11 +81,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
             case 2:
 
-                if (position > 1 && route.getSections().size() > position - 2) {
+                if (position > 1 && route[mPage].getSections().size() > position - 2) {
 
                     LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
 
-                    for (int i = 0; i < route.getSections().size(); i++) {
+                    for (int i = 0; i < route[mPage].getSections().size(); i++) {
 
                         LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                         llp.topMargin = 10;
@@ -102,11 +103,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         RelativeLayout llchild2 = new RelativeLayout(mActivity);
 
                         ImageView routeLaneStart = new ImageView(mActivity);
-                        routeLaneStart.setImageResource(getStartEndLane(route.getSections().get(i).get(0).getLaneType()));
+                        routeLaneStart.setImageResource(getStartEndLane(route[mPage].getSections().get(i).get(0).getLaneType()));
 
                         TextView routeStartStation = new TextView(mActivity);
                         routeStartStation.setTextColor(Color.BLACK);
-                        routeStartStation.setText("" + route.getSections().get(i).get(0).getStationName());
+                        routeStartStation.setText("" + route[mPage].getSections().get(i).get(0).getStationName());
                         routeStartStation.setTextSize(20);
 
 
@@ -114,12 +115,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         TextView routeNumStations = new TextView(mActivity);
                         routeNumStations.setTextColor(Color.BLACK);
-                        routeNumStations.setText("" + route.getSections().get(i).size() + "개 역");
+                        routeNumStations.setText("" + route[mPage].getSections().get(i).size() + "개 역");
                         routeNumStations.setTextSize(16);
                         routeNumStations.setLayoutParams(llp6);
 
 
-                        Calendar startTime = route.getSections().get(i).get(0).getArriveTime();
+                        Calendar startTime = route[mPage].getSections().get(i).get(0).getArriveTime();
                         TextView routeStartTime = new TextView(mActivity);
                         routeStartTime.setTextColor(Color.BLACK);
                         routeStartTime.setTextSize(18);
@@ -140,24 +141,24 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         paramsRouteStartTime.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
                         ll1.addView(llchild2);
-                        for (int j = 1; j < route.getSections().get(i).size() - 1; j++) {
+                        for (int j = 1; j < route[mPage].getSections().get(i).size() - 1; j++) {
                             RelativeLayout.LayoutParams llp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                             llp2.leftMargin = 150;
 
 
                             RelativeLayout llchild = new RelativeLayout(mActivity);
                             ImageView throughImg = new ImageView(mActivity);
-                            throughImg.setImageResource(getRouteLane(route.getSections().get(i).get(j).getLaneType()));
+                            throughImg.setImageResource(getRouteLane(route[mPage].getSections().get(i).get(j).getLaneType()));
 
 
                             TextView throughStationName = new TextView(mActivity);
-                            throughStationName.setText("" + route.getSections().get(i).get(j).getStationName());
+                            throughStationName.setText("" + route[mPage].getSections().get(i).get(j).getStationName());
                             throughStationName.setTextColor(Color.BLACK);
                             throughStationName.setTextSize(18);
                             throughStationName.setLayoutParams(llp2);
 
                             TextView throughStationTime = new TextView(mActivity);
-                            Calendar throughStationArrive = route.getSections().get(i).get(j).getArriveTime();
+                            Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTime();
                             throughStationTime.setTextColor(Color.BLACK);
                             Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
                             throughStationTime.setText(sdf.format(throughStationArrive.getTime()));
@@ -182,12 +183,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         RelativeLayout llchild3 = new RelativeLayout(mActivity);
 
                         TextView routeArriveStationName = new TextView(mActivity);
-                        routeArriveStationName.setText("" + route.getSections().get(i).get(route.getSections().get(i).size() - 1).getStationName());
+                        routeArriveStationName.setText("" + route[mPage].getSections().get(i).get(route[mPage].getSections().get(i).size() - 1).getStationName());
                         routeArriveStationName.setTextColor(Color.BLACK);
                         routeArriveStationName.setTextSize(20);
 
                         routeArriveStationName.setLayoutParams(llp3);
-                        Calendar arriveTime = route.getSections().get(i).get(route.getSections().get(i).size() - 1).getArriveTime();
+                        Calendar arriveTime = route[mPage].getSections().get(i).get(route[mPage].getSections().get(i).size() - 1).getArriveTime();
                         TextView routeArriveTime = new TextView(mActivity);
                         routeArriveTime.setTextColor(Color.BLACK);
                         routeArriveTime.setTextSize(18);
@@ -195,7 +196,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
 
                         ImageView routeArriveImageView = new ImageView(mActivity);
-                        routeArriveImageView.setImageResource(getStartEndLane(route.getSections().get(i).get(route.getSections().get(i).size() - 1).getLaneType()));
+                        routeArriveImageView.setImageResource(getStartEndLane(route[mPage].getSections().get(i).get(route[mPage].getSections().get(i).size() - 1).getLaneType()));
                         //                       routeArriveImageView.setLayoutParams(llpImg3);
 
                         llchild3.addView(routeArriveImageView);

@@ -18,7 +18,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 public class RouteInfoFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPage;
-    private static RouteNew  route;
+    private static RouteNew[]  route;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
     RouteRecyclerViewAdapter adapter;
@@ -29,7 +29,7 @@ public class RouteInfoFragment extends Fragment {
     }
 
 
-    public static RouteInfoFragment newInstance(int page, RouteNew route1) {
+    public static RouteInfoFragment newInstance(int page, RouteNew[] route1) {
         RouteInfoFragment fragment = new RouteInfoFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -58,7 +58,7 @@ public class RouteInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_route_info, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.route_recycler_view);
-        adapter = new RouteRecyclerViewAdapter(mActivity, route);
+        adapter = new RouteRecyclerViewAdapter(mActivity, route, mPage);
 
         return rootView;
     }
