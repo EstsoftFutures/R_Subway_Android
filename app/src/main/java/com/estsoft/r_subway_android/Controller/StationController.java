@@ -27,8 +27,6 @@ public class StationController {
     private static final String TAG = "StationController";
 
     private static final int SHORT_ROUTE_WEIGHT = 0;
-    private static final int MINIMUM_TRANSFER_WEIGHT = 500;
-    private int USING_WEIGHT;
 
     private RealmResults<RealmStation> realmStationList = null;
     private Realm mRealm = null;
@@ -36,9 +34,7 @@ public class StationController {
     private List<Station> deepCopiedStations = null;
 
 
-    private ArrayList<Pair<Station, Integer>> shortestPathAdj[] = null;
-    private ArrayList<Pair<Station, Integer>> minTransferAdj[] = null;
-    private ArrayList<Pair<Station, Integer>> customAdj[] = null;
+    private ArrayList<Pair<Station, Integer>> adj[] = null;
     private TtfXmlParserCost costParser;
     private InputStream inputStream;
 
@@ -49,9 +45,7 @@ public class StationController {
 
         deepCopyRealmStation();
 
-        shortestPathAdj = initializeAdj(SHORT_ROUTE_WEIGHT);
-        minTransferAdj = initializeAdj(MINIMUM_TRANSFER_WEIGHT);
-        customAdj = initializeAdj(SHORT_ROUTE_WEIGHT);
+        adj = initializeAdj(SHORT_ROUTE_WEIGHT);
 
     }
 
@@ -90,12 +84,14 @@ public class StationController {
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
                 adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), transferWeight));
+                Log.d(TAG, "initializeAdj: " + transferWeight);
             }
 
             if ( adj[i].size() == 0 ) {
                 Log.d(TAG, "StationController: " + station.getStationName() );
+            } else {
+                Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
             }
-//            Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
         }
         return adj;
     }
@@ -256,16 +252,8 @@ public class StationController {
         return null;
     }
 
-    public ArrayList<Pair<Station, Integer>>[] getShortestPathAdj() {
-        return shortestPathAdj;
-    }
-
-    public ArrayList<Pair<Station, Integer>>[] getMinTransferAdj() {
-        return minTransferAdj;
-    }
-
-    public ArrayList<Pair<Station, Integer>>[] getCustomAdj() {
-        return customAdj;
+    public ArrayList<Pair<Station, Integer>>[] getAdj() {
+        return adj;
     }
 
     public Station getStation(int index ) {

@@ -27,6 +27,8 @@ public class RouteControllerNew {
     private static final String TAG = "RouteControllerNew";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
     private static final SimpleDateFormat sdftest = new SimpleDateFormat("d H:mm");
+    private final static int SHORT_PATH = 0;
+    private final static int MIN_TRANSFER = 1;
     private final int adjScale = 6;
 
     StationController stationController = null;
@@ -50,7 +52,7 @@ public class RouteControllerNew {
         this.mapView = mapView;
         this.context = context;
 
-        this.defaultAdj = stationController.getShortestPathAdj();
+        this.defaultAdj = stationController.getAdj();
     }
 
     private void debugSections( List<List<Station>> sections ) {
@@ -111,30 +113,25 @@ public class RouteControllerNew {
 
     public RouteNew[] getRoutes( Station start, Station end ) {
         RouteNew[] routes = new RouteNew[3];
-        // getShortRoute
-
-        routes[0] = getRouteNew( start, end, stationController.getShortestPathAdj() );
+        // getShortRout
+        routes[0] = getRouteNew( start, end, SHORT_PATH );
         // getShortRoute done
 
         // getMinTransferRoute
-        defaultAdj = stationController.getMinTransferAdj();
-        routes[1] = getRouteNew( start, end, stationController.getMinTransferAdj() );
+//        defaultAdj = stationController.getMinTransferAdj();
+        routes[1] = getRouteNew( start, end, MIN_TRANSFER );
         // getMinTransferRoute done
 
         // getCustomRoute
-        defaultAdj = stationController.getShortestPathAdj();
-        routes[2] = getRouteNew( start, end, stationController.getCustomAdj() );
+//        defaultAdj = stationController.getShortestPathAdj();
+        routes[2] = getRouteNew( start, end, SHORT_PATH );
         // getCustomRoute done
-
-        for (int i = 0; i < 3; i ++ ) {
-            Log.d(TAG, "getRoutes: " + routes[1].getTotalSize());
-        }
 
         return routes;
 
     }
 
-    private RouteNew getRouteNew( Station start, Station end, ArrayList<Pair<Station, Integer>>[] adj  ) {
+    private RouteNew getRouteNew( Station start, Station end, int mode  ) {
 
         inputCalendar = null;
 
@@ -145,7 +142,13 @@ public class RouteControllerNew {
         //SearchSetting done
 
         // raw section making
-        int[] path = ShortestPath.getShortestPathByIntArray(adj, start, end);
+        int[] path ;
+        if ( mode == SHORT_PATH )
+            path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
+        else if ( mode == MIN_TRANSFER )
+            path = ShortestPath.getMinimumTransferPathByIntArray(defaultAdj, start, end);
+        else
+            path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
         // if could not find Route
         if (path.length == 0) return null;
         // if could not find Route

@@ -690,7 +690,7 @@ public class MainActivity extends AppCompatActivity
 //            currentRoute = routeController.getRouteNew(startStation, endStation);
             routes = routeController.getRoutes(startStation, endStation);
 
-            currentRoute = routes[1];
+            currentRoute = routes[0];
 
             if (currentRoute == null) {
                 Toast.makeText(getApplication().getBaseContext(), "결과를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
