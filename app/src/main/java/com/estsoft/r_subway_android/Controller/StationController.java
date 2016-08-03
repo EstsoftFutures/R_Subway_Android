@@ -9,7 +9,6 @@ import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -27,12 +26,19 @@ public class StationController {
 
     private static final String TAG = "StationController";
 
+    private static final int SHORT_ROUTE_WEIGHT = 0;
+    private static final int MINIMUM_TRANSFER_WEIGHT = 500;
+    private int USING_WEIGHT;
+
     private RealmResults<RealmStation> realmStationList = null;
     private Realm mRealm = null;
 
     private List<Station> deepCopiedStations = null;
 
-    private ArrayList<Pair<Station, Integer>> adj[] = null;
+
+    private ArrayList<Pair<Station, Integer>> shortestPathAdj[] = null;
+    private ArrayList<Pair<Station, Integer>> minTransferAdj[] = null;
+    private ArrayList<Pair<Station, Integer>> customAdj[] = null;
     private TtfXmlParserCost costParser;
     private InputStream inputStream;
 
@@ -43,18 +49,20 @@ public class StationController {
 
         deepCopyRealmStation();
 
-        adj = new ArrayList[ deepCopiedStations.size() ];
-        initializeAdj();
+        shortestPathAdj = initializeAdj(SHORT_ROUTE_WEIGHT);
+        minTransferAdj = initializeAdj(MINIMUM_TRANSFER_WEIGHT);
+        customAdj = initializeAdj(SHORT_ROUTE_WEIGHT);
 
     }
 
-    private void initializeAdj() throws IOException , XmlPullParserException {
+    private ArrayList<Pair<Station, Integer>>[] initializeAdj(int transferWeight) throws IOException , XmlPullParserException {
         if (costParser == null) {
             costParser = new TtfXmlParserCost(inputStream);
 //            stationTags = costParser.getStationTags();
         }
 
-        Log.d(TAG, "initializeAdj: " + adj.length);
+        ArrayList<Pair<Station, Integer>> adj[] = new ArrayList[ deepCopiedStations.size() ];
+
         for (int i = 0; i < adj.length; i++) {
 
             adj[i] = new ArrayList<>();
@@ -81,9 +89,15 @@ public class StationController {
             }
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
-                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), 50));
+                adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), transferWeight));
             }
+
+            if ( adj[i].size() == 0 ) {
+                Log.d(TAG, "StationController: " + station.getStationName() );
+            }
+            Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
         }
+        return adj;
     }
 
     private StationTag findMatchedStationTag( int stationId, String laneType ) {
@@ -211,6 +225,7 @@ public class StationController {
         for ( RealmStation rst : realmStationList ) {
             Station st = new Station( rst, null, getConLevel( rst.getStationID()) );
             deepCopiedStations.add( st );
+            Log.e(TAG, "deepCopyRealmStation: ," + st.getStationID() +", " +st.getStationName() + ", " + st.getAddress() );
         }
 //        for ( Station st : deepCopiedStations ) {
 //            Log.d(TAG, "deepCopyRealmStation: " + st.getIndex());
@@ -241,12 +256,19 @@ public class StationController {
         return null;
     }
 
-    public ArrayList<Pair<Station, Integer>>[] getAdj() {
-        return adj;
+    public ArrayList<Pair<Station, Integer>>[] getShortestPathAdj() {
+        return shortestPathAdj;
     }
 
+    public ArrayList<Pair<Station, Integer>>[] getMinTransferAdj() {
+        return minTransferAdj;
+    }
 
-    public Station getStation( int index ) {
+    public ArrayList<Pair<Station, Integer>>[] getCustomAdj() {
+        return customAdj;
+    }
+
+    public Station getStation(int index ) {
         return deepCopiedStations.get(index);
     }
 

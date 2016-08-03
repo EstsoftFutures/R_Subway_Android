@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -33,25 +31,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.estsoft.r_subway_android.Controller.RouteController;
 import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
-import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
-import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
-import com.estsoft.r_subway_android.Repository.StationRepository.TtfNode;
 import com.estsoft.r_subway_android.UI.MapTouchView.TtfMapImageView;
 import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
-import com.estsoft.r_subway_android.UI.StationInfo.TimeTableActivity;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
@@ -63,7 +57,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
 
@@ -101,7 +94,8 @@ public class MainActivity extends AppCompatActivity
     private Station startStation = null;
     private Station endStation = null;
 
-    private RouteNew normalRoute = null;
+    private RouteNew currentRoute = null;
+    private RouteNew[] routes = null;
     private RelativeLayout passMarkerMother = null;
     private List<ImageView> routeMarkers = null;
     private List<ImageView> transferMarkers = null;
@@ -382,7 +376,7 @@ public class MainActivity extends AppCompatActivity
             endStation = null;
             status = WAIT;
 
-            normalRoute = null;
+            currentRoute = null;
             if (routeMarkers != null) {
                 for (ImageView view : routeMarkers) {
                     view.setVisibility(View.GONE);
@@ -463,7 +457,7 @@ public class MainActivity extends AppCompatActivity
 
         hideSoftKeyboard(mapView);
 
-        if (normalRoute != null) {
+        if (currentRoute != null) {
             setRouteMarkerPosition();
         }
 
@@ -510,14 +504,14 @@ public class MainActivity extends AppCompatActivity
 
     private void setRouteMarkerPosition() {
 
-        if (routeMarkers == null || normalRoute == null) return;
+        if (routeMarkers == null || currentRoute == null) return;
         for (int i = 0; i < routeMarkers.size(); i++) {
 //            if (i == 0 || i == routeMarkers.size() - 1) continue;
             setImageMatrix(
 //                    routeMarkers.get(i - 1),
                     routeMarkers.get(i),
                     mapView.getMarkerRatio(),
-                    normalRoute.getStationByOrder(i).getMapPoint()
+                    currentRoute.getStationByOrder(i).getMapPoint()
             );
 
         }
@@ -687,15 +681,20 @@ public class MainActivity extends AppCompatActivity
     private void setStatus() {
         if (startStation != null && endStation != null) {
             status = FULL;
-            //RouteBottomSheet Call
-//            runBottomSheet(null, Route);
-            //MainActivity make Route Drawing
 
-//            normalRoute = routeController.getRoute(startStation, endStation);
-            normalRoute = routeController.getRouteNew(startStation, endStation);
+            // 수정
+//            currentRoute = routeController.getRouteNew(startStation, endStation);
+            routes = routeController.getRoutes(startStation, endStation);
 
-            inflateRouteNew(normalRoute);
-            runBottomSheet(null, normalRoute);
+            currentRoute = routes[1];
+
+            if (currentRoute == null) {
+                Toast.makeText(getApplication().getBaseContext(), "결과를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
+                setMarkerDefault(ALL_MARKERS);
+            } else {
+                inflateRouteNew(currentRoute);
+                runBottomSheet(null, currentRoute);
+            }
         } else {
             status = WAIT;
         }
@@ -747,43 +746,6 @@ public class MainActivity extends AppCompatActivity
         setRouteMarkerPosition();
 
     }
-
-
-   /* private void inflateRoute(Route route) {
-        if (routeMarkers == null) routeMarkers = new ArrayList<>();
-
-        for (int i = 0; i < route.getStationList().size(); i++) {
-            Log.d(TAG, "inflateRoute: " + ((Station)route.getStationList().get(i)).getStationName());
-            if (i == 0 || i == route.getStationList().size() - 1) {
-                continue;
-            }
-//            if ( ((Station)route.getStationList().get(i)).getStationID() == startStation.getStationID()
-//                    || ((Station)route.getStationList().get(i)).getStationID() == endStation.getStationID() ) {
-//                continue;
-//            }
-
-            Log.d(TAG, "inflateRoute: marker inflated." );
-            // Route Circle Inflate
-            ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
-            marker.setId(3000 + i);
-            for ( TtfNode st : normalRoute.getTransferStations() ) {
-                if ( ((Station)st).getStationName().equals(((Station) route.getStationList().get(i)).getStationName()) ) {
-                    marker.setImageResource(R.drawable.transfer_marker);
-                    marker.setId(4000 + i);
-                }
-            }
-            if (passMarkerMother != null) {
-                passMarkerMother.addView(marker);
-                marker.setVisibility(View.VISIBLE);
-                routeMarkers.add(marker);
-                //marker set Layout width, height using startMarker's LayoutParam
-                marker.setLayoutParams(markerList.get(0).getLayoutParams());
-
-            }
-        }
-        setRouteMarkerPosition();
-    }*/
-
 
 
     /*

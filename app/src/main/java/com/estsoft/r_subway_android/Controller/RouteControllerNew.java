@@ -5,7 +5,6 @@ import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
-import com.estsoft.r_subway_android.Repository.StationRepository.Route;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
@@ -43,11 +42,15 @@ public class RouteControllerNew {
 
     private boolean[] activeLaneArr = null;
 
+    private ArrayList<Pair<Station, Integer>>[] defaultAdj = null;
+
 
     public RouteControllerNew(StationController stationController, TtfMapImageView mapView, Context context) {
         this.stationController = stationController;
         this.mapView = mapView;
         this.context = context;
+
+        this.defaultAdj = stationController.getShortestPathAdj();
     }
 
     private void debugSections( List<List<Station>> sections ) {
@@ -102,19 +105,50 @@ public class RouteControllerNew {
     private void debugActiveLanes () {
         for ( int i = 0; i < SearchSetting.getActiveLanes().size(); i ++ ) {
             Log.d(TAG, "debugActiveLanes: " + SearchSetting.getActiveLanes().get(i).getName() +
-                    " /active? " + activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()]);
+                    " /inactive? " + activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()]);
         }
     }
 
-    public RouteNew getRouteNew( Station start, Station end ) {
+    public RouteNew[] getRoutes( Station start, Station end ) {
+        RouteNew[] routes = new RouteNew[3];
+        // getShortRoute
+
+        routes[0] = getRouteNew( start, end, stationController.getShortestPathAdj() );
+        // getShortRoute done
+
+        // getMinTransferRoute
+        defaultAdj = stationController.getMinTransferAdj();
+        routes[1] = getRouteNew( start, end, stationController.getMinTransferAdj() );
+        // getMinTransferRoute done
+
+        // getCustomRoute
+        defaultAdj = stationController.getShortestPathAdj();
+        routes[2] = getRouteNew( start, end, stationController.getCustomAdj() );
+        // getCustomRoute done
+
+        for (int i = 0; i < 3; i ++ ) {
+            Log.d(TAG, "getRoutes: " + routes[1].getTotalSize());
+        }
+
+        return routes;
+
+    }
+
+    private RouteNew getRouteNew( Station start, Station end, ArrayList<Pair<Station, Integer>>[] adj  ) {
+
+        inputCalendar = null;
 
         //SearchSetting
         initializeSettings();
+        ShortestPath.setLineRange( activeLaneArr );
         debugActiveLanes();
         //SearchSetting done
 
         // raw section making
-        int[] path = ShortestPath.getShortestPathByIntArray(stationController.getAdj(), start, end);
+        int[] path = ShortestPath.getShortestPathByIntArray(adj, start, end);
+        // if could not find Route
+        if (path.length == 0) return null;
+        // if could not find Route
         // listing path[]
         List<Integer> listPath = getListPath(path);
         // listing path[] end
@@ -237,7 +271,7 @@ public class RouteControllerNew {
         return sectionCalendars;
     }
     private Calendar getTimeGap( int stationIndex, int nextStationIndex, Calendar sharedTime ) {
-        ArrayList<Pair<Station, Integer>>[] adj = stationController.getAdj();
+        ArrayList<Pair<Station, Integer>>[] adj = defaultAdj;
         ArrayList<Pair<Station, Integer>> pairs = adj[stationIndex];
 
         Calendar caledGapCal = (Calendar)sharedTime.clone();
@@ -465,10 +499,13 @@ public class RouteControllerNew {
 
     private void initActiveLaneArr() {
         if ( activeLaneArr == null )  activeLaneArr = new boolean[112]; // false init
+//        for (int i = 0; i < activeLaneArr.length; i ++ ) {
+//            activeLaneArr[i] = true;
+//        }
 
         for (int i = 0; i < SearchSetting.getActiveLanes().size(); i ++) {
             activeLaneArr[ SearchSetting.getActiveLanes().get(i).getNumber() ] =
-                    SearchSetting.getActiveLanes().get(i).isActive();
+                    !(SearchSetting.getActiveLanes().get(i).isActive());
         }
     }
 

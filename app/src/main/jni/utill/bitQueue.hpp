@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <utility>
+#include <stl/_algobase.h>
 
 
 template <typename E>
@@ -40,7 +41,7 @@ private:
     }
 
 public:
-    bQueue(int MAX_SIZE = 50) : MAX_SIZE(MAX_SIZE)
+    bQueue(int MAX_SIZE = 10) : MAX_SIZE(MAX_SIZE)
     {
         arr = new E[MAX_SIZE];
     };
@@ -101,7 +102,7 @@ public:
     }
 
     void push(const std::pair<E ,int> &newValue);
-    std::pair<E, int> back();
+    std::pair<E, int> top();
     void pop();
     int size() const;
     bool empty() const;
@@ -159,7 +160,7 @@ void BitQueue<E>::push(const std::pair<E, int> &newValue)
 
 
 template <typename E>
-std::pair<E, int> BitQueue<E>::back()
+std::pair<E, int> BitQueue<E>::top()
 {
     for(int i = memo, idx = 0; i < MASK_SIZE; i++)
     {
@@ -185,6 +186,11 @@ std::pair<E, int> BitQueue<E>::back()
 template <typename E>
 void BitQueue<E>::pop()
 {
+    if(size_ == 0)
+        return;
+
+    size_--;
+
     for(int i = memo, idx = 0; i < MASK_SIZE; i++)
     {
 #if MAX_SIZE < MAX_64
@@ -199,8 +205,10 @@ void BitQueue<E>::pop()
             memo = i;
             table[offset].pop();
             if(table[offset].isEmpty())
+            {
                 offMaskBit(offset);
-            size_--;
+            }
+
             break;
         }
     }
@@ -215,18 +223,7 @@ int BitQueue<E>::size() const
 template <typename E>
 bool BitQueue<E>::empty() const
 {
-    for(int i = memo, idx = 0; i < MASK_SIZE; i++)
-    {
-#if MAX_SIZE < MAX_64
-        i = __builtin_ctzll(MASK_TABLE);
-        idx = __builtin_ctzll(mask[i]);
-#else
-        idx = __builtin_ctzll(mask[i]);
-#endif
-        if(idx || mask[i] != 0LL)
-            return false;
-    }
-    return true;
+    return size_ == 0;
 }
 
 template <typename E>
