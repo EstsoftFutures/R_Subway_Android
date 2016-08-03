@@ -12,8 +12,8 @@ import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 public class RoutePagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[]{"최단경로", "최소환승", "Custom",};
-    private RouteNew route;
-    public RoutePagerAdapter(FragmentManager fm, RouteNew route) {
+    private RouteNew[] route;
+    public RoutePagerAdapter(FragmentManager fm, RouteNew[] route) {
         super(fm);
         this.route = route;
 

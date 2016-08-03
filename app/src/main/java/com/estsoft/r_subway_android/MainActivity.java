@@ -562,7 +562,7 @@ public class MainActivity extends AppCompatActivity
     /*
     BottomSheets
     */
-    public void runBottomSheet(List<Station> exStations, RouteNew route) {
+    public void runBottomSheet(List<Station> exStations, RouteNew[] route) {
 //    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
