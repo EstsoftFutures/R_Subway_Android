@@ -221,7 +221,20 @@ public class InteractionListener implements
 
         @Override
         public void onPageSelected(int position) {
-            host.setCurPage(position);
+            switch ( position ) {
+                case 0 :
+                    host.setCurrentRoute( position, host.SHORT_ROUTE );
+                    break;
+                case 1 :
+                    host.setCurrentRoute( position, host.MIN_TRANSFER );
+                    break;
+                case 2 :
+                    host.setCurrentRoute( position, host.CUSTOM_ROUTE );
+                    break;
+                default:
+                    host.setCurrentRoute( position, host.DEFAULT_ROUTE );
+                    break;
+            }
             Log.d("pager","====================>"+host.getCurPage());
         }
 

@@ -16,7 +16,7 @@
 
 using namespace std;
 
-jintArray shortestPath(JNIEnv *env, Station end, const vector<int>& parent);
+jintArray shortestPath(JNIEnv *env, Station start ,Station end, const vector<int>& parent);
 void loadAdjByObjArray(JNIEnv *env, jobjectArray obj);
 jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int weight);
 bool hasAdjGraph();
@@ -32,100 +32,101 @@ Logger logger;
 
 extern "C"
 {
-    JNIEXPORT void JNICALL
-    Java_com_estsoft_r_1subway_1android_utility_ShortestPath_setLineRange(JNIEnv *env, jclass type,
-                                                                          jbooleanArray isExcept_) {
-        jboolean *isExceptj = env->GetBooleanArrayElements(isExcept_, NULL);
+JNIEXPORT void JNICALL
+Java_com_estsoft_r_1subway_1android_utility_ShortestPath_setLineRange(JNIEnv *env, jclass type,
+                                                                      jbooleanArray isExcept_) {
+    jboolean *isExceptj = env->GetBooleanArrayElements(isExcept_, NULL);
 
-        for(int i = 0; i < 113; i++)
-            isExcept[i] = isExceptj[i];
-
-        // TODO
-
-        env->ReleaseBooleanArrayElements(isExcept_, isExceptj, 0);
-    }
+    for(int i = 0; i < 113; i++)
+        isExcept[i] = isExceptj[i];
 
 
-    JNIEXPORT jintArray JNICALL
-    Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getShortestPathByIntArray(JNIEnv *env, jclass type, jobjectArray a, jobject start, jobject end)
-    {
-        // TODO Return the shortest path as an integer array receives input the departure station and arrival station.
+    // TODO
 
-        // convert the graph
-        if(!hasAdjGraph())
-            loadAdjByObjArray(env, a);
-
-        // Bring the class type of Station.
-        jclass clsStation = env->FindClass("com/estsoft/r_subway_android/Repository/StationRepository/Station");
-        // Bring the fieldID of Station.
-        jfieldID filedIndex = env->GetFieldID(clsStation, "index", "I");
-        jfieldID filedStationName = env->GetFieldID(clsStation, "stationName" , "Ljava/lang/String;");
-        jstring jStartname = (jstring) env->GetObjectField(start, filedStationName);
-        jstring jEndname = (jstring) env->GetObjectField(end, filedStationName);
-
-        jboolean isSucceed;
-        string startName = env->GetStringUTFChars(jStartname, &isSucceed);
-        string endName = env->GetStringUTFChars(jEndname, &isSucceed);
+    env->ReleaseBooleanArrayElements(isExcept_, isExceptj, 0);
+}
 
 
-        // Bring the Station
-        int startIdx = env->GetIntField(start, filedIndex);
-        int endIdx = env->GetIntField(end, filedIndex);
-        // using the dijkstra algorithm.
+JNIEXPORT jintArray JNICALL
+Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getShortestPathByIntArray(JNIEnv *env, jclass type, jobjectArray a, jobject start, jobject end)
+{
+    // TODO Return the shortest path as an integer array receives input the departure station and arrival station.
 
-        // return is testing
-        Station startS(startIdx);
-        Station endS(endIdx);
+    // convert the graph
+    if(!hasAdjGraph())
+        loadAdjByObjArray(env, a);
 
-        startS.setStationName(startName);
-        endS.setStationName(endName);
+    // Bring the class type of Station.
+    jclass clsStation = env->FindClass("com/estsoft/r_subway_android/Repository/StationRepository/Station");
+    // Bring the fieldID of Station.
+    jfieldID filedIndex = env->GetFieldID(clsStation, "index", "I");
+    jfieldID filedStationName = env->GetFieldID(clsStation, "stationName" , "Ljava/lang/String;");
+    jstring jStartname = (jstring) env->GetObjectField(start, filedStationName);
+    jstring jEndname = (jstring) env->GetObjectField(end, filedStationName);
 
-        //startS.setStationName()
-
-        return dijkstra(env ,startS, endS, 30);
-
-    }
-
-    JNIEXPORT jintArray JNICALL
-    Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getMinimumTransferPathByIntArray(
-            JNIEnv *env, jclass type, jobjectArray a, jobject start, jobject end)
-    {
-
-        // TODO Return the minimum transfer path as an integer array receives input the departure station and arrival station.
-
-        if(!hasAdjGraph())
-            loadAdjByObjArray(env, a);
-
-        // Bring the class type of Station.
-        jclass clsStation = env->FindClass("com/estsoft/r_subway_android/Repository/StationRepository/Station");
-        // Bring the fieldID of Station.
-        jfieldID filedIndex = env->GetFieldID(clsStation, "index", "I");
-        jfieldID filedStationName = env->GetFieldID(clsStation, "stationName" , "Ljava/lang/String;");
-        jstring jStartname = (jstring) env->GetObjectField(start, filedStationName);
-        jstring jEndname = (jstring) env->GetObjectField(end, filedStationName);
-
-        jboolean isSucceed;
-        string startName = env->GetStringUTFChars(jStartname, &isSucceed);
-        string endName = env->GetStringUTFChars(jEndname, &isSucceed);
+    jboolean isSucceed;
+    string startName = env->GetStringUTFChars(jStartname, &isSucceed);
+    string endName = env->GetStringUTFChars(jEndname, &isSucceed);
 
 
-        // Bring the Station
-        int startIdx = env->GetIntField(start, filedIndex);
-        int endIdx = env->GetIntField(end, filedIndex);
-        // using the dijkstra algorithm.
+    // Bring the Station
+    int startIdx = env->GetIntField(start, filedIndex);
+    int endIdx = env->GetIntField(end, filedIndex);
+    // using the dijkstra algorithm.
 
-        // return is testing
-        Station startS(startIdx);
-        Station endS(endIdx);
+    // return is testing
+    Station startS(startIdx);
+    Station endS(endIdx);
 
-        startS.setStationName(startName);
-        endS.setStationName(endName);
+    startS.setStationName(startName);
+    endS.setStationName(endName);
 
-        // using the dijkstra algorithm.
-        //dijkstra(env ,Station(startIdx), Station(endIdx));
-        return dijkstra(env ,startS, endS, 300);
+    //startS.setStationName()
 
-    }
+    return dijkstra(env ,startS, endS, 30);
+
+}
+
+JNIEXPORT jintArray JNICALL
+Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getMinimumTransferPathByIntArray(
+        JNIEnv *env, jclass type, jobjectArray a, jobject start, jobject end)
+{
+
+    // TODO Return the minimum transfer path as an integer array receives input the departure station and arrival station.
+
+    if(!hasAdjGraph())
+        loadAdjByObjArray(env, a);
+
+    // Bring the class type of Station.
+    jclass clsStation = env->FindClass("com/estsoft/r_subway_android/Repository/StationRepository/Station");
+    // Bring the fieldID of Station.
+    jfieldID filedIndex = env->GetFieldID(clsStation, "index", "I");
+    jfieldID filedStationName = env->GetFieldID(clsStation, "stationName" , "Ljava/lang/String;");
+    jstring jStartname = (jstring) env->GetObjectField(start, filedStationName);
+    jstring jEndname = (jstring) env->GetObjectField(end, filedStationName);
+
+    jboolean isSucceed;
+    string startName = env->GetStringUTFChars(jStartname, &isSucceed);
+    string endName = env->GetStringUTFChars(jEndname, &isSucceed);
+
+
+    // Bring the Station
+    int startIdx = env->GetIntField(start, filedIndex);
+    int endIdx = env->GetIntField(end, filedIndex);
+    // using the dijkstra algorithm.
+
+    // return is testing
+    Station startS(startIdx);
+    Station endS(endIdx);
+
+    startS.setStationName(startName);
+    endS.setStationName(endName);
+
+    // using the dijkstra algorithm.
+    //dijkstra(env ,Station(startIdx), Station(endIdx));
+    return dijkstra(env ,startS, endS, 300);
+
+}
 
 //    JNIEXPORT jintArray JNICALL
 //    Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getParticularRoutePathByIntArray(
@@ -160,7 +161,7 @@ extern "C"
 
 jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int weight)
 {
- //   logger.logE("종료역 이름이다.", end.getStationName());
+    //   logger.logE("종료역 이름이다.", end.getStationName());
     vector<int> dist(MAX, INT32_MAX);
     vector<int> parent(MAX, -1);
     dist[start.index] = 0;
@@ -204,7 +205,7 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
             if(here.getStationName() == there.getStationName() &&
                here.getStationName() != end.getStationName()   &&
                here.getStationName() != start.getStationName() &&
-                    weight)
+               weight)
             {
                 nextDist += weight;
             }
@@ -223,27 +224,21 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
         }
     }
 
-    bool pathFail = true;
-
-    for(int i = 0; i < parent.size(); i++)
-        if(parent[i] == end.index)
-        {
-            pathFail = false;
-            break;
-        }
-
-    // 경로가 없다면 빈 배열을 반환한다.
-    if(pathFail)
-        return env->NewIntArray(0);
-
     //memset(isExcept, 0, sizeof(isExcept));
 
-    return shortestPath(env, end, parent);
+    return shortestPath(env, start ,end, parent);
 }
 
-jintArray shortestPath(JNIEnv *env, Station end, const vector<int>& parent)
+jintArray shortestPath(JNIEnv *env, Station start ,Station end, const vector<int>& parent)
 {
+
+
+    if(parent[end.index] == -1)
+        return env->NewIntArray(0);
+
+
     int v = end.index;
+
     vector<int> path(1, v);
     while(parent[v]!= v)
     {
@@ -256,6 +251,7 @@ jintArray shortestPath(JNIEnv *env, Station end, const vector<int>& parent)
     jint tempArr[path.size()];
     for(int i = 0; i < path.size(); i++)
         tempArr[i] = path[i];
+
     env->SetIntArrayRegion(shortestPathIntArray, 0, path.size(), tempArr);
 
     return shortestPathIntArray;
@@ -353,4 +349,3 @@ bool hasAdjGraph()
     if(!adj[500].size()) return false;
     return true;
 }
-

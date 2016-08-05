@@ -75,6 +75,13 @@ public class Station extends TtfNode {
         copyFromRealmStationLite( );
     }
 
+    private Station() {
+        super( 0, 0+"", null );
+    }
+    public static Station getEmptyStation() {
+        return new Station();
+    }
+
     public void copyFromRealmStationLite(  ) {
 
         index = realmStation.getIndex();

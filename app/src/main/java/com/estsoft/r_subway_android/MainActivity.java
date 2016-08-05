@@ -71,7 +71,13 @@ public class MainActivity extends AppCompatActivity
     public int status = WAIT;
 
     public static final int ALL_MARKERS = 0;
-    public static final int ACTI_MARKER = 1;
+    public static final int ACT_MARKER = 1;
+    public static final int REINFLATE_MARKER = 2;
+
+    public static final int SHORT_ROUTE = 10;
+    public static final int MIN_TRANSFER = 11;
+    public static final int CUSTOM_ROUTE = 12;
+    public static final int DEFAULT_ROUTE = 13;
 
     private InteractionListener interactionListener = null;
 
@@ -112,7 +118,8 @@ public class MainActivity extends AppCompatActivity
     ExpandableListView expListView;
     SearchSetting searchSetting;
 
-    private static int curPage;
+    private int curPage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -375,8 +382,8 @@ public class MainActivity extends AppCompatActivity
             startStation = null;
             endStation = null;
             status = WAIT;
-
             currentRoute = null;
+
             if (routeMarkers != null) {
                 for (ImageView view : routeMarkers) {
                     view.setVisibility(View.GONE);
@@ -387,13 +394,30 @@ public class MainActivity extends AppCompatActivity
 
             applyMapScaleChange();
 
-        } else if (markerMode == ACTI_MARKER) {
+        } else if ( markerMode == ACT_MARKER ) {
             setMarkerVisibility(markerList.get(0), false);
             activeStation = null;
             if (findViewById(R.id.station_bottomSheet) != null) {
                 stationBottomSheet.dismissSheet();
             }
-        } else {
+        } else if ( markerMode == REINFLATE_MARKER ){
+
+            for (View marker : markerList) {
+                setMarkerVisibility(marker, false);
+            }
+
+            activeStation = null;
+            currentRoute = null;
+
+            if (routeMarkers != null) {
+                for (ImageView view : routeMarkers) {
+                    view.setVisibility(View.GONE);
+                    passMarkerMother.removeView(view);
+                }
+            }
+            routeMarkers = null;
+
+            applyMapScaleChange();
 
         }
     }
@@ -697,7 +721,7 @@ public class MainActivity extends AppCompatActivity
                 setMarkerDefault(ALL_MARKERS);
             } else {
                 inflateRouteNew(currentRoute);
-                runBottomSheet(null, currentRoute);
+                runBottomSheet(null, routes);
             }
         } else {
             status = WAIT;
@@ -712,6 +736,7 @@ public class MainActivity extends AppCompatActivity
         int count = 0;
         for ( List<Station> section : route.getSections() ) {
             for ( int i = 0 ; i < section.size(); i ++ ) {
+                Log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
                     marker.setImageResource( R.drawable.start_marker );
@@ -780,11 +805,34 @@ public class MainActivity extends AppCompatActivity
         return stationController;
     }
 
-    public static int getCurPage() {
+    public int getCurPage() {
         return curPage;
     }
 
-    public static void setCurPage(int curPage) {
-        MainActivity.curPage = curPage;
+    public void setCurrentRoute( int curPage, int mode ) {
+
+        this.curPage = curPage;
+
+        setMarkerDefault(REINFLATE_MARKER);
+//        getRouteBottomSheet().dismissSheet();
+
+        switch ( mode ) {
+            case SHORT_ROUTE:
+                currentRoute = routes[0];
+                break;
+            case MIN_TRANSFER:
+                currentRoute = routes[1];
+                break;
+            case CUSTOM_ROUTE:
+                currentRoute = routes[2];
+                break;
+            default:
+                currentRoute = routes[0];
+                break;
+
+        }
+
+        inflateRouteNew(currentRoute);
+//        runBottomSheet(null, routes);
     }
 }
