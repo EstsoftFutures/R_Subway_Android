@@ -32,6 +32,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     OnItemClickListener mItemClickListener;
     RouteNew[] route;
     private int mPage;
+
     public RouteRecyclerViewAdapter(FragmentActivity mActivity, RouteNew[] route, int mPage) {
         this.mActivity = mActivity;
         this.route = route;
@@ -115,7 +116,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
                         TextView routeNumStations = new TextView(mActivity);
                         routeNumStations.setTextColor(Color.BLACK);
-                        routeNumStations.setText("" + route[mPage].getSections().get(i).size() + "개 역");
+                        if (route[mPage].getExpressSectionIndex().get(i)) {
+                            routeNumStations.setText("" + route[mPage].getSections().get(i).size() + "개 역(급행)");
+                        } else {
+                            routeNumStations.setText("" + route[mPage].getSections().get(i).size() + "개 역");
+                        }
                         routeNumStations.setTextSize(16);
                         routeNumStations.setLayoutParams(llp6);
 
@@ -276,7 +281,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         int hour = (int) parsedMinute / 60;
         int minute = (int) parsedMinute - hour * 60;
 
-        if(hour == 0 ) return minute+"분";
+        if (hour == 0) return minute + "분";
         return hour + "시간 " + minute + "분";
     }
 
