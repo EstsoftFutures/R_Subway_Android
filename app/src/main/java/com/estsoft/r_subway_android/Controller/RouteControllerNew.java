@@ -42,6 +42,8 @@ public class RouteControllerNew {
 
     private Boolean isExpress;
 
+    private Boolean expressFirst;
+
     private boolean[] activeLaneArr = null;
 
     private ArrayList<Pair<Station, Integer>>[] defaultAdj = null;
@@ -245,6 +247,9 @@ public class RouteControllerNew {
             Station station = section.get(i);
             if ( RouteNew.isExpressStation( station.getStationID() ) )
                 removedSection.add( station );
+            else {
+                Log.d(TAG, "getNoneExRemovedSection: " + station.getStationName() + "is deleting");
+            }
         }
         return removedSection;
     }
@@ -347,11 +352,22 @@ public class RouteControllerNew {
             String terminalName = timeString[1].replace(")", "");
             Log.d(TAG, "getTimeTable: " + terminalName );
             Log.d(TAG, "checkTerminalName: " + station.getStationName());
-            if ( timeMinute >= minute && checkTerminalName(terminals, terminalName)) {
-                newCal.set(Calendar.MINUTE, timeMinute);
-                // 전역변수 isExpress
-                isExpress = (Boolean)timeMap.get("isExpress");
-                break;
+
+            boolean tmpIsExpress = (Boolean)timeMap.get("isExpress");
+            if (expressFirst && RouteNew.isExpressStation(station.getStationID())) {
+                if ( timeMinute >= minute && checkTerminalName(terminals, terminalName) && tmpIsExpress ) {
+                    newCal.set(Calendar.MINUTE, timeMinute);
+                    // 전역변수 isExpress
+                    isExpress = tmpIsExpress;
+                    break;
+                }
+            } else {
+                if ( timeMinute >= minute && checkTerminalName(terminals, terminalName) ) {
+                    newCal.set(Calendar.MINUTE, timeMinute);
+                    // 전역변수 isExpress
+                    isExpress = tmpIsExpress;
+                    break;
+                }
             }
         }
 
@@ -402,7 +418,16 @@ public class RouteControllerNew {
             // 2호선 원형 성수역 탈출
             if ( nextStation.getStationID() == 211 ) return;
             // 6호선 원형 응암 탈출
-            if ( nextStation.getStationID() == 610 ) return;
+            if ( nextStation.getStationID() == 610 ) {
+                Station tmpStation = Station.getEmptyStation();
+                tmpStation.setLaneType(6);
+                if (isPrevWay) tmpStation.setStationName("봉화산-역촌");
+                else tmpStation.setStationName("봉화산-새절");
+                findingTerminal( tmpStation );
+                // 6호선일 경우, 무조건 봉화산 Terminal 입력
+                findingTerminal( stationController.getDeepStation( 647 ) );
+                return;
+            }
 
             recursiveFindingTerminal(nextStation, isPrevWay);
         }
@@ -513,7 +538,11 @@ public class RouteControllerNew {
     }
 
     private void initializeSettings(){
+
         initActiveLaneArr();
+
+        expressFirst = SearchSetting.isActiveExpressOnly();
+
     }
 
 }
