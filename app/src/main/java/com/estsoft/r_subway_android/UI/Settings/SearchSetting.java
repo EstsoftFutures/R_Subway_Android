@@ -32,8 +32,6 @@ public class SearchSetting {
 
     public void createGroupList() {
         groupList = new ArrayList<String>();
-        groupList.add("시간혼잡도");
-        groupList.add("위험역 제거");
         groupList.add("급행 열차");
         groupList.add("검색노선 설정");
 

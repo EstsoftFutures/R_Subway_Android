@@ -254,20 +254,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.useInfo.setVisibility(View.VISIBLE);
                 break;
 
+
             case 5:
-
-                holder.infoName.setText("급행열차");
-                holder.stationInfo.setText("급행열차정보");
-                holder.useInfo.setVisibility(View.GONE);
-                holder.curInfo.setVisibility(View.GONE);
-                holder.goToTimetable.setVisibility(View.GONE);
-                holder.stationDefaultInfo.setVisibility(View.GONE);
-                break;
-
-            case 6:
                 holder.infoName.setText("실시간 현재 역 정보");
-                holder.stationInfo.setText("역 내 정보 알림 필요시 남길 것 _ CRAWLING");
-                holder.stationDefaultInfo.setVisibility(View.GONE);
+                holder.stationInfo.setText("현재 서울역 공사로 인해 경의중앙선 이용불가");
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 break;
@@ -280,7 +270,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (stations.get(page) != null) return 7;
+        if (stations.get(page) != null) return 6;
         return 0;
     }
 
