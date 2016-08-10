@@ -11,13 +11,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.R;
+import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Administrator on 2016-07-04.
@@ -52,15 +60,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        Calendar curTime = new GregorianCalendar();
         switch (position) {
             case 0:
 
                 //이전역
                 if (stations.get(page).getPrevStations().size() != 0) {
                     holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
-                    holder.preTime1.setText("00행 00분");
-                    holder.preTime2.setText("00행 00분");
+                    Map prevTime = getTime(stations.get(page),true,curTime);
+                    Map prevTime2 = getTime(stations.get(page),true,(Calendar)prevTime.get("time"));
+                    int gapTime1 = ((Calendar)prevTime.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
+                    if(gapTime1<0) gapTime1 +=60;
+                    int gapTime2 = ((Calendar)prevTime2.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
+                    if(gapTime2<0) gapTime2 +=60;
+                    holder.preTime1.setText(prevTime.get("terminalName")+"행 "+gapTime1+"분 후");
+                    holder.preTime2.setText(prevTime2.get("terminalName")+"행 "+gapTime2+"분 후");
                 } else {
                     holder.preStation.setText("");
                     holder.preTime1.setText("-");
@@ -73,8 +87,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // 다음역
                 if (stations.get(page).getNextStations().size() != 0) {
                     holder.nextStation.setText("" + stations.get(page).getNextStations().get(0).getStationName());
-                    holder.nextTime1.setText("00행 00분");
-                    holder.nextTime2.setText("00행 00분");
+                    Map nextTime = getTime(stations.get(page),false,curTime);
+                    Map nextTime2 = getTime(stations.get(page),false,(Calendar) nextTime.get("time"));
+
+                    int nextGapTime1 = ((Calendar)nextTime.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
+                    if(nextGapTime1<0) nextGapTime1 +=60;
+                    int nextGapTime2 = ((Calendar)nextTime2.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
+                    if(nextGapTime2<0) nextGapTime2 +=60;
+                    holder.nextTime1.setText(nextTime.get("terminalName")+"행 "+nextGapTime1+"분 후");
+                    holder.nextTime2.setText(nextTime2.get("terminalName")+"행 "+nextGapTime2+"분 후");
                 } else {
                     holder.nextStation.setText("");
                     holder.nextTime1.setText("-");
@@ -233,20 +254,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.useInfo.setVisibility(View.VISIBLE);
                 break;
 
+
             case 5:
-
-                holder.infoName.setText("급행열차");
-                holder.stationInfo.setText("급행열차정보");
-                holder.useInfo.setVisibility(View.GONE);
-                holder.curInfo.setVisibility(View.GONE);
-                holder.goToTimetable.setVisibility(View.GONE);
-                holder.stationDefaultInfo.setVisibility(View.GONE);
-                break;
-
-            case 6:
                 holder.infoName.setText("실시간 현재 역 정보");
-                holder.stationInfo.setText("역 내 정보 알림 필요시 남길 것 _ CRAWLING");
-                holder.stationDefaultInfo.setVisibility(View.GONE);
+                holder.stationInfo.setText("현재 서울역 공사로 인해 경의중앙선 이용불가");
                 holder.curInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 break;
@@ -259,7 +270,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (stations.get(page) != null) return 7;
+        if (stations.get(page) != null) return 6;
         return 0;
     }
 
@@ -333,5 +344,80 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mItemClickListener = mItemClickListener;
     }
 
+public Map getTime(Station curStation,boolean isPrevWay, Calendar time){
+    Calendar newCal = (Calendar)time.clone();
+    Calendar compareCal = (Calendar)time.clone();
+    Map<String, Object> returnTime = new HashMap<>();
+    String terminalName = "";
+    JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(mActivity ,curStation.getStationID());
+    StationTimetable stt = jsonTimetableParser.getStationTimetable();
+
+    ArrayList<HashMap<String, Object>>[] timeTable;
+    String key;
+    int day = newCal.get(Calendar.DAY_OF_WEEK);
+    switch ( day ) {
+        case 1 :
+            if (isPrevWay) {
+                timeTable = stt.getSunUpWayLdx();
+                key = "sunUpWayLdx";
+            }
+            else {
+                timeTable = stt.getSunDownWayLdx();
+                key = "sunDownWayLdx";
+            }
+            break;
+        case 7 :
+            if (isPrevWay) {
+                timeTable = stt.getSatUpWayLdx();
+                key = "satUpWayLdx";
+            }
+            else{
+                timeTable = stt.getSatDownWayLdx();
+                key = "satDownWayLdx";
+            }
+            break;
+        default:
+            if (isPrevWay){
+                timeTable = stt.getOrdUpWayLdx();
+                key = "ordUpWayLdx";
+            }
+            else {
+                timeTable = stt.getOrdDownWayLdx();
+                key = "ordDownWayLdx";
+            }
+            break;
+    }
+    int hour = newCal.get(Calendar.HOUR_OF_DAY);
+    int hourIndex = hour - 5 < 0 ? hour - 5 + 19 : hour - 5;
+    ArrayList<HashMap<String, Object>> timeList = timeTable[hourIndex];
+
+    int minute = newCal.get(Calendar.MINUTE);
+
+//        Log.d(TAG, "getTimeTable: " + timeList.size());
+    for ( int i = 0; i < timeList.size(); i ++ ) {
+        HashMap<String, Object> timeMap = timeList.get(i);
+        String timeString[] = ((String)timeMap.get( key )).split("\\(");
+        int timeMinute = Integer.parseInt(timeString[0]);
+        Log.d(TAG, "getTimeTable: " + timeMinute);
+        terminalName = timeString[1].replace(")", "");
+        Log.d(TAG, "getTimeTable: " + terminalName );
+        Log.d(TAG, "checkTerminalName: " + curStation.getStationName());
+
+            if ( timeMinute > minute ) {
+                newCal.set(Calendar.MINUTE, timeMinute);
+                // 전역변수 isExpress
+                break;
+            }
+    }
+
+    if (!newCal.equals(compareCal)){
+        returnTime.put("terminalName", terminalName);
+        returnTime.put("time",newCal);
+        return returnTime;
+    }else {
+        newCal.set( Calendar.MINUTE, 60 );
+        return getTime(curStation,isPrevWay, newCal);
+    }
+}
 
 }

@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.R;
@@ -68,6 +71,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter implements PagerSlid
             default: return imageResId[0];
 
         }
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        Fragment view = (Fragment) object;
+        ((ViewPager) container).removeView(view.getView());
+        view = null;
     }
 
     @Override
