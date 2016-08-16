@@ -34,7 +34,7 @@ public class StationInfoFragment extends Fragment {
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
     ArrayList<Integer> stationIDs = new ArrayList<>();
-    static RecyclerViewAdapter adapter;
+    public static RecyclerViewAdapter adapter;
     static List<Station> stations;
 
     public StationInfoFragment() {

@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
+import com.estsoft.r_subway_android.Crawling.ServerConnection;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
@@ -45,8 +47,10 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.UI.StationInfo.StationInfoFragment;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
+import com.estsoft.r_subway_android.listener.ServerConnectionListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
@@ -98,6 +102,8 @@ public class MainActivity extends AppCompatActivity
     private Station activeStation = null;
     private Station startStation = null;
     private Station endStation = null;
+
+    private ServerConnection mServerConnection = null;
 
     private RouteNew currentRoute = null;
     private RouteNew[] routes = null;
@@ -152,7 +158,6 @@ public class MainActivity extends AppCompatActivity
 
         stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
-        routeBottomSheet.addOnSheetDismissedListener(interactionListener);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -234,6 +239,9 @@ public class MainActivity extends AppCompatActivity
         routeController = new RouteControllerNew( stationController, mapView, this );
 
 //        mapView.setSemiStationLaneNumber( stationController );
+
+        mServerConnection = new ServerConnection(this);
+
     }
 
 
@@ -458,6 +466,8 @@ public class MainActivity extends AppCompatActivity
             runBottomSheet(stationController.getExStations(activeStation), null);
 //            runBottomSheet(activeStation, null);
             stationController.getExStations(activeStation);
+
+
         }
     }
 
@@ -589,6 +599,7 @@ public class MainActivity extends AppCompatActivity
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+        routeBottomSheet.addOnSheetDismissedListener(interactionListener);
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
                  LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
@@ -617,6 +628,10 @@ public class MainActivity extends AppCompatActivity
             TextView arrive = (TextView) findViewById(R.id.Arrive);
             start.setOnClickListener(interactionListener);
             arrive.setOnClickListener(interactionListener);
+
+            // getting Server AccidentInfo
+            mServerConnection.getAccidentInfo(activeStation);
+            Log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
 
 //            Log.d("----------->", start.getText().toString());
 //            Log.d("----------->", arrive.getText().toString());
@@ -836,5 +851,9 @@ public class MainActivity extends AppCompatActivity
 
         inflateRouteNew(currentRoute);
 //        runBottomSheet(null, routes);
+    }
+
+    public void setStationStatus( int status ) {
+        StationInfoFragment.adapter.setStationStatus( status );
     }
 }

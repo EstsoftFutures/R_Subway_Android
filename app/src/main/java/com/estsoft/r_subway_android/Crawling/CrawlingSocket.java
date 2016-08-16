@@ -1,5 +1,7 @@
 package com.estsoft.r_subway_android.Crawling;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +12,9 @@ import java.net.Socket;
  * Created by estsoft on 2016-08-10.
  */
 public class CrawlingSocket extends Thread {
+
+    private static final String TAG = "CrawlingSocket";
+
     private String serverAddr = "222.239.250.207";
     private int port = 11011;
     private String stationName;
@@ -21,21 +26,28 @@ public class CrawlingSocket extends Thread {
 
     @Override
     public void run() {
+        Socket socket = null;
         try {
-            Socket socket = new Socket(serverAddr, port);
+            socket = new Socket(serverAddr, port);
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             outputStream.writeUTF(stationName);
             outputStream.flush();
-
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
             accidentInfo = input.readLine();
+            Log.d(TAG, "run: " + accidentInfo);
+            socket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } catch (Exception ex ) {
+            ex.printStackTrace();
+        } finally {
+            accidentInfo = "Server Connection Fail";
+            Log.d(TAG, "run: " + accidentInfo);
         }
     }
 
     public String getAccidentInfo() {
+        Log.d(TAG, "getAccidentInfo: Call getAccidentInfo" );
         return accidentInfo;
     }
 
