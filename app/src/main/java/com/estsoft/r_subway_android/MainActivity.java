@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -46,9 +45,9 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
-import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity
 
         stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
-
+        routeBottomSheet.addOnSheetDismissedListener(interactionListener);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -246,7 +245,6 @@ public class MainActivity extends AppCompatActivity
         final MenuItem searchMenu = menu.findItem(R.id.menu_search);
         final SearchView searchView = (SearchView) searchMenu.getActionView();
 
-
         interactionListener.setMenu(menu);
 //        searchView.setIconifiedByDefault(false);
         searchView.onActionViewExpanded();
@@ -290,12 +288,7 @@ public class MainActivity extends AppCompatActivity
 
         LinearLayout searchPlate = (LinearLayout)searchView.findViewById(R.id.search_plate);
         EditText mSearchEditText = (EditText)searchPlate.findViewById(R.id.search_src_text);
-        mSearchEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG,"searchtextview");
-            }
-        });
+        mSearchEditText.setOnClickListener(interactionListener);
 
         searchView.setSubmitButtonEnabled(false);
         searchView.setQueryHint("역검색");
@@ -350,10 +343,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void itemClick(SemiStation semiStation) {
-        setActiveStation( semiStation );
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
-        list.setVisibility(View.GONE);
+        ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
         hideSoftKeyboard(mapView);
+        if (status == FULL) {       
+            setMarkerDefault(ALL_MARKERS);
+            routeBottomSheet.dismissSheet();
+        }
+
+        setActiveStation( semiStation );
 
         Log.d(TAG, "itemClick: ");
     }
@@ -809,7 +807,11 @@ public class MainActivity extends AppCompatActivity
         return curPage;
     }
 
-    public void setCurrentRoute( int curPage, int mode ) {
+    public TtfMapImageView getMapView() {
+        return mapView;
+    }
+
+    public void setCurrentRoute(int curPage, int mode ) {
 
         this.curPage = curPage;
 

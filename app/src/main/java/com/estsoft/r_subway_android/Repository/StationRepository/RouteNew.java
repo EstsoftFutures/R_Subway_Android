@@ -50,7 +50,8 @@ public class RouteNew {
             { "문산", "청량리", "능곡", "용산", "용문", "일산", "덕소", "수색", "서울역", "팔당", "대곡", "신촌",  }, //경의중앙
             { "서울역", "디지털미디어시티", "인천국제공항", "검암",  }, //공항선
             { "발곡", "탑석" }, //경전철
-            { "기흥", "전대.에버랜드" } //에버라인
+            { "기흥", "전대.에버랜드" }, //에버라인
+            { "인천국제공항", "용유"} //자기부상
     };
     private static int[] crazy2laneStationIDs = {
             251, 252, 253, 254, // 신설동 방면
@@ -90,11 +91,14 @@ public class RouteNew {
             case 101 : return 15;
             case 110 : return 16;
             case 107 : return 17;
+            case 102 : return 18;
             default : return -1;
         }
     }
     public static boolean compareTerminalName( String stationName, int laneType ) {
+        Log.d(TAG, "compareTerminalName: " + laneType);
         String[] laneTerminalNames = terminalStationNames[ getLineIndex(laneType) ];
+        if (stationName.contains("(")) stationName = stationName.substring(0, stationName.indexOf("("));
         for (int i = 0; i < laneTerminalNames.length; i ++ ) {
             if (laneTerminalNames[i].equals( stationName )) return true;
         }

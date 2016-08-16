@@ -63,6 +63,10 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
             if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition());
             }
+
+
+
+
         }
     }
 

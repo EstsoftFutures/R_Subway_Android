@@ -434,6 +434,7 @@ public class RouteControllerNew {
     }
     private void findingTerminal ( Station nextStation ) {
             if (RouteNew.compareTerminalName(nextStation.getStationName(), nextStation.getLaneType())) {
+                Log.d(TAG, "findingTerminal: " + nextStation.getStationName());
                 fTerminals.add(nextStation);
             }
     }

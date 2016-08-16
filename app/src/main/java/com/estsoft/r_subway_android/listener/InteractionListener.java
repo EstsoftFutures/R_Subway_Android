@@ -1,6 +1,7 @@
 package com.estsoft.r_subway_android.listener;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +28,8 @@ import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.SearchListAdapter;
 import com.estsoft.r_subway_android.localization.KoreanTextMatcher;
+import com.flipboard.bottomsheet.BottomSheetLayout;
+import com.flipboard.bottomsheet.OnSheetDismissedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +41,8 @@ public class InteractionListener implements
         View.OnClickListener,
         SearchView.OnQueryTextListener,
         ExpandableListView.OnChildClickListener,
-        NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener, ViewPager.OnPageChangeListener {
+        NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener, ViewPager.OnPageChangeListener,
+        OnSheetDismissedListener {
 
     public InteractionListener(Context context, List<SemiStation> list) {
 
@@ -55,6 +61,7 @@ public class InteractionListener implements
     private final int startStationButton = R.id.Start;
     private final int arriveStationButton = R.id.Arrive;
     private final int endInfoButton = R.id.end_info;
+    private final int searchTextContext = R.id.search_src_text;
     private final int toolbarNavButtonView = 0;
 
     private final List<SemiStation> semiStationList;
@@ -81,6 +88,11 @@ public class InteractionListener implements
                 host.setMarkerDefault(host.ALL_MARKERS);
                 host.getRouteBottomSheet().dismissSheet();
                 break;
+
+//            case searchTextContext:
+//                ((EditText)v).setText("");
+//                onQueryTextChange("");
+//                break;
 
             default:
                 Log.d(TAG, "onClick: default");
@@ -115,14 +127,22 @@ public class InteractionListener implements
         final MenuItem searchMenu = m.findItem(R.id.menu_search);
         m.performIdentifierAction(searchMenu.getItemId(), 0);
 
-        RecyclerView list = (RecyclerView) host.findViewById(R.id.list_test_view);
-        list.setVisibility(View.VISIBLE);
+        RecyclerView listView = (RecyclerView) host.findViewById(R.id.list_test_view);
 
-        List<SemiStation> searchResult = checkChoseong(newText);
+        List<SemiStation> searchResult;
+        if (newText.equals("")) {
+            searchResult = new ArrayList<>();
+            listView.setVisibility(View.GONE);
+            host.hideSoftKeyboard(host.getMapView());
+        } else {
+            searchResult = checkChoseong(newText);
+            listView.setVisibility(View.VISIBLE);
+        }
+
 
 
         // use a linear layout manager
-        list.setLayoutManager(new LinearLayoutManager(host.getApplicationContext()));
+        listView.setLayoutManager(new LinearLayoutManager(host.getApplicationContext()));
         // semiStation 에 라인번호들 입력
 //        for ( SemiStation ss : searchResult ) {
 //            ss.setLaneNumbers( host.getStationController().getExNumbers(ss) );
@@ -242,4 +262,14 @@ public class InteractionListener implements
         public void onPageScrollStateChanged(int state) {
 
         }
+    @Override
+    public void onDismissed(BottomSheetLayout bottomSheetLayout) {
+        host.setMarkerDefault(host.ALL_MARKERS);
+        host.getRouteBottomSheet().dismissSheet();
+        Log.d(TAG, "onDismissed: " + bottomSheetLayout.toString());
+    }
+
+    public int getSearchTextContext() {
+        return searchTextContext;
+    }
 }
