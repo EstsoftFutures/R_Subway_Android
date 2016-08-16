@@ -151,7 +151,7 @@ public class InteractionListener implements
         sla.setmSearchListAdapterListener(host);
         sla.SetOnItemClickListener(sla.getmItemClickListener());
 
-        list.setAdapter(sla);
+        listView.setAdapter(sla);
 
         return true;
     }
