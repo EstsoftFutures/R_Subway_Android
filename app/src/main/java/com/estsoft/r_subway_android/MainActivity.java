@@ -654,7 +654,7 @@ public class MainActivity extends AppCompatActivity
             // Attach the view pager to the tab strip
             tabsStrip.setViewPager(viewPager);
 
-
+            routeBottomSheet.setPeekSheetTranslation(450);
             routeBottomSheet.findViewById(R.id.end_info).setOnClickListener(interactionListener);
 
             viewPager.addOnPageChangeListener(interactionListener);
