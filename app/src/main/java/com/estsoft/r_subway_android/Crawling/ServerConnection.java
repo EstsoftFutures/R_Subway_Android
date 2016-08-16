@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,11 +43,11 @@ public class ServerConnection {
 
     public int getAccidentInfo( Station station ) {
         AccidentTask at = new AccidentTask(station);
-        if ( checkNetwork() ) {
+        if ( InternetManager.getInstance().checkNetwork() ) {
             at.execute();
         } else {
-            Toast.makeText(mContext, "INTERNET DISABLED", Toast.LENGTH_SHORT).show();
-            ((MainActivity)mContext).setStationStatus( INTERNET_DISCONNECTED );
+//            Toast.makeText(mContext, "INTERNET DISABLED", Toast.LENGTH_SHORT).show();
+//            ((MainActivity)mContext).setStationStatus( INTERNET_DISCONNECTED );
         }
 
         //Canceling Task...
@@ -109,6 +110,7 @@ public class ServerConnection {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             Log.d(TAG, "onPostExecute: " + integer);
+//            SystemClock.sleep(2000);
             ((MainActivity)mContext).setStationStatus( integer );
         }
 

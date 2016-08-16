@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
+import com.estsoft.r_subway_android.Crawling.InternetManager;
 import com.estsoft.r_subway_android.Crawling.ServerConnection;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
@@ -241,6 +242,8 @@ public class MainActivity extends AppCompatActivity
 //        mapView.setSemiStationLaneNumber( stationController );
 
         mServerConnection = new ServerConnection(this);
+
+        InternetManager.init(this);
 
     }
 

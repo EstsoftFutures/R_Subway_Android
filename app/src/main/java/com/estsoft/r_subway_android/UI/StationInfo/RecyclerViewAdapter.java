@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.estsoft.r_subway_android.Crawling.InternetManager;
 import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
@@ -52,6 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static int INTERNET_DISCONNECTED = 13;
 
     public void setStationStatus( int status ) {
+
         String msg = "";
         if ( status == ACCIDENT_TRUE ) {
             msg = "사고가 났어요!";
@@ -66,9 +68,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         } else {
             msg = "STATUS NOT INITIALIZED";
         }
-
         congestionHolder.stationInfo.setText(msg);
-
     }
 
 
@@ -91,7 +91,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Calendar curTime = new GregorianCalendar();
         switch (position) {
             case 0:
-
                 //이전역
                 if (stations.get(page).getPrevStations().size() != 0) {
                     holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
@@ -155,11 +154,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.infoName.setText("역혼잡도");
 
                 if (stations.get(page).getPrevStations().size() == 0 || stations.get(page).getNextStations().size() == 0) {
-
                     holder.stationInfo.setText("서버와 연결중!");
                 } else {
                     holder.stationInfo.setText("서버와 연결중!");
                 }
+
+                if (!InternetManager.getInstance().checkNetwork()) holder.stationInfo.setText("인터넷 연결 끊김");
+
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
