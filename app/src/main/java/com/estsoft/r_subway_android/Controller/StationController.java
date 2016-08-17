@@ -1,20 +1,28 @@
 package com.estsoft.r_subway_android.Controller;
 
+import android.content.Context;
 import android.support.v4.util.Pair;
 import android.util.Log;
 
+import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.Parser.StationTag;
 import com.estsoft.r_subway_android.Parser.TtfXmlParserCost;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
+import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,7 +46,9 @@ public class StationController {
     private TtfXmlParserCost costParser;
     private InputStream inputStream;
 
-    public StationController(Realm mRealm, InputStream in) throws IOException , XmlPullParserException {
+    private Context mContext;
+
+    public StationController(Realm mRealm, InputStream in, Context context) throws IOException , XmlPullParserException {
         this.mRealm = mRealm;
         this.inputStream = in;
         realmStationList = mRealm.where(RealmStation.class).findAll();
@@ -46,6 +56,8 @@ public class StationController {
         deepCopyRealmStation();
 
         adj = initializeAdj(SHORT_ROUTE_WEIGHT);
+
+        mContext = context;
 
     }
 
@@ -246,10 +258,120 @@ public class StationController {
             }
         }
         Log.d(TAG, "getExStations: for count = " + debugCount);
+
+        for ( Station stationForTime : exStations ) {
+            stationForTime.setTimeStringList(getPrevNextStationTime( stationForTime ));
+        }
+
         return exStations;
     }
-    public List<Station> getExStations( SemiStation semiStation ) {
-        return null;
+    public List<String> getPrevNextStationTime( Station station ) {
+        List<String> result = new ArrayList<>();
+
+        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(mContext, station.getStationID());
+        StationTimetable stt = jsonTimetableParser.getStationTimetable();
+
+        //지금 시간 세팅
+        Calendar newCal = new GregorianCalendar();
+        int day = newCal.get(Calendar.DAY_OF_WEEK);
+        String prevKey, nextKey;
+        ArrayList<HashMap<String, Object>>[] prevTimeTable, nextTimeTable;
+        switch ( day ) {
+            case 1 :
+                prevTimeTable =  stt.getSunUpWayLdx(); nextTimeTable = stt.getSunDownWayLdx();
+                prevKey = "sunUpWayLdx"; nextKey = "sunDownWayLdx"; break;
+            case 7 :
+                prevTimeTable =  stt.getSatUpWayLdx(); nextTimeTable = stt.getSatDownWayLdx();
+                prevKey = "satUpWayLdx"; nextKey = "satDownWayLdx"; break;
+            default :
+                prevTimeTable =  stt.getOrdUpWayLdx(); nextTimeTable = stt.getOrdDownWayLdx();
+                prevKey = "ordUpWayLdx"; nextKey = "ordDownWayLdx"; break;
+        }
+
+        int hour = newCal.get(Calendar.HOUR_OF_DAY);
+        int hourIndex = hour - 5 < 0 ? hour - 5 + 19 : hour - 5;
+        ArrayList<HashMap<String, Object>> prevTimeList = prevTimeTable[hourIndex];
+        ArrayList<HashMap<String, Object>> nextTimeList = nextTimeTable[hourIndex];
+
+        if (station.getPrevStationIDs().size() > 0) {
+            Map prevFirst = getCalendar(prevTimeList, prevKey, (Calendar) newCal.clone());
+            Calendar prevCalendarFirst = (Calendar) prevFirst.get("calendar");
+            String prevTerminalFirst = (String) prevFirst.get("terminal");
+
+            Map prevSecond = getCalendar(prevTimeList, prevKey, (Calendar) prevCalendarFirst.clone());
+            Calendar prevCalendarSecond = (Calendar) prevSecond.get("calendar");
+            String prevTerminalSecond = (String) prevSecond.get("terminal");
+
+            int timeGapFirst = prevCalendarFirst.get(Calendar.MINUTE) - newCal.get(Calendar.MINUTE);
+            if (timeGapFirst < 0) timeGapFirst += 60;
+            result.add( prevTerminalFirst +"행 " + timeGapFirst +"분 후 ");
+
+            int timeGapSecond = prevCalendarSecond.get(Calendar.MINUTE) - newCal.get(Calendar.MINUTE);
+            if (timeGapSecond < 0) timeGapSecond += 60;
+            result.add( prevTerminalSecond +"행 " + timeGapSecond +"분 후 ");
+
+//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarFirst.get(Calendar.HOUR) + ":" + prevCalendarFirst.get(Calendar.MINUTE) + " to " + prevTerminalFirst );
+//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarSecond.get(Calendar.HOUR) + ":" + prevCalendarSecond.get(Calendar.MINUTE) + " to " + prevTerminalSecond );
+        } else {
+            result.add("-"); result.add("-");
+        }
+
+        if (station.getNextStationIDs().size() > 0) {
+            Map nextFirst = getCalendar(nextTimeList, nextKey, (Calendar) newCal.clone());
+            Calendar nextCalendarFirst = (Calendar) nextFirst.get("calendar");
+            String nextTerminalFirst = (String) nextFirst.get("terminal");
+
+            Map nextSecond = getCalendar(nextTimeList, nextKey, (Calendar) nextCalendarFirst.clone());
+            Calendar nextCalendarSecond = (Calendar) nextSecond.get("calendar");
+            String nextTerminalSecond = (String) nextSecond.get("terminal");
+
+            int timeGapFirst = nextCalendarFirst.get(Calendar.MINUTE) - newCal.get(Calendar.MINUTE);
+            if (timeGapFirst < 0) timeGapFirst += 60;
+            result.add( nextTerminalFirst +"행 " + timeGapFirst +"분 후 ");
+
+            int timeGapSecond = nextCalendarSecond.get(Calendar.MINUTE) - newCal.get(Calendar.MINUTE);
+            if (timeGapSecond < 0) timeGapSecond += 60;
+            result.add( nextTerminalSecond +"행 " + timeGapSecond +"분 후 ");
+
+//            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
+//            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
+        }
+
+        return result;
+    }
+    private Map getCalendar( ArrayList<HashMap<String, Object>> timeList, String key, Calendar cal ) {
+        Log.d(TAG, "getCalendar: " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
+        Map< String, Object > result = new HashMap<>();
+        String terminalName = "";
+        int timeMinute = 0;
+        boolean flag = false ;
+        int minute = cal.get(Calendar.MINUTE);
+        Log.d(TAG, "getCalendar: " + timeList.size());
+        for ( int i = 0; i < timeList.size(); i ++ ) {
+            HashMap<String, Object> timeMap = timeList.get(i);
+            String timeString[] =  ((String) timeMap.get(key)).split("\\(");
+            timeMinute = Integer.parseInt(timeString[0]);
+            Log.d( TAG, "getCalendar: " + i + "//// Size " + timeList.size() + " / " + timeMinute + " / " + minute );
+            if ( timeMinute > minute ) {
+                terminalName = timeString[1].replace(")", "");
+                cal.set(Calendar.MINUTE, timeMinute);
+                flag = true;
+                break;
+            }
+        }
+
+        if ( flag ) {
+            cal.set(Calendar.MINUTE, timeMinute);
+            result.put("calendar", cal);
+            result.put("terminal", terminalName);
+            return result;
+        }
+        else {
+            cal.set(Calendar.MINUTE, 60);
+//            cal.set(Calendar.MINUTE, 0);
+            return getCalendar( timeList, key, cal );
+        }
+
     }
 
     public ArrayList<Pair<Station, Integer>>[] getAdj() {
