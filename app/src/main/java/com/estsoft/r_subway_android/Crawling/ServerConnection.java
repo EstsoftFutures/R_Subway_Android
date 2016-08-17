@@ -57,15 +57,10 @@ public class ServerConnection {
         return -1;
     }
 
-    private boolean checkNetwork() {
-        NetworkInfo network = cm.getActiveNetworkInfo();
-        if ( network != null ) {
-            if( network.getType() == ConnectivityManager.TYPE_WIFI
-                || network.getType() == ConnectivityManager.TYPE_MOBILE ) return true;
-        }
-        return false;
+    private boolean checkYunYear( int year ) {
+        boolean result = ( year % 4 == 0 ) && ( year % 100 != 0 || ( year % 400 == 0 ) ) ;
+        return result;
     }
-
 
 
     private class AccidentTask extends AsyncTask<Void, Void,Integer> {
