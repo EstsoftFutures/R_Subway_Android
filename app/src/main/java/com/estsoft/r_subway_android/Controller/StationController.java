@@ -293,7 +293,7 @@ public class StationController {
         ArrayList<HashMap<String, Object>> prevTimeList = prevTimeTable[hourIndex];
         ArrayList<HashMap<String, Object>> nextTimeList = nextTimeTable[hourIndex];
 
-        if (station.getPrevStationIDs().size() > 0) {
+        if (station.getPrevStationIDs().size() > 0 && prevTimeList.size() > 0) {
             Map prevFirst = getCalendar(prevTimeList, prevKey, (Calendar) newCal.clone());
             Calendar prevCalendarFirst = (Calendar) prevFirst.get("calendar");
             String prevTerminalFirst = (String) prevFirst.get("terminal");
@@ -316,7 +316,7 @@ public class StationController {
             result.add("-"); result.add("-");
         }
 
-        if (station.getNextStationIDs().size() > 0) {
+        if (station.getNextStationIDs().size() > 0 && nextTimeList.size() > 0) {
             Map nextFirst = getCalendar(nextTimeList, nextKey, (Calendar) newCal.clone());
             Calendar nextCalendarFirst = (Calendar) nextFirst.get("calendar");
             String nextTerminalFirst = (String) nextFirst.get("terminal");
@@ -339,19 +339,19 @@ public class StationController {
 
         return result;
     }
-    private Map getCalendar( ArrayList<HashMap<String, Object>> timeList, String key, Calendar cal ) {
+    private Map getCalendar( ArrayList<HashMap<String, Object>> timeList, String key, Calendar cal) {
+
         Log.d(TAG, "getCalendar: " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
         Map< String, Object > result = new HashMap<>();
+
         String terminalName = "";
         int timeMinute = 0;
         boolean flag = false ;
         int minute = cal.get(Calendar.MINUTE);
-        Log.d(TAG, "getCalendar: " + timeList.size());
         for ( int i = 0; i < timeList.size(); i ++ ) {
             HashMap<String, Object> timeMap = timeList.get(i);
             String timeString[] =  ((String) timeMap.get(key)).split("\\(");
             timeMinute = Integer.parseInt(timeString[0]);
-            Log.d( TAG, "getCalendar: " + i + "//// Size " + timeList.size() + " / " + timeMinute + " / " + minute );
             if ( timeMinute > minute ) {
                 terminalName = timeString[1].replace(")", "");
                 cal.set(Calendar.MINUTE, timeMinute);
