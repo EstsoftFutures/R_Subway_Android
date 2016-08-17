@@ -152,12 +152,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case 2:
 
                 holder.infoName.setText("역혼잡도");
-
-                if (stations.get(page).getPrevStations().size() == 0 || stations.get(page).getNextStations().size() == 0) {
-                    holder.stationInfo.setText("서버와 연결중!");
-                } else {
-                    holder.stationInfo.setText("서버와 연결중!");
-                }
+                holder.stationInfo.setText("서버와 연결중!");
 
                 if (!InternetManager.getInstance().checkNetwork()) holder.stationInfo.setText("인터넷 연결 끊김");
 
@@ -290,13 +285,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 break;
 
 
-            case 5:
-                holder.infoName.setText("실시간 현재 역 정보");
-                holder.stationInfo.setText("현재 서울역 공사로 인해 경의중앙선 이용불가");
-                holder.curInfo.setVisibility(View.GONE);
-                holder.goToTimetable.setVisibility(View.GONE);
-                break;
-
         }
 
 
@@ -305,7 +293,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (stations.get(page) != null) return 6;
+        if (stations.get(page) != null) return 5;
         return 0;
     }
 
