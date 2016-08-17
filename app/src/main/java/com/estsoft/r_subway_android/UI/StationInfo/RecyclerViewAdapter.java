@@ -11,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.estsoft.r_subway_android.Crawling.InternetManager;
 import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 import com.estsoft.r_subway_android.Repository.StationRepository.StationTimetable;
+import com.estsoft.r_subway_android.listener.ServerConnectionListener;
 
 import org.w3c.dom.Text;
 
@@ -42,9 +44,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     View.OnClickListener mClickListener;
     private int page;    //pager page ; page에 맞게 수정할 예정
 
+    //인규 - SERVER CONNECTION
+    private ViewHolder congestionHolder = null;
+    private static int ERROR = -1;
+    private static int ACCIDENT_TRUE = 10;
+    private static int ACCIDENT_FALSE = 11;
+    private static int SERVER_CONNECTION_FAILED = 12;
+    private static int INTERNET_DISCONNECTED = 13;
+
+    public void setStationStatus( int status ) {
+
+        String msg = "";
+        if ( status == ACCIDENT_TRUE ) {
+            msg = "사고가 났어요!";
+        } else if ( status == ACCIDENT_FALSE ) {
+            msg = "혼잡도가 들어갈 예정";
+        } else if ( status == SERVER_CONNECTION_FAILED ) {
+            msg = "서버와 통신이 어렵습니다!";
+        } else if ( status == INTERNET_DISCONNECTED){
+            msg = "인터넷 끊김";
+        } else if ( status == ERROR ) {
+            msg = "알 수 없는 에러";
+        } else {
+            msg = "STATUS NOT INITIALIZED";
+        }
+        congestionHolder.stationInfo.setText(msg);
+    }
+
 
     public RecyclerViewAdapter(FragmentActivity mActivity, List<Station> stations1, int page) {
-//        Log.d(TAG, "stationinadapterconstructor" + stations1.toString());
         this.mActivity = mActivity;
         stations = stations1;
         this.page = page;
@@ -63,7 +91,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Calendar curTime = new GregorianCalendar();
         switch (position) {
             case 0:
-
                 //이전역
                 if (stations.get(page).getPrevStations().size() != 0) {
                     holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
@@ -125,17 +152,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             case 2:
 
                 holder.infoName.setText("역혼잡도");
+                holder.stationInfo.setText("서버와 연결중!");
 
-                if (stations.get(page).getPrevStations().size() == 0 || stations.get(page).getNextStations().size() == 0) {
+                if (!InternetManager.getInstance().checkNetwork()) holder.stationInfo.setText("인터넷 연결 끊김");
 
-                    holder.stationInfo.setText("-");
-                } else {
-                    holder.stationInfo.setText("역혼잡도 정보");
-                }
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
                 holder.stationDefaultInfo.setVisibility(View.GONE);
+
+                //인규 - AsyncTask 용
+                congestionHolder = holder;
+
+                // getting Server AccidentInfo
+
                 break;
 
 
@@ -255,13 +285,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 break;
 
 
-            case 5:
-                holder.infoName.setText("실시간 현재 역 정보");
-                holder.stationInfo.setText("현재 서울역 공사로 인해 경의중앙선 이용불가");
-                holder.curInfo.setVisibility(View.GONE);
-                holder.goToTimetable.setVisibility(View.GONE);
-                break;
-
         }
 
 
@@ -270,7 +293,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (stations.get(page) != null) return 6;
+        if (stations.get(page) != null) return 5;
         return 0;
     }
 

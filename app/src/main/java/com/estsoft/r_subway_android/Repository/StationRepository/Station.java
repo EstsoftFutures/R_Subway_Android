@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Station extends TtfNode {
 
+    private boolean accidentInfo;
 
     private int index;
     private int stationID;
@@ -386,6 +387,14 @@ public class Station extends TtfNode {
 
     public void setExpress(boolean express) {
         isExpress = express;
+    }
+
+    public boolean isAccidentInfo() {
+        return accidentInfo;
+    }
+
+    public void setAccidentInfo(boolean accidentInfo) {
+        this.accidentInfo = accidentInfo;
     }
 
     @Override
