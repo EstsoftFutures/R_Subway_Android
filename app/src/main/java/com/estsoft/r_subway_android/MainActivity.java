@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         try {
-            stationController = new StationController(Realm.getInstance(this), getResources().openRawResource(R.raw.station_cost));
+            stationController = new StationController(Realm.getInstance(this), getResources().openRawResource(R.raw.station_cost), this);
             Log.d(TAG, "initializeAdj: Successfully Finished ");
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -468,7 +468,7 @@ public class MainActivity extends AppCompatActivity
 
             runBottomSheet(stationController.getExStations(activeStation), null);
 //            runBottomSheet(activeStation, null);
-            stationController.getExStations(activeStation);
+//            stationController.getExStations(activeStation);
 
 
         }

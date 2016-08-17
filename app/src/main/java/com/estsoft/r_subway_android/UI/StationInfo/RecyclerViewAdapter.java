@@ -52,18 +52,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static int SERVER_CONNECTION_FAILED = 12;
     private static int INTERNET_DISCONNECTED = 13;
 
-    public void setStationStatus( int status ) {
+    public void setStationStatus(int status) {
 
         String msg = "";
-        if ( status == ACCIDENT_TRUE ) {
+        if (status == ACCIDENT_TRUE) {
             msg = "사고가 났어요!";
-        } else if ( status == ACCIDENT_FALSE ) {
+        } else if (status == ACCIDENT_FALSE) {
             msg = "혼잡도가 들어갈 예정";
-        } else if ( status == SERVER_CONNECTION_FAILED ) {
+        } else if (status == SERVER_CONNECTION_FAILED) {
             msg = "서버와 통신이 어렵습니다!";
-        } else if ( status == INTERNET_DISCONNECTED){
+        } else if (status == INTERNET_DISCONNECTED) {
             msg = "인터넷 끊김";
-        } else if ( status == ERROR ) {
+        } else if (status == ERROR) {
             msg = "알 수 없는 에러";
         } else {
             msg = "STATUS NOT INITIALIZED";
@@ -94,14 +94,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 //이전역
                 if (stations.get(page).getPrevStations().size() != 0) {
                     holder.preStation.setText("" + stations.get(page).getPrevStations().get(0).getStationName());
-                    Map prevTime = getTime(stations.get(page),true,curTime);
-                    Map prevTime2 = getTime(stations.get(page),true,(Calendar)prevTime.get("time"));
-                    int gapTime1 = ((Calendar)prevTime.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
-                    if(gapTime1<0) gapTime1 +=60;
-                    int gapTime2 = ((Calendar)prevTime2.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
-                    if(gapTime2<0) gapTime2 +=60;
-                    holder.preTime1.setText(prevTime.get("terminalName")+"행 "+gapTime1+"분 후");
-                    holder.preTime2.setText(prevTime2.get("terminalName")+"행 "+gapTime2+"분 후");
+                    Map prevTime = getTime(stations.get(page), true, curTime);
+                    Map prevTime2 = getTime(stations.get(page), true, (Calendar) prevTime.get("time"));
+                    int gapTime1 = ((Calendar) prevTime.get("time")).get(Calendar.MINUTE) - curTime.get(Calendar.MINUTE);
+                    if (gapTime1 < 0) gapTime1 += 60;
+                    int gapTime2 = ((Calendar) prevTime2.get("time")).get(Calendar.MINUTE) - curTime.get(Calendar.MINUTE);
+                    if (gapTime2 < 0) gapTime2 += 60;
+                    holder.preTime1.setText(prevTime.get("terminalName") + "행 " + gapTime1 + "분 후");
+                    holder.preTime2.setText(prevTime2.get("terminalName") + "행 " + gapTime2 + "분 후");
                 } else {
                     holder.preStation.setText("");
                     holder.preTime1.setText("-");
@@ -114,15 +114,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 // 다음역
                 if (stations.get(page).getNextStations().size() != 0) {
                     holder.nextStation.setText("" + stations.get(page).getNextStations().get(0).getStationName());
-                    Map nextTime = getTime(stations.get(page),false,curTime);
-                    Map nextTime2 = getTime(stations.get(page),false,(Calendar) nextTime.get("time"));
+                    Map nextTime = getTime(stations.get(page), false, curTime);
+                    Map nextTime2 = getTime(stations.get(page), false, (Calendar) nextTime.get("time"));
 
-                    int nextGapTime1 = ((Calendar)nextTime.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
-                    if(nextGapTime1<0) nextGapTime1 +=60;
-                    int nextGapTime2 = ((Calendar)nextTime2.get("time")).get(Calendar.MINUTE)-curTime.get(Calendar.MINUTE);
-                    if(nextGapTime2<0) nextGapTime2 +=60;
-                    holder.nextTime1.setText(nextTime.get("terminalName")+"행 "+nextGapTime1+"분 후");
-                    holder.nextTime2.setText(nextTime2.get("terminalName")+"행 "+nextGapTime2+"분 후");
+                    int nextGapTime1 = ((Calendar) nextTime.get("time")).get(Calendar.MINUTE) - curTime.get(Calendar.MINUTE);
+                    if (nextGapTime1 < 0) nextGapTime1 += 60;
+                    int nextGapTime2 = ((Calendar) nextTime2.get("time")).get(Calendar.MINUTE) - curTime.get(Calendar.MINUTE);
+                    if (nextGapTime2 < 0) nextGapTime2 += 60;
+                    holder.nextTime1.setText(nextTime.get("terminalName") + "행 " + nextGapTime1 + "분 후");
+                    holder.nextTime2.setText(nextTime2.get("terminalName") + "행 " + nextGapTime2 + "분 후");
                 } else {
                     holder.nextStation.setText("");
                     holder.nextTime1.setText("-");
@@ -154,7 +154,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.infoName.setText("역혼잡도");
                 holder.stationInfo.setText("서버와 연결중!");
 
-                if (!InternetManager.getInstance().checkNetwork()) holder.stationInfo.setText("인터넷 연결 끊김");
+                if (!InternetManager.getInstance().checkNetwork())
+                    holder.stationInfo.setText("인터넷 연결 끊김");
 
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
@@ -367,80 +368,78 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mItemClickListener = mItemClickListener;
     }
 
-public Map getTime(Station curStation,boolean isPrevWay, Calendar time){
-    Calendar newCal = (Calendar)time.clone();
-    Calendar compareCal = (Calendar)time.clone();
-    Map<String, Object> returnTime = new HashMap<>();
-    String terminalName = "";
-    JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(mActivity ,curStation.getStationID());
-    StationTimetable stt = jsonTimetableParser.getStationTimetable();
 
-    ArrayList<HashMap<String, Object>>[] timeTable;
-    String key;
-    int day = newCal.get(Calendar.DAY_OF_WEEK);
-    switch ( day ) {
-        case 1 :
-            if (isPrevWay) {
-                timeTable = stt.getSunUpWayLdx();
-                key = "sunUpWayLdx";
-            }
-            else {
-                timeTable = stt.getSunDownWayLdx();
-                key = "sunDownWayLdx";
-            }
-            break;
-        case 7 :
-            if (isPrevWay) {
-                timeTable = stt.getSatUpWayLdx();
-                key = "satUpWayLdx";
-            }
-            else{
-                timeTable = stt.getSatDownWayLdx();
-                key = "satDownWayLdx";
-            }
-            break;
-        default:
-            if (isPrevWay){
-                timeTable = stt.getOrdUpWayLdx();
-                key = "ordUpWayLdx";
-            }
-            else {
-                timeTable = stt.getOrdDownWayLdx();
-                key = "ordDownWayLdx";
-            }
-            break;
-    }
-    int hour = newCal.get(Calendar.HOUR_OF_DAY);
-    int hourIndex = hour - 5 < 0 ? hour - 5 + 19 : hour - 5;
-    ArrayList<HashMap<String, Object>> timeList = timeTable[hourIndex];
+    public Map getTime(Station curStation, boolean isPrevWay, Calendar time) {
+        Calendar newCal = (Calendar) time.clone();
+        Calendar compareCal = (Calendar) time.clone();
+        Map<String, Object> returnTime = new HashMap<>();
+        String terminalName = "";
+        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(mActivity, curStation.getStationID());
+        StationTimetable stt = jsonTimetableParser.getStationTimetable();
 
-    int minute = newCal.get(Calendar.MINUTE);
+        ArrayList<HashMap<String, Object>>[] timeTable;
+        String key;
+        int day = newCal.get(Calendar.DAY_OF_WEEK);
+        switch (day) {
+            case 1:
+                if (isPrevWay) {
+                    timeTable = stt.getSunUpWayLdx();
+                    key = "sunUpWayLdx";
+                } else {
+                    timeTable = stt.getSunDownWayLdx();
+                    key = "sunDownWayLdx";
+                }
+                break;
+            case 7:
+                if (isPrevWay) {
+                    timeTable = stt.getSatUpWayLdx();
+                    key = "satUpWayLdx";
+                } else {
+                    timeTable = stt.getSatDownWayLdx();
+                    key = "satDownWayLdx";
+                }
+                break;
+            default:
+                if (isPrevWay) {
+                    timeTable = stt.getOrdUpWayLdx();
+                    key = "ordUpWayLdx";
+                } else {
+                    timeTable = stt.getOrdDownWayLdx();
+                    key = "ordDownWayLdx";
+                }
+                break;
+        }
+        int hour = newCal.get(Calendar.HOUR_OF_DAY);
+        int hourIndex = hour - 5 < 0 ? hour - 5 + 19 : hour - 5;
+        ArrayList<HashMap<String, Object>> timeList = timeTable[hourIndex];
+
+        int minute = newCal.get(Calendar.MINUTE);
 
 //        Log.d(TAG, "getTimeTable: " + timeList.size());
-    for ( int i = 0; i < timeList.size(); i ++ ) {
-        HashMap<String, Object> timeMap = timeList.get(i);
-        String timeString[] = ((String)timeMap.get( key )).split("\\(");
-        int timeMinute = Integer.parseInt(timeString[0]);
-        Log.d(TAG, "getTimeTable: " + timeMinute);
-        terminalName = timeString[1].replace(")", "");
-        Log.d(TAG, "getTimeTable: " + terminalName );
-        Log.d(TAG, "checkTerminalName: " + curStation.getStationName());
+        for (int i = 0; i < timeList.size(); i++) {
+            HashMap<String, Object> timeMap = timeList.get(i);
+            String timeString[] = ((String) timeMap.get(key)).split("\\(");
+            int timeMinute = Integer.parseInt(timeString[0]);
+            Log.d(TAG, "getTimeTable: " + timeMinute);
+            terminalName = timeString[1].replace(")", "");
+            Log.d(TAG, "getTimeTable: " + terminalName);
+            Log.d(TAG, "checkTerminalName: " + curStation.getStationName());
 
-            if ( timeMinute > minute ) {
+            if (timeMinute > minute) {
                 newCal.set(Calendar.MINUTE, timeMinute);
                 // 전역변수 isExpress
                 break;
             }
-    }
+        }
 
-    if (!newCal.equals(compareCal)){
-        returnTime.put("terminalName", terminalName);
-        returnTime.put("time",newCal);
-        return returnTime;
-    }else {
-        newCal.set( Calendar.MINUTE, 60 );
-        return getTime(curStation,isPrevWay, newCal);
+        if (!newCal.equals(compareCal)) {
+            returnTime.put("terminalName", terminalName);
+            returnTime.put("time", newCal);
+            return returnTime;
+        } else {
+            newCal.set(Calendar.MINUTE, 60);
+            return getTime(curStation, isPrevWay, newCal);
+        }
     }
-}
 
 }

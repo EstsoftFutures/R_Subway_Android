@@ -53,6 +53,8 @@ public class Station extends TtfNode {
     private Calendar arriveTime;
     private boolean isExpress;
 
+    private List<String> timeStringList;
+
 
     public Station( RealmStation rst, PointF mapPoint, int conLevel ) {
         super( conLevel, rst.getStationID() + "", null );
@@ -395,6 +397,14 @@ public class Station extends TtfNode {
 
     public void setAccidentInfo(boolean accidentInfo) {
         this.accidentInfo = accidentInfo;
+    }
+
+    public List<String> getTimeStringList() {
+        return timeStringList;
+    }
+
+    public void setTimeStringList(List<String> timeStringList) {
+        this.timeStringList = timeStringList;
     }
 
     @Override

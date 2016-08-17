@@ -374,6 +374,7 @@ public class RouteControllerNew {
         if (!newCal.equals(compareCal)) return newCal;
         else {
             newCal.set( Calendar.MINUTE, 60 );
+//            newCal.set( Calendar.MINUTE, 0 );
             return getTimeTable(station, terminals, isPrevWay, newCal);
         }
 
