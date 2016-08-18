@@ -74,13 +74,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter implements PagerSlid
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        Fragment view = (Fragment) object;
-        ((ViewPager) container).removeView(view.getView());
-        view = null;
-    }
-
-    @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }

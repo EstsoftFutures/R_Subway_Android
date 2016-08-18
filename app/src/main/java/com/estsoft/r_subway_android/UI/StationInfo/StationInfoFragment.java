@@ -30,7 +30,7 @@ public class StationInfoFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
     String TAG = "StationInfoFragment";
-    private static int mPage;
+    private int mPage;
     FragmentActivity mActivity;
     RecyclerView mRecyclerView;
     ArrayList<Integer> stationIDs = new ArrayList<>();
