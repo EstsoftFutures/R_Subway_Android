@@ -276,8 +276,6 @@ public class StationController {
 
         //지금 시간 세팅
         Calendar newCal = new GregorianCalendar();
-        newCal.set(Calendar.HOUR_OF_DAY,0);
-        newCal.set(Calendar.MINUTE, 0);
         int day = newCal.get(Calendar.DAY_OF_WEEK);
         String prevKey, nextKey;
         ArrayList<HashMap<String, Object>>[] prevTimeTable, nextTimeTable;
