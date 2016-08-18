@@ -106,7 +106,7 @@ public class ServerConnection {
             super.onPostExecute(integer);
             Log.d(TAG, "onPostExecute: " + integer);
 //            SystemClock.sleep(2000);
-            ((MainActivity)mContext).setStationStatus( integer );
+//            ((MainActivity)mContext).setStationStatus( integer );
         }
 
     }

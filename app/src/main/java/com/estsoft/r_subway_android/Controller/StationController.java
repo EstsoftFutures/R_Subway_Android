@@ -273,6 +273,8 @@ public class StationController {
 
         //지금 시간 세팅
         Calendar newCal = new GregorianCalendar();
+        newCal.set(Calendar.HOUR, 9);
+        newCal.set(Calendar.MINUTE, 55);
         int day = newCal.get(Calendar.DAY_OF_WEEK);
         String prevKey, nextKey;
         ArrayList<HashMap<String, Object>>[] prevTimeTable, nextTimeTable;
@@ -310,8 +312,8 @@ public class StationController {
             if (timeGapSecond < 0) timeGapSecond += 60;
             result.add( prevTerminalSecond +"행 " + timeGapSecond +"분 후 ");
 
-//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarFirst.get(Calendar.HOUR) + ":" + prevCalendarFirst.get(Calendar.MINUTE) + " to " + prevTerminalFirst );
-//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarSecond.get(Calendar.HOUR) + ":" + prevCalendarSecond.get(Calendar.MINUTE) + " to " + prevTerminalSecond );
+            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarFirst.get(Calendar.HOUR) + ":" + prevCalendarFirst.get(Calendar.MINUTE) + " to " + prevTerminalFirst );
+            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarSecond.get(Calendar.HOUR) + ":" + prevCalendarSecond.get(Calendar.MINUTE) + " to " + prevTerminalSecond );
         } else {
             result.add("-"); result.add("-");
         }
@@ -333,8 +335,8 @@ public class StationController {
             if (timeGapSecond < 0) timeGapSecond += 60;
             result.add( nextTerminalSecond +"행 " + timeGapSecond +"분 후 ");
 
-//            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
-//            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
+            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
+            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
         } else {
             result.add("-"); result.add("-");
         }
@@ -369,6 +371,7 @@ public class StationController {
             return result;
         }
         else {
+            Log.d(TAG, "getCalendar: YEAR ? " + cal.get(Calendar.DAY_OF_YEAR));
             cal.set(Calendar.MINUTE, 60);
 //            cal.set(Calendar.MINUTE, 0);
             return getCalendar( timeList, key, cal );

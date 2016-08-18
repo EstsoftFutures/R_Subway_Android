@@ -4,10 +4,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.util.Calendar;
+
 /**
  * Created by estsoft on 2016-08-16.
  */
 public class InternetManager {
+
     private static InternetManager ourInstance = null;
 
     public static InternetManager getInstance() {
