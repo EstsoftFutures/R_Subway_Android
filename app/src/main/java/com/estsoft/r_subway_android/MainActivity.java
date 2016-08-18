@@ -435,6 +435,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
+        ServerConnectionSingle.killThread();
 
         if (status != FULL) {
             activeStation = stationController.getStation(semiStation);
@@ -603,7 +604,6 @@ public class MainActivity extends AppCompatActivity
 //    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
-        stationBottomSheet.addOnSheetDismissedListener(interactionListener);
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         routeBottomSheet.addOnSheetDismissedListener(interactionListener);
         if (status == WAIT) {         // Station 정보
