@@ -378,12 +378,10 @@ public class StationController {
 
             }
 
-<<<<<<< HEAD
-            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarFirst.get(Calendar.HOUR) + ":" + prevCalendarFirst.get(Calendar.MINUTE) + " to " + prevTerminalFirst );
-            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarSecond.get(Calendar.HOUR) + ":" + prevCalendarSecond.get(Calendar.MINUTE) + " to " + prevTerminalSecond );
-=======
+//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarFirst.get(Calendar.HOUR) + ":" + prevCalendarFirst.get(Calendar.MINUTE) + " to " + prevTerminalFirst );
+//            Log.d(TAG, "getPrevNextStationTime: " + prevCalendarSecond.get(Calendar.HOUR) + ":" + prevCalendarSecond.get(Calendar.MINUTE) + " to " + prevTerminalSecond );
+
             result.add("-");
->>>>>>> origin/inkiu_0803
         } else {
             //둘다 빔
             result.add("-");
@@ -435,10 +433,8 @@ public class StationController {
                 timeGapSecond += 60;
             }
 
-<<<<<<< HEAD
-            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
-            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
-=======
+//            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
+            //           Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
             if(hourGapSecond> 0) {
                 result.add(nextTerminalSecond + "행 "+ hourGapSecond +"시간 "+ timeGapSecond + "분 후 ");
             }else{
@@ -463,7 +459,6 @@ public class StationController {
 
             }
             result.add("-");
->>>>>>> origin/inkiu_0803
         } else {
             //둘다 빔
             result.add("-");
@@ -509,14 +504,7 @@ public class StationController {
             result.put("calendar", cal);
             result.put("terminal", terminalName);
             return result;
-<<<<<<< HEAD
-        }
-        else {
-            Log.d(TAG, "getCalendar: YEAR ? " + cal.get(Calendar.DAY_OF_YEAR));
-=======
         } else {
-//            cal.set(Calendar.MINUTE, 60);
->>>>>>> origin/inkiu_0803
             cal.set(Calendar.MINUTE, 60);
             return getCalendar(timeTable, hourIndex + 1, key, cal);
         }

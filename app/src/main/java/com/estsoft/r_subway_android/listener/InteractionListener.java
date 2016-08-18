@@ -267,7 +267,6 @@ public class InteractionListener implements
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         host.setMarkerDefault(host.ALL_MARKERS);
         host.getRouteBottomSheet().dismissSheet();
-        ServerConnectionSingle.killThread();
     }
 
     public int getSearchTextContext() {
