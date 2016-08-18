@@ -173,7 +173,7 @@ public class TimeTableActivity extends AppCompatActivity {
         switch (ordSatSun) {
             //sat
             case 1:
-                for (int j = 0; j < 39; j++) {
+                for (int j = 0; j < 40; j++) {
 //Up
                     if (upMinute != null) upMinute = "";
                     if (downMinute != null) downMinute = "";
@@ -208,7 +208,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 break;
             //sun
             case 2:
-                for (int j = 0; j < 39; j++) {
+                for (int j = 0; j < 40; j++) {
 
                     if (upMinute != null) upMinute = "";
                     if (downMinute != null) downMinute = "";
@@ -243,7 +243,7 @@ public class TimeTableActivity extends AppCompatActivity {
                 break;
             //ord
             default:
-                for (int j = 0; j < 39; j++) {
+                for (int j = 0; j < 40; j++) {
                     if (upMinute != null) upMinute = "";
                     if (downMinute != null) downMinute = "";
 
