@@ -38,6 +38,7 @@ import com.estsoft.r_subway_android.Controller.RouteControllerNew;
 import com.estsoft.r_subway_android.Controller.StationController;
 import com.estsoft.r_subway_android.Crawling.InternetManager;
 import com.estsoft.r_subway_android.Crawling.ServerConnection;
+import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.Repository.StationRepository.InitializeRealm;
 import com.estsoft.r_subway_android.Repository.StationRepository.RealmStation;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity
     private Station endStation = null;
 
     private ServerConnection mServerConnection = null;
+    private ServerConnectionSingle mServerConnectionSingle = null;
 
     private RouteNew currentRoute = null;
     private RouteNew[] routes = null;
@@ -601,6 +603,7 @@ public class MainActivity extends AppCompatActivity
 //    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
+        stationBottomSheet.addOnSheetDismissedListener(interactionListener);
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         routeBottomSheet.addOnSheetDismissedListener(interactionListener);
         if (status == WAIT) {         // Station 정보
@@ -634,7 +637,7 @@ public class MainActivity extends AppCompatActivity
             arrive.setOnClickListener(interactionListener);
 
             // getting Server AccidentInfo
-            mServerConnection.getAccidentInfo(activeStation);
+//            mServerConnection.getAccidentInfo(activeStation);
             Log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
 
 //            Log.d("----------->", start.getText().toString());
@@ -855,9 +858,5 @@ public class MainActivity extends AppCompatActivity
 
         inflateRouteNew(currentRoute);
 //        runBottomSheet(null, routes);
-    }
-
-    public void setStationStatus( int status ) {
-        StationInfoFragment.adapter.setStationStatus( status );
     }
 }

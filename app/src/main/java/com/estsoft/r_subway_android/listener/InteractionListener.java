@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.SemiStation;
@@ -266,7 +267,7 @@ public class InteractionListener implements
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         host.setMarkerDefault(host.ALL_MARKERS);
         host.getRouteBottomSheet().dismissSheet();
-        Log.d(TAG, "onDismissed: " + bottomSheetLayout.toString());
+        ServerConnectionSingle.killThread();
     }
 
     public int getSearchTextContext() {

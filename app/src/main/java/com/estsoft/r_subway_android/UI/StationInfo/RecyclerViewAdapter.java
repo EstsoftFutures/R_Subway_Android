@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.estsoft.r_subway_android.Crawling.InternetManager;
+import com.estsoft.r_subway_android.Crawling.ServerConnection;
+import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.Parser.JSONTimetableParser;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
@@ -46,29 +48,38 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //인규 - SERVER CONNECTION
     private ViewHolder congestionHolder = null;
-    private static int ERROR = -1;
-    private static int ACCIDENT_TRUE = 10;
-    private static int ACCIDENT_FALSE = 11;
-    private static int SERVER_CONNECTION_FAILED = 12;
-    private static int INTERNET_DISCONNECTED = 13;
+    public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor) {
+        String accidentMsg = "";
+        String congestionMsg = "";
+        if ( internetStatus == ServerConnectionSingle.INTERNET_GOOD ) {
 
-    public void setStationStatus(int status) {
+            if ( accidentStatus == ServerConnectionSingle.SERVER_CONNECTION_FAILED ) {
+                accidentMsg = "사고정보 서버와 통신이 원활하지 않습니다.";
+            } else if ( accidentStatus == ServerConnectionSingle.ACCIDENT_TRUE ) {
+                accidentMsg = "해당역에 사고발생!";
+            } else {
+                accidentMsg = "해당역에 사고없음.";
+            }
 
-        String msg = "";
-        if (status == ACCIDENT_TRUE) {
-            msg = "사고가 났어요!";
-        } else if (status == ACCIDENT_FALSE) {
-            msg = "혼잡도가 들어갈 예정";
-        } else if (status == SERVER_CONNECTION_FAILED) {
-            msg = "서버와 통신이 어렵습니다!";
-        } else if (status == INTERNET_DISCONNECTED) {
-            msg = "인터넷 끊김";
-        } else if (status == ERROR) {
-            msg = "알 수 없는 에러";
+            if ( congestionStatus == ServerConnectionSingle.NONE_EXIST_STATION ) {
+                congestionMsg = "지원하지 않는 역입니다!";
+            } else {
+                congestionMsg = "예상인원 : " + congestionStatus + " / " + getCongestionColor(congestionColor);
+            }
+
         } else {
-            msg = "STATUS NOT INITIALIZED";
+            accidentMsg = "네트워크가 활성화 되지 않았습니다.";
         }
-        congestionHolder.stationInfo.setText(msg);
+
+        if (congestionHolder == null) Log.d(TAG, "setStationStatus: NULL!!!!!!!!!!!!!!!!!!!");
+
+        congestionHolder.stationInfo.setText(accidentMsg + " _ " +  congestionMsg);
+    }
+    private String getCongestionColor( int congestionColor ) {
+        if (congestionColor == ServerConnectionSingle.CON_RED) return "RED!";
+        if (congestionColor == ServerConnectionSingle.CON_YELLOW) return "YELLOW!";
+        if (congestionColor == ServerConnectionSingle.CON_GREEN) return "GREEN!";
+        return "NONE";
     }
 
 
@@ -129,10 +140,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 holder.infoName.setText("역혼잡도");
                 holder.stationInfo.setText("서버와 연결중!");
-
-                if (!InternetManager.getInstance().checkNetwork())
-                    holder.stationInfo.setText("인터넷 연결 끊김");
-
+                // Automatically call setStationStatus
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
@@ -140,6 +148,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 //인규 - AsyncTask 용
                 congestionHolder = holder;
+
+                new ServerConnectionSingle().setStationInfo(stations.get(page), this);
 
                 // getting Server AccidentInfo
 
