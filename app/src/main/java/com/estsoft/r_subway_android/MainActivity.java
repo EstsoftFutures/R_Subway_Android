@@ -611,8 +611,9 @@ public class MainActivity extends AppCompatActivity
             }
             // Get the ViewPager and set it's PagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+ //           Log.d(TAG,"pager : station:"+exStations.size());
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
-//        viewPager.setOffscreenPageLimit(3);
+ //       viewPager.setOffscreenPageLimit(1);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
