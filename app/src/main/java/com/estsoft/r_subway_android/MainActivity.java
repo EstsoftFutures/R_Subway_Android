@@ -736,13 +736,16 @@ public class MainActivity extends AppCompatActivity
 
             currentRoute = routes[0];
 
-            if (currentRoute == null) {
-                Toast.makeText(getApplication().getBaseContext(), "결과를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
-                setMarkerDefault(ALL_MARKERS);
-            } else {
-                inflateRouteNew(currentRoute);
-                runBottomSheet(null, routes);
-            }
+            inflateRouteNew(currentRoute);
+            runBottomSheet(null, routes);
+
+//            if (currentRoute == null) {
+//                Toast.makeText(getApplication().getBaseContext(), "결과를 찾을 수 없습니다.", Toast.LENGTH_LONG).show();
+//                setMarkerDefault(ALL_MARKERS);
+//            } else {
+//                inflateRouteNew(currentRoute);
+//                runBottomSheet(null, routes);
+//            }
         } else {
             status = WAIT;
         }
@@ -750,6 +753,8 @@ public class MainActivity extends AppCompatActivity
 
 
     private void inflateRouteNew(RouteNew route) {
+
+        if (route == null) return;
 
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
 
@@ -857,6 +862,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         inflateRouteNew(currentRoute);
+        // 수정
 //        runBottomSheet(null, routes);
     }
 }
