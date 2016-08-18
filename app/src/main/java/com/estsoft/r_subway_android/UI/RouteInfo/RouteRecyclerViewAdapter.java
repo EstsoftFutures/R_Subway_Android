@@ -72,17 +72,10 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 holder.routeStartTime.setVisibility(View.VISIBLE);
                 holder.routeFirstMom.setVisibility(View.VISIBLE);
                 break;
+
             case 1:
 
-                holder.routeStartStation.setText("아마도 여긴 시간설정?");
-                holder.routeStationTo.setVisibility(View.GONE);
-                holder.routeNumStations.setVisibility(View.GONE);
-                holder.routeStartTime.setVisibility(View.GONE);
-                break;
-
-            case 2:
-
-                if (position > 1 && route[mPage].getSections().size() > position - 2) {
+                if (position > 0 && route[mPage].getSections().size() > position - 1) {
 
                     LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
 
@@ -219,12 +212,6 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 holder.routeStartTime.setVisibility(View.GONE);
                 holder.routeFirstMom.setVisibility(View.GONE);
                 break;
-            case 3:
-                holder.routeStartStation.setText("검색 근거");
-                holder.routeStationTo.setVisibility(View.GONE);
-                holder.routeNumStations.setVisibility(View.GONE);
-                holder.routeStartTime.setVisibility(View.GONE);
-                break;
 
         }
 
@@ -233,7 +220,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
