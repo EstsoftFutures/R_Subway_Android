@@ -335,6 +335,8 @@ public class StationController {
 
 //            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
 //            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
+        } else {
+            result.add("-"); result.add("-");
         }
 
         return result;
