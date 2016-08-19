@@ -276,8 +276,8 @@ public class StationController {
 
         //지금 시간 세팅
         Calendar newCal = new GregorianCalendar();
-        newCal.set(Calendar.HOUR, 9);
-        newCal.set(Calendar.MINUTE, 55);
+//        newCal.set(Calendar.HOUR, 9);
+//        newCal.set(Calendar.MINUTE, 55);
         int day = newCal.get(Calendar.DAY_OF_WEEK);
         String prevKey, nextKey;
         ArrayList<HashMap<String, Object>>[] prevTimeTable, nextTimeTable;
@@ -308,6 +308,13 @@ public class StationController {
 
         int hour = newCal.get(Calendar.HOUR_OF_DAY);
         int hourIndexFirst = hour - 5 < 0 ? hour + 19 : hour - 5;
+
+        int prevTrainsSize = prevTimeTable[hourIndexFirst].size();
+        int nextTrainsSize = nextTimeTable[hourIndexFirst].size();
+
+        station.setTrainsPerHour( prevTrainsSize + nextTrainsSize );
+
+        Log.d(TAG, "getPrevNextStationTime: TEST " + hour + " / " + station.getTrainsPerHour());
 
         Map prevFirst = null;
         Calendar prevCalendarFirst = null;

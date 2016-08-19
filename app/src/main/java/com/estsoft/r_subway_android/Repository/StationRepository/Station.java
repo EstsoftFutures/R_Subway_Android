@@ -55,6 +55,8 @@ public class Station extends TtfNode {
 
     private List<String> timeStringList;
 
+    private int TrainsPerHour;
+
 
     public Station( RealmStation rst, PointF mapPoint, int conLevel ) {
         super( conLevel, rst.getStationID() + "", null );
@@ -405,6 +407,14 @@ public class Station extends TtfNode {
 
     public void setTimeStringList(List<String> timeStringList) {
         this.timeStringList = timeStringList;
+    }
+
+    public int getTrainsPerHour() {
+        return TrainsPerHour;
+    }
+
+    public void setTrainsPerHour(int trainsPerHour) {
+        TrainsPerHour = trainsPerHour;
     }
 
     @Override
