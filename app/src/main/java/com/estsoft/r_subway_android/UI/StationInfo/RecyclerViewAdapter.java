@@ -201,6 +201,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.stationDefaultInfo.setVisibility(View.VISIBLE);
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
+                holder.stationInfo.setVisibility(View.GONE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 break;
 
