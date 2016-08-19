@@ -174,13 +174,18 @@ public class InteractionListener implements
 
         switch ( groupPosition ) {
             case 0 :
-                SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
+                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             case 1 :
                 /*SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
                 break;
+<<<<<<< HEAD
             case 2 :*/
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
+=======
+            case 2 :
+                SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
+>>>>>>> origin/inkiu_0803
                 break;
             default:
                 break;
@@ -192,7 +197,11 @@ public class InteractionListener implements
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
+<<<<<<< HEAD
     //    Toast.makeText(host, "item selected", Toast.LENGTH_SHORT).show();
+=======
+//        Toast.makeText(host, "item selected", Toast.LENGTH_SHORT).show();
+>>>>>>> origin/inkiu_0803
 
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
