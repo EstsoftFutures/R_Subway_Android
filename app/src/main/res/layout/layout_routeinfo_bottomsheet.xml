@@ -26,8 +26,8 @@
             android:id="@+id/end_info"
             android:src="@drawable/close_bottomsheet"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:paddingRight="20dp"
+            android:layout_marginTop="6dp"
+            android:paddingRight="10dp"
             />
 
 
