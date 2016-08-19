@@ -94,6 +94,7 @@ public class TtfMapImageView extends MapTouchImageView {
                 return;
             }
         }
+        semiStation.sortLaneNumbers();
         semiStationList.add(semiStation);
     }
 
