@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
@@ -53,6 +54,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
+        if ( route[mPage] == null ) {
+            if ( position == 0 ) holder.routeStartStation.setText("결과를 찾을 수 없습니다!");
+            return;
+        }
 
         switch (position) {
             case 0:

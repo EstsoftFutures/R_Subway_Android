@@ -29,6 +29,8 @@ public class RouteControllerNew {
     private static final SimpleDateFormat sdftest = new SimpleDateFormat("d H:mm");
     private final static int SHORT_PATH = 0;
     private final static int MIN_TRANSFER = 1;
+    private static final int CUSTOM_ROUTE = 2;
+
     private final int adjScale = 6;
 
     StationController stationController = null;
@@ -126,7 +128,7 @@ public class RouteControllerNew {
 
         // getCustomRoute
 //        defaultAdj = stationController.getShortestPathAdj();
-        routes[2] = getRouteNew( start, end, SHORT_PATH );
+        routes[2] = getRouteNew( start, end, CUSTOM_ROUTE );
         // getCustomRoute done
 
         return routes;
@@ -138,7 +140,7 @@ public class RouteControllerNew {
         inputCalendar = null;
 
         //SearchSetting
-        initializeSettings();
+        initializeSettings( mode );
         ShortestPath.setLineRange( activeLaneArr );
         debugActiveLanes();
         //SearchSetting done
@@ -527,24 +529,29 @@ public class RouteControllerNew {
         return listPath;
     }
 
-    private void initActiveLaneArr() {
-        if ( activeLaneArr == null )  activeLaneArr = new boolean[112]; // false init
+    private void initActiveLaneArr( int mode ) {
+        if ( activeLaneArr == null || mode != CUSTOM_ROUTE)  activeLaneArr = new boolean[112]; // false init
 //        for (int i = 0; i < activeLaneArr.length; i ++ ) {
 //            activeLaneArr[i] = true;
 //        }
-
-        for (int i = 0; i < SearchSetting.getActiveLanes().size(); i ++) {
-            activeLaneArr[ SearchSetting.getActiveLanes().get(i).getNumber() ] =
-                    !(SearchSetting.getActiveLanes().get(i).isActive());
+        if ( mode == CUSTOM_ROUTE) {
+            Log.d(TAG, "initActiveLaneArr: CUSTOM_ROUTE");
+            for (int i = 0; i < SearchSetting.getActiveLanes().size(); i++) {
+                activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()] =
+                        !(SearchSetting.getActiveLanes().get(i).isActive());
+            }
         }
     }
 
-    private void initializeSettings(){
-
-        initActiveLaneArr();
-
-        expressFirst = SearchSetting.isActiveExpressOnly();
-
+    private void initializeSettings( int mode ){
+        initActiveLaneArr( mode );
+        Log.d(TAG, "initializeSettings: " + mode);
+        if (mode == CUSTOM_ROUTE) {
+            expressFirst = SearchSetting.isActiveExpressOnly();
+            Log.d(TAG, "initializeSettings: " + expressFirst);
+        } else {
+            expressFirst = false;
+        }
     }
 
 }
