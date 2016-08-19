@@ -118,19 +118,23 @@ public class RouteControllerNew {
     public RouteNew[] getRoutes( Station start, Station end ) {
         RouteNew[] routes = new RouteNew[3];
         // getShortRout
+        Log.d(TAG, "getRoutes: " + "SHORT_ROUTE");
         routes[0] = getRouteNew( start, end, SHORT_PATH );
         // getShortRoute done
 
         // getMinTransferRoute
 //        defaultAdj = stationController.getMinTransferAdj();
+        Log.d(TAG, "getRoutes: " + "MIN_TRANSFER");
         routes[1] = getRouteNew( start, end, MIN_TRANSFER );
         // getMinTransferRoute done
 
         // getCustomRoute
 //        defaultAdj = stationController.getShortestPathAdj();
+        Log.d(TAG, "getRoutes: " + "CUSTOM_ROUTE");
         routes[2] = getRouteNew( start, end, CUSTOM_ROUTE );
         // getCustomRoute done
 
+        Log.d(TAG, "getRoutes: " + "returning Route");
         return routes;
 
     }

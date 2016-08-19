@@ -1,12 +1,14 @@
 package com.estsoft.r_subway_android;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
@@ -29,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,6 +119,8 @@ public class MainActivity extends AppCompatActivity
     private TextView markerText = null;
     private List<View> markerList = null;
 
+    private ProgressBar progressBar = null;
+
     private TtfMapImageView mapView = null;
 
     private float normalMarkerSize = -1;
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity
         Drawable image = ((ImageView)findViewById(R.id.marker)).getDrawable();
         normalMarkerSize = (image.getIntrinsicWidth() + image.getIntrinsicHeight()) / 2;
         // f 값 작을수록 작아짐
-        routeMarkerSize = normalMarkerSize / 0.5f;
+        routeMarkerSize = normalMarkerSize / 0.6f;
 
         // passMarkerMother Relative View reference
         passMarkerMother = (RelativeLayout) findViewById(R.id.route_mother);
@@ -247,6 +252,7 @@ public class MainActivity extends AppCompatActivity
 
         InternetManager.init(this);
 
+        progressBar = (ProgressBar)findViewById(R.id.progressCircle);
     }
 
 
@@ -659,6 +665,7 @@ public class MainActivity extends AppCompatActivity
 
 
         } else if (status == FULL) {          // Route 정보
+
 //            if(bottomSheet!= null) bottomSheet.dismissSheet();
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
@@ -723,6 +730,8 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(startMarker, true);
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
+
+
         setStatus();
     }
 
@@ -730,11 +739,10 @@ public class MainActivity extends AppCompatActivity
         if (startStation != null && endStation != null) {
             status = FULL;
 
-            // 수정
+            progressBar.setVisibility(View.VISIBLE);
+
 //            currentRoute = routeController.getRouteNew(startStation, endStation);
             routes = routeController.getRoutes(startStation, endStation);
-
-            currentRoute = routes[0];
 
             inflateRouteNew(currentRoute);
             runBottomSheet(null, routes);
@@ -770,7 +778,7 @@ public class MainActivity extends AppCompatActivity
                 } else if ( i == 0 ){
                     marker.setImageResource( R.drawable.transfer_marker );
                     marker.setId( 4000 + count );
-                    marker.setAlpha( 1f );
+                    marker.setAlpha( 0.8f );
                 } else if (count == route.getTotalSize() - 1){
                     marker.setImageResource( R.drawable.end_marker );
                     marker.setId( 5000 + count );
@@ -778,7 +786,7 @@ public class MainActivity extends AppCompatActivity
                 } else if ( i != section.size() - 1 ) {
                     marker.setImageResource(R.drawable.blue_route_icon);
                     marker.setId( 3000 + count );
-                    marker.setAlpha(0.8f);
+                    marker.setAlpha(0.6f);
                 }
                 routeMarkers.add(marker);
                 count ++;
