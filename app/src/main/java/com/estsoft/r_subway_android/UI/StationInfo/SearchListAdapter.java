@@ -49,7 +49,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
             transferStandard = (ImageView) view.findViewById(R.id.transfer_standard);
 
-            mImageView = (ImageView) view.findViewById(R.id.search_list_image);
+    //        mImageView = (ImageView) view.findViewById(R.id.search_list_image);
             mTextView = (TextView) view.findViewById(R.id.search_list_text);
 
             mTransferRelativeLayout = (RelativeLayout) view.findViewById(R.id.search_transfer_Layout);
@@ -116,12 +116,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         holder.mTransferRelativeLayout.removeAllViews();
         holder.mTextView.setText(stationList.get(position).getName());
 
-        // 수정
-        if (true) {
-            holder.mImageView.setImageResource(R.drawable.checked_image);
-        } else {
-            holder.mImageView.setImageResource(R.drawable.danger_image);
-        }
 
         holder.station = stationList.get(position);
 //        holder.laneNumbers = matchStation.getLaneNumbers();

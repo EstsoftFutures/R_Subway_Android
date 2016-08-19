@@ -165,7 +165,7 @@ public class InteractionListener implements
         ImageView check = (ImageView) v.findViewById(R.id.setting_group_check);
 
         //검색노선 설정은 CHECK안되도록
-        if (check.getVisibility() == View.INVISIBLE && groupPosition != 3) {
+        if (check.getVisibility() == View.INVISIBLE && groupPosition != 1) {
             check.setVisibility(View.VISIBLE);
 
         } else {
@@ -177,9 +177,9 @@ public class InteractionListener implements
                 SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
                 break;
             case 1 :
-                SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
+                /*SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
                 break;
-            case 2 :
+            case 2 :*/
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             default:
@@ -192,7 +192,7 @@ public class InteractionListener implements
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
-        Toast.makeText(host, "item selected", Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(host, "item selected", Toast.LENGTH_SHORT).show();
 
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
