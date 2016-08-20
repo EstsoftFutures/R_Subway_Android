@@ -50,7 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //인규 - SERVER CONNECTION
     private ViewHolder congestionHolder = null;
     // congestionStatus : 예상인원
-    public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor) {
+    public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor,Station station) {
         String accidentMsg = "";
         String congestionMsg = "";
         String congestionPercent = "?";
@@ -59,16 +59,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             if ( accidentStatus == ServerConnectionSingle.SERVER_CONNECTION_FAILED ) {
                 accidentMsg = "사고정보 서버와 통신이 원활하지 않습니다.";
             } else if ( accidentStatus == ServerConnectionSingle.ACCIDENT_TRUE ) {
-                accidentMsg = "해당역에 사고발생!";
+                accidentMsg = "현재 역에 사고 발생함. 지연 가능성 있습니다";
             } else {
-                accidentMsg = "해당역에 사고없음.";
+                accidentMsg = "현재 역에 특별한 상황이 없습니다.";
             }
 
             if ( congestionStatus == ServerConnectionSingle.NONE_EXIST_STATION ) {
-                congestionMsg = "지원하지 않는 역입니다!";
+                congestionMsg = "지원하지 않는 역입니다.";
                 congestionHolder.congestionPercent.setVisibility(View.GONE);
             } else {
-                congestionPercent = (congestionStatus/32)+"%";
+//                int movePerson = congestion/(mStation.getTrainsPerHour()*10*4);
+                // red : 12
+                Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
+                congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%";
                 congestionMsg = getCongestionColor(congestionColor);
                 congestionHolder.congestionPercent.setVisibility(View.VISIBLE);
             }

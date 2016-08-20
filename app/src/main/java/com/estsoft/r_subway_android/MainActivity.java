@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.inflateMenu(R.menu.search);
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-
+        mSearchView.setFocusableInTouchMode(true);
         setSupportActionBar(toolbar);
 
 

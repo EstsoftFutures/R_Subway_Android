@@ -104,6 +104,7 @@ public class InteractionListener implements
         if (v.getClass() == ImageButton.class) {
             Log.d(TAG, "onClick: toolbarNavigationImageButton");
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
+
                 host.getDrawer().closeDrawer(GravityCompat.START);
                 Log.d(TAG, "onClick: drawer open");
 
@@ -177,18 +178,11 @@ public class InteractionListener implements
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             case 1 :
-<<<<<<< HEAD
                 /*SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
                 break;
 
             case 2 :*/
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
-
-=======
-                SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
-            case 2 :
-                SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
->>>>>>> refs/remotes/origin/inkiu_0803
                 break;
             default:
                 break;
@@ -200,10 +194,6 @@ public class InteractionListener implements
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/remotes/origin/inkiu_0803
 
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
