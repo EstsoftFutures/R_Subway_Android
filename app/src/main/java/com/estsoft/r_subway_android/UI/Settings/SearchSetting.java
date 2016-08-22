@@ -24,7 +24,7 @@ public class SearchSetting {
         createCollection();
 
         avoidCongestStations = false;
-        avoidDangerStations = false;
+  //      avoidDangerStations = false;
         activeExpressOnly = false;
         activeLanes = makeTmpLaneList();
 
@@ -79,7 +79,7 @@ public class SearchSetting {
     static boolean avoidCongestStations ;
 
     // 위험역 ?
-    static  boolean avoidDangerStations ;
+ //   static  boolean avoidDangerStations ;
 
     // 급행열차만
     static boolean activeExpressOnly ;
@@ -95,6 +95,7 @@ public class SearchSetting {
         SearchSetting.avoidCongestStations = avoidCongestStations;
     }
 
+/*
     public static boolean isAvoidDangerStations() {
         return avoidDangerStations;
     }
@@ -102,6 +103,7 @@ public class SearchSetting {
     public static void setAvoidDangerStations(boolean avoidDangerStations) {
         SearchSetting.avoidDangerStations = avoidDangerStations;
     }
+*/
 
     public static boolean isActiveExpressOnly() {
         return activeExpressOnly;
@@ -121,7 +123,6 @@ public class SearchSetting {
 
     public static void checkSettings() {
         Log.d(TAG, "checkSettings: 혼잡도 ? " + isAvoidCongestStations());
-        Log.d(TAG, "checkSettings: 위험역 ? " + isAvoidDangerStations());
         Log.d(TAG, "checkSettings: 급행차 ? " + isActiveExpressOnly());
 
         Log.d(TAG, "checkSettings: 검색노선");

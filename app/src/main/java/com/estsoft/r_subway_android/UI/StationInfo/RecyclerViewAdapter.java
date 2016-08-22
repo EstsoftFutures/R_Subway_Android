@@ -1,5 +1,6 @@
 package com.estsoft.r_subway_android.UI.StationInfo;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,23 +49,31 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //인규 - SERVER CONNECTION
     private ViewHolder congestionHolder = null;
-    public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor) {
+    // congestionStatus : 예상인원
+    public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor,Station station) {
         String accidentMsg = "";
         String congestionMsg = "";
+        String congestionPercent = "?";
         if ( internetStatus == ServerConnectionSingle.INTERNET_GOOD ) {
 
             if ( accidentStatus == ServerConnectionSingle.SERVER_CONNECTION_FAILED ) {
                 accidentMsg = "사고정보 서버와 통신이 원활하지 않습니다.";
             } else if ( accidentStatus == ServerConnectionSingle.ACCIDENT_TRUE ) {
-                accidentMsg = "해당역에 사고발생!";
+                accidentMsg = "현재 역에 사고 발생함. 지연 가능성 있습니다";
             } else {
-                accidentMsg = "해당역에 사고없음.";
+                accidentMsg = "현재 역에 특별한 상황이 없습니다.";
             }
 
             if ( congestionStatus == ServerConnectionSingle.NONE_EXIST_STATION ) {
-                congestionMsg = "지원하지 않는 역입니다!";
+                congestionMsg = "지원하지 않는 역입니다.";
+                congestionHolder.congestionPercent.setVisibility(View.GONE);
             } else {
-                congestionMsg = "예상인원 : " + congestionStatus + " / " + getCongestionColor(congestionColor);
+//                int movePerson = congestion/(mStation.getTrainsPerHour()*10*4);
+                // red : 12
+                Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
+                congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%";
+                congestionMsg = getCongestionColor(congestionColor);
+                congestionHolder.congestionPercent.setVisibility(View.VISIBLE);
             }
 
         } else {
@@ -73,12 +82,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         if (congestionHolder == null) Log.d(TAG, "setStationStatus: NULL!!!!!!!!!!!!!!!!!!!");
 
-        congestionHolder.stationInfo.setText(accidentMsg + " _ " +  congestionMsg);
+        congestionHolder.crawling.setText(accidentMsg);
+        congestionHolder.crawling.setTextColor(Color.BLACK);
+
+
+        congestionHolder.congestion.setText("혼잡도: "+congestionMsg);
+        congestionHolder.congestionPercent.setTextColor(Color.BLACK);
+
+
+        congestionHolder.congestionPercent.setText(congestionPercent);
+        if(congestionMsg.equals("혼잡")) {congestionHolder.congestionPercent.setTextColor(Color.RED);}
+        else if(congestionMsg.equals("보통")) {congestionHolder.congestionPercent.setTextColor(Color.rgb(253,219,86));}
+        else if(congestionMsg.equals("원활")) {congestionHolder.congestionPercent.setTextColor(Color.GREEN);}
+        else {congestionHolder.congestionPercent.setTextColor(Color.BLACK);}
+
+
     }
     private String getCongestionColor( int congestionColor ) {
-        if (congestionColor == ServerConnectionSingle.CON_RED) return "RED!";
-        if (congestionColor == ServerConnectionSingle.CON_YELLOW) return "YELLOW!";
-        if (congestionColor == ServerConnectionSingle.CON_GREEN) return "GREEN!";
+        if (congestionColor == ServerConnectionSingle.CON_RED) return "혼잡";
+        if (congestionColor == ServerConnectionSingle.CON_YELLOW) return "보통";
+        if (congestionColor == ServerConnectionSingle.CON_GREEN) return "원활";
         return "NONE";
     }
 
@@ -138,9 +161,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             case 2:
 
-                holder.infoName.setText("역혼잡도");
-                holder.stationInfo.setText("서버와 연결중!");
+                holder.infoName.setText("현재 역 상황");
+                holder.crawling.setText("정보를 받아오는 중입니다.");
                 // Automatically call setStationStatus
+
+                holder.stationCongestion.setVisibility(View.VISIBLE);
                 holder.goToTimetable.setVisibility(View.GONE);
                 holder.useInfo.setVisibility(View.GONE);
                 holder.curInfo.setVisibility(View.GONE);
@@ -293,9 +318,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView preStation, curStation, nextStation, infoName, stationInfo;
         TextView preTime1, preTime2, nextTime1, nextTime2;
         ImageView goToTimetable;
-        GridLayout useInfo, stationDefaultInfo;
+        GridLayout useInfo, stationDefaultInfo, stationCongestion;
         TextView Platform, MeetingPlace, Restroom, OffDoor, CrossOver, HandicapCount, ParkingCount, BicycleCount, CivilCount, Tel, Address, PublicPlace;
 
+        TextView congestion, congestionPercent, crawling;
         public ViewHolder(View view) {
             super(view);
 
@@ -332,7 +358,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             PublicPlace = (TextView) view.findViewById(R.id.public_place);
             Address = (TextView) view.findViewById(R.id.address);
 
-
+            stationCongestion = (GridLayout) view.findViewById(R.id.station_cur_info);
+            congestion = (TextView) view.findViewById(R.id.congestion);
+            congestionPercent = (TextView) view.findViewById(R.id.congestion_percent);
+            crawling = (TextView) view.findViewById(R.id.crawling);
             view.setOnClickListener(this);
 
         }

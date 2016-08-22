@@ -9,10 +9,10 @@
         android:id="@+id/station_cardview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:layout_marginBottom="9dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="5dp"
         card_view:cardCornerRadius="3dp">
 
         <LinearLayout
@@ -493,6 +493,52 @@
                     android:textColor="#000000" />
             </GridLayout>
 
+            <GridLayout
+                android:id="@+id/station_cur_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="8dp"
+                android:columnCount="2"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/crawling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="#000000"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_columnSpan="2"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/congestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="#000000"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:textSize="15dp" />
+
+
+                <TextView
+                    android:id="@+id/congestion_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="#000000"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:textSize="20dp" />
+
+
+            </GridLayout>
             <TextView
                 android:id="@+id/info_stationinfo"
                 android:layout_width="wrap_content"
@@ -501,6 +547,7 @@
                 android:layout_marginLeft="8dp"
                 android:textColor="#000000"
                 android:textSize="15dp" />
+
 
 
         </LinearLayout>
