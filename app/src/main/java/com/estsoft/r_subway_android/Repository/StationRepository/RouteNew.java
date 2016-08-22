@@ -9,9 +9,15 @@ import java.util.List;
  */
 public class RouteNew {
 
+    private static final int[] firstLaneExceptingStation = {
+            100, 101, 102, 103, 104, 105, 106, 107, 108, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
+            172, 173, 174, 1175, 175, 176, 177, 178, 179, 180, 1181, 181, 182, 183, 184, 185, 186, 1187,
+            187, 188, 189, 190, 1401, 1402, 1403, 1404, 1405, 1406, 1407, 1408, 1409, 1410, 1411, 1412, 1413, 1415, 1416
+    };
+
     private static final int[] expressStationIDs = {
             // 1 호선
-            133, 139, 174, 177, 180, 182, 1543, 186, 188, 1402, 1404, 1405, 1407, 1408,
+            133, 139, 174, 177, 180, 182, 1543, 186, 188, 1402, 1404, 1405, 1407, 1408, 141,
             // 4 호선
             409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426,
             427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
@@ -53,10 +59,22 @@ public class RouteNew {
             { "기흥", "전대.에버랜드" }, //에버라인
             { "인천국제공항", "용유"} //자기부상
     };
+
     private static int[] crazy2laneStationIDs = {
             251, 252, 253, 254, // 신설동 방면
              261, 262, 263, 264  // 까치산 방면
     };
+
+    public static boolean checkFirstLaneException( int stationID ) {
+        Log.d(TAG, "checkFirstLaneException: run! " + stationID);
+        for (int i = 0; i  < firstLaneExceptingStation.length; i ++) {
+            if ( firstLaneExceptingStation[i] == stationID ) {
+                Log.d(TAG, "checkFirstLaneException: returning true!!");
+                return true;
+            }
+        }
+        return false;
+    }
     public static boolean isCrazyStation( int stationID ) {
         for (int i = 0; i < crazy2laneStationIDs.length; i ++ ) {
             if (crazy2laneStationIDs[i] == stationID ) return true;

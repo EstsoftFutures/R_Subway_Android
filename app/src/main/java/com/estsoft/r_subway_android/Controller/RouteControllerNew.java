@@ -157,6 +157,7 @@ public class RouteControllerNew {
             path = ShortestPath.getMinimumTransferPathByIntArray(defaultAdj, start, end);
         else
             path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
+        Log.d(TAG, "getRouteNew: passing pathget");
         // if could not find Route
         if (path.length == 0) return null;
         // if could not find Route
@@ -482,16 +483,41 @@ public class RouteControllerNew {
     private List<List<Station>> getSection ( List<Integer> listPath, int start, int end ) {
         List<List<Station>> sections = new ArrayList<>();
         List<Station> section = new ArrayList<>();
+        Log.d(TAG, "getSection: LaneType : " +  stationController.getStation(listPath.get(start)).getLaneType());
+        // 처음과 끝 역
+        int startStationID = stationController.getStation(listPath.get(start)).getStationID();
+        int endStationID = stationController.getStation(listPath.get(end)).getStationID();
+
         // 2호선이 아닐때, 미친 구간이 아닐때
         if (stationController.getStation(listPath.get(start)).getLaneType() != 2
                 || !(RouteNew.isCrazyStation(stationController.getStation(listPath.get(start)).getStationID())
                 ^ RouteNew.isCrazyStation(stationController.getStation(listPath.get(end)).getStationID()))
                 ) {
-            for (int i = start; i <= end; i++) {
-                section.add(stationController.getStation(listPath.get(i)));
+            //1호선일때, 구로때문에
+            //수정!!
+//            if (false) {
+            Log.d(TAG, "getSection: into the space good night");
+            if ( stationController.getStation(listPath.get(start)).getLaneType() == 1
+                    && RouteNew.checkFirstLaneException(startStationID)
+                    && RouteNew.checkFirstLaneException(endStationID)) {
+                for (int i = start; i <= end; i ++ ) {
+                    Station curStation = stationController.getStation(listPath.get(i));
+                    section.add( curStation );
+                    if ( curStation.getStationID() == 141 ){
+                        sections.add(section);
+                        // new Section and add crazy station one more
+                        section = new ArrayList<>();
+                        section.add( curStation );
+                    }
+                }
+                sections.add(section);
+            } else {
+                for (int i = start; i <= end; i++) {
+                    section.add(stationController.getStation(listPath.get(i)));
+                }
+                sections.add(section);
             }
-            sections.add(section);
-        } else {
+        }  else {
             // 미친구간 일때
             for (int i = start; i <= end; i ++ ) {
                 Station curStation = stationController.getStation(listPath.get(i));
