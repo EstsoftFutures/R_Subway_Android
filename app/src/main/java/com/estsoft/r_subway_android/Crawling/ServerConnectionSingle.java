@@ -64,7 +64,7 @@ public class ServerConnectionSingle {
     private Station mStation = null;
     private RecyclerViewAdapter mAdapter = null;
 
-    public void setStationInfo(Station station, RecyclerViewAdapter adapter ) {
+    public void setStationInfo(Station station, RecyclerViewAdapter adapter) {
         mStation = station;
         mAdapter = adapter;
         getAccidentInfo();
@@ -75,14 +75,18 @@ public class ServerConnectionSingle {
         callAdapter(INTERNET_GOOD);
     }
 
-    private int getRYGByCongestion(int congestion){
-        // return Red
-        if( congestion > 3210) return CON_RED;
-        // return Green
-        else if(congestion < 1070) return CON_GREEN;
-        // return Yellow
-        else return CON_YELLOW;
-
+    private int getRYGByCongestion(int congestion) {
+        if (congestion != NONE_EXIST_STATION) {
+            //!!!!!!!!!!!!!!!!!!!!!!!!!hour error
+            int movePerson = congestion / (mStation.getTrainsPerHour() * 10 * 4);
+            // return Red
+            if (movePerson > 12) return CON_RED;
+                // return Green
+            else if (movePerson < 7) return CON_GREEN;
+                // return Yellow
+            else return CON_YELLOW;
+        }
+        return CON_GREEN;
     }
 
     private void getAccidentInfo() {
@@ -90,40 +94,38 @@ public class ServerConnectionSingle {
         if (InternetManager.getInstance().checkNetwork()) {
             at.execute();
             tasks.add(at);
-        }
-        else callAdapter(INTERNET_DISCONNECTED);
+        } else callAdapter(INTERNET_DISCONNECTED);
     }
+
     private void getCongestionInfo() {
         CongestionTask ct = new CongestionTask();
-        if (InternetManager.getInstance().checkNetwork()){
+        if (InternetManager.getInstance().checkNetwork()) {
             ct.execute();
             tasks.add(ct);
-        }
-        else callAdapter(INTERNET_DISCONNECTED);
+        } else callAdapter(INTERNET_DISCONNECTED);
     }
 
     public static void killThread() {
-        while( tasks.size() > 0 ) {
+        while (tasks.size() > 0) {
             tasks.get(0).cancel(true);
             tasks.remove(0);
             Log.d(TAG, "killThread: TreadKilled");
         }
     }
 
-    private void callAdapter( int internetStatus ) {
-        if ( internetStatus == INTERNET_GOOD ) {
-            mAdapter.setStationStatus( internetStatus, accidentStatus, congestionStatus, congestionColor);
-            Log.d(TAG, "callAdapter: " + mStation.getStationID() + " / " + mStation.getLaneName() +" / " + mStation.getStationName() + " accident : " + accidentStatus + " congestionStatus : " + congestionStatus);
-        }
-        else {
-            mAdapter.setStationStatus(internetStatus, 0, 0, 0);
-            Log.d(TAG, "callAdapter: INTERNET_DISCONNECTED" );
+    private void callAdapter(int internetStatus) {
+        if (internetStatus == INTERNET_GOOD) {
+            mAdapter.setStationStatus(internetStatus, accidentStatus, congestionStatus, congestionColor, mStation);
+            Log.d(TAG, "callAdapter: " + mStation.getStationID() + " / " + mStation.getLaneName() + " / " + mStation.getStationName() + " accident : " + accidentStatus + " congestionStatus : " + congestionStatus);
+        } else {
+            mAdapter.setStationStatus(internetStatus, 0, 0, 0, mStation);
+            Log.d(TAG, "callAdapter: INTERNET_DISCONNECTED");
         }
 
     }
 
 
-    private class CongestionTask extends AsyncTask<Void, Void,Integer> {
+    private class CongestionTask extends AsyncTask<Void, Void, Integer> {
         private static final String TAG = "CongestionTask";
 
         @Override
@@ -139,12 +141,12 @@ public class ServerConnectionSingle {
                 MongoDatabase db = mongoClient.getDatabase("congestion");
                 MongoCollection<Document> collection = db.getCollection("data");
 
-                Document myDoc = collection.find(Filters.and(Filters.eq("date", dateInfo[0]), Filters.eq("isRedDay", dateInfo[1]), Filters.eq("stationID", String.valueOf(mStation.getStationID()) ))).first();
+                Document myDoc = collection.find(Filters.and(Filters.eq("date", dateInfo[0]), Filters.eq("isRedDay", dateInfo[1]), Filters.eq("stationID", String.valueOf(mStation.getStationID())))).first();
 //                Document myDoc = collection.find(Filters.and(Filters.eq("date", "0"), Filters.eq("isRedDay", "0"), Filters.eq("stationID", String.valueOf(mStation.getStationID()) ))).first();
 
                 Log.d(TAG, "doInBackground: " + myDoc.toJson());
                 JSONObject jsonObject = new JSONObject(myDoc.toJson());
-                return Integer.parseInt((String)jsonObject.get(dateInfo[2]));
+                return Integer.parseInt((String) jsonObject.get(dateInfo[2]));
 //                return Integer.parseInt((String)jsonObject.get("14"));
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -167,10 +169,12 @@ public class ServerConnectionSingle {
 
 
     }
-    private class AccidentTask extends AsyncTask<Void, Void,Integer> {
+
+    private class AccidentTask extends AsyncTask<Void, Void, Integer> {
         private static final String TAG = "AccidentTask";
         private String serverAddr = "222.239.250.207";
         private int port = 11011;
+
         @Override
         protected Integer doInBackground(Void... params) {
             Socket socket = null;
@@ -186,12 +190,12 @@ public class ServerConnectionSingle {
             } catch (IOException ex) {
                 ex.printStackTrace();
                 accidentInfo = "Server Connection Fail";
-            } catch (Exception ex ) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 accidentInfo = "Server Connection Fail";
             }
-            if ( accidentInfo.equals("T") ) return ACCIDENT_TRUE;
-            else if (accidentInfo.equals("F") ) return ACCIDENT_FALSE;
+            if (accidentInfo.equals("T")) return ACCIDENT_TRUE;
+            else if (accidentInfo.equals("F")) return ACCIDENT_FALSE;
             return SERVER_CONNECTION_FAILED;
 
         }

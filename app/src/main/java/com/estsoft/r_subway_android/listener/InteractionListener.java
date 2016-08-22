@@ -104,6 +104,7 @@ public class InteractionListener implements
         if (v.getClass() == ImageButton.class) {
             Log.d(TAG, "onClick: toolbarNavigationImageButton");
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
+
                 host.getDrawer().closeDrawer(GravityCompat.START);
                 Log.d(TAG, "onClick: drawer open");
 
@@ -177,9 +178,11 @@ public class InteractionListener implements
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             case 1 :
-                SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
-            case 2 :
-                SearchSetting.setAvoidCongestStations( !SearchSetting.isAvoidCongestStations() );
+                /*SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
+                break;
+
+            case 2 :*/
+                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             default:
                 break;

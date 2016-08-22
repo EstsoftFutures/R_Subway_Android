@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.inflateMenu(R.menu.search);
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
-
+        mSearchView.setFocusableInTouchMode(true);
         setSupportActionBar(toolbar);
 
 
@@ -640,8 +640,8 @@ public class MainActivity extends AppCompatActivity
 
             Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
-            TextView start = (TextView) findViewById(R.id.Start);
-            TextView arrive = (TextView) findViewById(R.id.Arrive);
+            ImageView start = (ImageView) findViewById(R.id.Start);
+            ImageView arrive = (ImageView) findViewById(R.id.Arrive);
             start.setOnClickListener(interactionListener);
             arrive.setOnClickListener(interactionListener);
 
