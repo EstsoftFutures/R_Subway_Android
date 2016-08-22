@@ -266,8 +266,14 @@ public class InteractionListener implements
         }
     @Override
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
-        host.setMarkerDefault(host.ALL_MARKERS);
-        host.getRouteBottomSheet().dismissSheet();
+        if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
+            //루트 시트일때
+            host.setMarkerDefault(host.ALL_MARKERS);
+        } else if (bottomSheetLayout.getId() == R.id.station_bottomSheet) {
+            //스테이션 시트일때
+            host.setMarkerDefault(host.ACT_MARKER);
+        }
+//        host.getRouteBottomSheet().dismissSheet();
     }
 
     public int getSearchTextContext() {

@@ -251,8 +251,6 @@ public class MainActivity extends AppCompatActivity
         mServerConnection = new ServerConnection(this);
 
         InternetManager.init(this);
-
-        progressBar = (ProgressBar)findViewById(R.id.progressCircle);
     }
 
 
@@ -610,8 +608,13 @@ public class MainActivity extends AppCompatActivity
 //    public void runBottomSheet(Station station, Route route) {
         BottomSheetLayout stationBottomSheet = (BottomSheetLayout) findViewById(R.id.station_bottomSheet);
         stationBottomSheet.setPeekSheetTranslation(490);
+        stationBottomSheet.addOnSheetDismissedListener(interactionListener);
+
+
         final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         routeBottomSheet.addOnSheetDismissedListener(interactionListener);
+
+
         if (status == WAIT) {         // Station 정보
             if (stationBottomSheet.isSheetShowing()) {
                  LayoutInflater.from(this).inflate(R.layout.layout_subwayinfo_bottomsheet, stationBottomSheet, false);
@@ -711,6 +714,9 @@ public class MainActivity extends AppCompatActivity
 
     public void onStartClick(View v) {
         ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
+        Station tmp = activeStation;
+        if (activeStation == endStation) setMarkerDefault(ALL_MARKERS);
+        activeStation = tmp;
         startStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
@@ -723,6 +729,9 @@ public class MainActivity extends AppCompatActivity
 
     public void onArriveClick(View v) {
         ((BottomSheetLayout) findViewById(R.id.station_bottomSheet)).dismissSheet();
+        Station tmp = activeStation;
+        if (activeStation == startStation) setMarkerDefault(ALL_MARKERS);
+        activeStation = tmp;
         endStation = activeStation;
 //        activeStation = null;
         // 0 :defaultMarker, 1 : startMarker, 2 : endMarker
@@ -739,10 +748,12 @@ public class MainActivity extends AppCompatActivity
         if (startStation != null && endStation != null) {
             status = FULL;
 
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
 
 //            currentRoute = routeController.getRouteNew(startStation, endStation);
             routes = routeController.getRoutes(startStation, endStation);
+
+            currentRoute = routes[0];
 
             inflateRouteNew(currentRoute);
             runBottomSheet(null, routes);
@@ -762,7 +773,11 @@ public class MainActivity extends AppCompatActivity
 
     private void inflateRouteNew(RouteNew route) {
 
+        Log.d(TAG, "inflateRouteNew: route is null" );
+
         if (route == null) return;
+
+        Log.d(TAG, "inflateRouteNew: under if " + route.getSections().size());
 
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
 

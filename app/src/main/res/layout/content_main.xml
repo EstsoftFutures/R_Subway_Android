@@ -63,16 +63,6 @@
                 android:scaleType="matrix"
                 android:src="@drawable/end_marker" />
 
-            <ProgressBar
-                android:id="@+id/progressCircle"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@android:style/Widget.ProgressBar.Large"
-                android:layout_below="@+id/markerText"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="120dp" />
-
         </RelativeLayout>
 
 
