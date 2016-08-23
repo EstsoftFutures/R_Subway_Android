@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -134,15 +135,17 @@ public class MainActivity extends AppCompatActivity
 
     private int curPage;
 
-    @BindView(R.id.Start)
-    ImageView start;
-    @BindView(R.id.Arrive)
-    ImageView arrive;
+//    @BindView(R.id.Start)
+//    ImageView start;
+//    @BindView(R.id.Arrive)
+//    ImageView arrive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -647,8 +650,8 @@ public class MainActivity extends AppCompatActivity
 
             Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
-//            ImageView start = (ImageView) findViewById(R.id.Start);
-//            ImageView arrive = (ImageView) findViewById(R.id.Arrive);
+            ImageView start = (ImageView) findViewById(R.id.Start);
+            ImageView arrive = (ImageView) findViewById(R.id.Arrive);
             start.setOnClickListener(interactionListener);
             arrive.setOnClickListener(interactionListener);
 
