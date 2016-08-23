@@ -54,7 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String accidentMsg = "";
         String congestionMsg = "";
         String congestionPercent = "?";
-        String congestionNum = "승하차인원: 약";
+        String congestionNum = "승하차 인원: 약 ";
         if ( internetStatus == ServerConnectionSingle.INTERNET_GOOD ) {
 
             if ( accidentStatus == ServerConnectionSingle.SERVER_CONNECTION_FAILED ) {
@@ -75,10 +75,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
                 congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%";
                 congestionMsg = getCongestionColor(congestionColor);
-                congestionNum += congestionStatus+"명";
+                congestionNum += congestionStatus+" 명 (1시간 기준)";
                 congestionHolder.congestionNum.setText(congestionNum);
                 congestionHolder.congestionPercent.setVisibility(View.VISIBLE);
-                congestionHolder.congestionNum.setText(View.VISIBLE);
+                congestionHolder.congestionNum.setVisibility(View.VISIBLE);
 
             }
 

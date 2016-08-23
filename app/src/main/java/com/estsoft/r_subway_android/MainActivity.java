@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -191,19 +192,19 @@ public class MainActivity extends AppCompatActivity
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.addDrawerListener(interactionListener);
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         toolbar.setNavigationOnClickListener(interactionListener);
 
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(interactionListener);
-
         searchSetting = new SearchSetting();
         expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
 
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity
 
         expListView.setOnGroupClickListener(interactionListener);
         expListView.setOnChildClickListener(interactionListener);
+
 
 
         Stetho.initialize(
@@ -901,5 +903,9 @@ public class MainActivity extends AppCompatActivity
         inflateRouteNew(currentRoute);
         // 수정
 //        runBottomSheet(null, routes);
+    }
+
+    public ExpandableListView getExpListView() {
+        return expListView;
     }
 }

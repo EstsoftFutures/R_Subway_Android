@@ -43,7 +43,7 @@ public class InteractionListener implements
         SearchView.OnQueryTextListener,
         ExpandableListView.OnChildClickListener,
         NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener, ViewPager.OnPageChangeListener,
-        OnSheetDismissedListener {
+        OnSheetDismissedListener,DrawerLayout.DrawerListener {
 
     public InteractionListener(Context context, List<SemiStation> list) {
 
@@ -105,6 +105,7 @@ public class InteractionListener implements
             Log.d(TAG, "onClick: toolbarNavigationImageButton");
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
 
+                host.getExpListView().collapseGroup(1);
                 host.getDrawer().closeDrawer(GravityCompat.START);
                 Log.d(TAG, "onClick: drawer closed");
 
@@ -282,4 +283,29 @@ public class InteractionListener implements
     public int getSearchTextContext() {
         return searchTextContext;
     }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            host.getExpListView().collapseGroup(0);
+            host.getExpListView()
+
+
+                    .collapseGroup(1);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+
 }
