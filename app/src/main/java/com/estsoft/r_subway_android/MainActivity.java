@@ -260,6 +260,10 @@ public class MainActivity extends AppCompatActivity
         mServerConnection = new ServerConnection(this);
 
         InternetManager.init(this);
+
+
+
+
     }
 
 
