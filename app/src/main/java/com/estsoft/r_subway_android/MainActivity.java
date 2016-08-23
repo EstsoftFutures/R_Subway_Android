@@ -64,6 +64,7 @@ import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -132,6 +133,11 @@ public class MainActivity extends AppCompatActivity
     SearchSetting searchSetting;
 
     private int curPage;
+
+    @BindView(R.id.Start)
+    ImageView start;
+    @BindView(R.id.Arrive)
+    ImageView arrive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -557,6 +563,7 @@ public class MainActivity extends AppCompatActivity
             );
 
         }
+        System.gc();
 
     }
 
@@ -640,8 +647,8 @@ public class MainActivity extends AppCompatActivity
 
             Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
-            ImageView start = (ImageView) findViewById(R.id.Start);
-            ImageView arrive = (ImageView) findViewById(R.id.Arrive);
+//            ImageView start = (ImageView) findViewById(R.id.Start);
+//            ImageView arrive = (ImageView) findViewById(R.id.Arrive);
             start.setOnClickListener(interactionListener);
             arrive.setOnClickListener(interactionListener);
 
