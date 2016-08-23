@@ -54,6 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         String accidentMsg = "";
         String congestionMsg = "";
         String congestionPercent = "?";
+        String congestionNum = "승하차인원: 약";
         if ( internetStatus == ServerConnectionSingle.INTERNET_GOOD ) {
 
             if ( accidentStatus == ServerConnectionSingle.SERVER_CONNECTION_FAILED ) {
@@ -67,13 +68,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             if ( congestionStatus == ServerConnectionSingle.NONE_EXIST_STATION ) {
                 congestionMsg = "지원하지 않는 역입니다.";
                 congestionHolder.congestionPercent.setVisibility(View.GONE);
+                congestionHolder.congestionNum.setVisibility(View.GONE);
             } else {
 //                int movePerson = congestion/(mStation.getTrainsPerHour()*10*4);
                 // red : 12
                 Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
                 congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%";
                 congestionMsg = getCongestionColor(congestionColor);
+                congestionNum += congestionStatus+"명";
+                congestionHolder.congestionNum.setText(congestionNum);
                 congestionHolder.congestionPercent.setVisibility(View.VISIBLE);
+                congestionHolder.congestionNum.setText(View.VISIBLE);
+
             }
 
         } else {
@@ -88,6 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         congestionHolder.congestion.setText("혼잡도: "+congestionMsg);
         congestionHolder.congestionPercent.setTextColor(Color.BLACK);
+        congestionHolder.congestionNum.setTextColor(Color.BLACK);
 
 
         congestionHolder.congestionPercent.setText(congestionPercent);
@@ -321,7 +328,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         GridLayout useInfo, stationDefaultInfo, stationCongestion;
         TextView Platform, MeetingPlace, Restroom, OffDoor, CrossOver, HandicapCount, ParkingCount, BicycleCount, CivilCount, Tel, Address, PublicPlace;
 
-        TextView congestion, congestionPercent, crawling;
+        TextView congestion, congestionPercent, crawling, congestionNum;
         public ViewHolder(View view) {
             super(view);
 
@@ -362,6 +369,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             congestion = (TextView) view.findViewById(R.id.congestion);
             congestionPercent = (TextView) view.findViewById(R.id.congestion_percent);
             crawling = (TextView) view.findViewById(R.id.crawling);
+            congestionNum = (TextView) view.findViewById(R.id.congestion_num);
             view.setOnClickListener(this);
 
         }
