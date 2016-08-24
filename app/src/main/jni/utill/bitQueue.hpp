@@ -152,7 +152,6 @@ void BitQueue<E>::push(const std::pair<E, int> &newValue)
 
     if(!isMaskOn(idx))
         onMaskBit(idx);
-
     table[idx].push(newValue);
     size_++;
 }

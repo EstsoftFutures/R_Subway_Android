@@ -4,12 +4,17 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.dd.processbutton.iml.ActionProcessButton;
 
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
@@ -45,48 +50,60 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
             case 1:
                 LinearLayout linearLayout1 = (LinearLayout) inflater.inflate(R.layout.fragment_tutorial_page1, container, false);
                 LinearLayout background1 = (LinearLayout) linearLayout1.findViewById(R.id.background);
-                TextView page_num1 = (TextView) linearLayout1.findViewById(R.id.page_num);
-                page_num1.setText(String.valueOf(1));
-                background1.setBackground(new ColorDrawable(0xff6dc6d2));
+
+                background1.setBackgroundColor(new ColorDrawable().getAlpha());
                 return linearLayout1;
             case 2:
                 LinearLayout linearLayout2 = (LinearLayout) inflater.inflate(R.layout.fragment_tutorial_page2, container, false);
-                LinearLayout background2 = (LinearLayout) linearLayout2.findViewById(R.id.background);
-                TextView page_num2 = (TextView) linearLayout2.findViewById(R.id.page_num);
-                page_num2.setText(String.valueOf(2));
-                background2.setBackground(new ColorDrawable(0xff26abb5));
+                RelativeLayout background2 = (RelativeLayout) linearLayout2.findViewById(R.id.background);
+//                YoYo.with(Techniques.Flash)
+//                        .duration(2000)
+//                        .playOn(linearLayout2.findViewById(R.id.splash));
+                background2.setBackgroundColor(new ColorDrawable().getAlpha());
                 return linearLayout2;
             case 3:
                 LinearLayout linearLayout3 = (LinearLayout) inflater.inflate(R.layout.fragment_tutorial_page3, container, false);
-                LinearLayout background3 = (LinearLayout) linearLayout3.findViewById(R.id.background);
-                TextView page_num3 = (TextView) linearLayout3.findViewById(R.id.page_num);
-                page_num3.setText(String.valueOf(3));
-                background3.setBackground(new ColorDrawable(0xff008c9e));
+                RelativeLayout background3 = (RelativeLayout) linearLayout3.findViewById(R.id.background);
+
+                background3.setBackgroundColor(new ColorDrawable().getAlpha());
 
                 return linearLayout3;
             case 4:
                 LinearLayout linearLayout4 = (LinearLayout) inflater.inflate(R.layout.fragment_tutorial_page4, container, false);
-                LinearLayout background4 = (LinearLayout) linearLayout4.findViewById(R.id.background);
-                TextView page_num4 = (TextView) linearLayout4.findViewById(R.id.page_num);
-                page_num4.setText(String.valueOf(4));
-                background4.setBackground(new ColorDrawable(0xff009c9e));
-                Button btn = (Button) linearLayout4.findViewById(R.id.TutorialF);
-                btn.setOnClickListener(this);
+                RelativeLayout background4 = (RelativeLayout) linearLayout4.findViewById(R.id.background);
+                //TextView page_num4 = (TextView) linearLayout4.findViewById(R.id.page_num);
+                final ActionProcessButton btnStart = (ActionProcessButton) background4.findViewById(R.id.btnSignIn);
+
+                //page_num4.setText(String.valueOf(4));
+                background4.setBackgroundColor(new ColorDrawable().getAlpha());
+                btnStart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        Log.e("onClick","finish");
+                        getActivity().finish();
+                    }
+                });
+
+
                 return linearLayout4;
             default:
                 LinearLayout linearLayoutD = (LinearLayout) inflater.inflate(R.layout.fragment_tutorial_page4, container, false);
                 LinearLayout backgroundD = (LinearLayout) linearLayoutD.findViewById(R.id.background);
-                TextView page_numD = (TextView) linearLayoutD.findViewById(R.id.page_num);
-                page_numD.setText("Error");
-                backgroundD.setBackground(new ColorDrawable(0xffff0000));
-                Button btnD = (Button) linearLayoutD.findViewById(R.id.TutorialF);
-                btnD.setOnClickListener(this);
+                //TextView page_numD = (TextView) linearLayoutD.findViewById(R.id.page_num);
+//                page_numD.setText("Error");
+//                Button btnD = (Button) linearLayoutD.findViewById(R.id.TutorialF);
+//                linearLayoutD.setBackgroundColor(new ColorDrawable().getAlpha());
+//                btnD.setOnClickListener(this);
                 return linearLayoutD;
         }
     }
 
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
     }
+
+
 }

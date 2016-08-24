@@ -3,7 +3,11 @@ package com.estsoft.r_subway_android;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
@@ -17,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +51,7 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.UI.Tutorial.TutorialActivity;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.estsoft.r_subway_android.listener.InteractionListener;
@@ -53,6 +59,8 @@ import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,9 +129,12 @@ public class MainActivity extends AppCompatActivity
     private int curPage;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startActivity(new Intent(getApplicationContext(), TutorialActivity.class));
 
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -235,6 +246,10 @@ public class MainActivity extends AppCompatActivity
         routeController = new RouteControllerNew( stationController, mapView, this );
 
 //        mapView.setSemiStationLaneNumber( stationController );
+
+
+
+
     }
 
 
