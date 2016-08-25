@@ -2,6 +2,7 @@ package com.estsoft.r_subway_android.Crawling;
 
 import android.os.AsyncTask;
 
+import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
 
 import java.io.BufferedReader;
@@ -13,10 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
+import android.util.Pair;
 
 import com.estsoft.r_subway_android.UI.StationInfo.RecyclerViewAdapter;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -63,6 +70,20 @@ public class ServerConnectionSingle {
 
     private Station mStation = null;
     private RecyclerViewAdapter mAdapter = null;
+    private MainActivity mMainActivity = null;
+
+    public void getRouteCongestion(List<Station> stationList, MainActivity mainActivity) {
+        if (mMainActivity == null) mMainActivity = mainActivity;
+        RouteCongestionTask rt = new RouteCongestionTask(stationList);
+        if (InternetManager.getInstance().checkNetwork()) {
+            rt.execute();
+            tasks.add(rt);
+        }
+    }
+
+    private void reInflate( List<Pair<Integer, Integer>> conList ) {
+        mMainActivity.reInflateRouteMarker(conList);
+    }
 
     public void setStationInfo(Station station, RecyclerViewAdapter adapter) {
         mStation = station;
@@ -76,17 +97,34 @@ public class ServerConnectionSingle {
     }
 
     private int getRYGByCongestion(int congestion) {
+//        if (congestion != NONE_EXIST_STATION) {
+//            //!!!!!!!!!!!!!!!!!!!!!!!!!hour error
+//            int movePerson = congestion / (mStation.getTrainsPerHour() * 10 * 4);
+//            // return Red
+//            if (movePerson > 12) return CON_RED;
+//                // return Green
+//            else if (movePerson < 7) return CON_GREEN;
+//                // return Yellow
+//            else return CON_YELLOW;
+//        }
+        return getRYGByCongestion(congestion, mStation);
+    }
+
+    public int getRYGByCongestion(int congestion, Station station) {
+        int result = -2;
         if (congestion != NONE_EXIST_STATION) {
             //!!!!!!!!!!!!!!!!!!!!!!!!!hour error
-            int movePerson = congestion / (mStation.getTrainsPerHour() * 10 * 4);
+            int movePerson = congestion / (station.getTrainsPerHour() * 10 * 4);
             // return Red
-            if (movePerson > 12) return CON_RED;
+            if (movePerson > 12) result = CON_RED;
                 // return Green
-            else if (movePerson < 7) return CON_GREEN;
+            else if (movePerson < 7) result = CON_GREEN;
                 // return Yellow
-            else return CON_YELLOW;
+            else result = CON_YELLOW;
         }
-        return CON_GREEN;
+        station.setCongestionNum(congestion);
+        station.setCongestionFlag(result);
+        return result;
     }
 
     private void getAccidentInfo() {
@@ -94,7 +132,7 @@ public class ServerConnectionSingle {
         if (InternetManager.getInstance().checkNetwork()) {
             at.execute();
             tasks.add(at);
-        } else callAdapter(INTERNET_DISCONNECTED);
+        } else callAdapter(INTERNET_DISCONNECTED );
     }
 
     private void getCongestionInfo() {
@@ -125,6 +163,73 @@ public class ServerConnectionSingle {
     }
 
 
+    private class RouteCongestionTask extends AsyncTask<Void, Void, List<Pair<Integer, Integer>>> {
+
+        List<Station> tStations = null;
+        public RouteCongestionTask( List<Station> stations ) {
+            tStations = stations;
+        }
+
+        @Override
+        protected List<Pair<Integer, Integer>> doInBackground(Void... params) {
+            String[] dateInfo = DateManager.getInstance().getDayAndTime().split("-");
+            Log.d(TAG, "doInBackground: " + dateInfo[0] + " _ " + dateInfo[1] + " _ " + dateInfo[2]);
+
+            try {
+                MongoClientURI mongoUri = new MongoClientURI("mongodb://222.239.250.207:11012");
+                MongoClient mongoClient = new MongoClient(mongoUri);
+                MongoDatabase db = mongoClient.getDatabase("congestion");
+                MongoCollection<Document> collection = db.getCollection("data");
+
+                List<String> ids = new ArrayList<>();
+                for ( Station station : tStations ) {
+                    ids.add(String.valueOf(station.getStationID()));
+                }
+
+                BasicDBObject qeuryToFind = new BasicDBObject();
+                List<BasicDBObject> objs = new ArrayList<>();
+                objs.add(new BasicDBObject("date", dateInfo[0]));
+                objs.add(new BasicDBObject("isRedDay", dateInfo[1]));
+                objs.add(new BasicDBObject("stationID", new BasicDBObject("$in", ids)));
+                qeuryToFind.put("$and", objs);
+
+                Log.d(TAG, "doInBackground: " + qeuryToFind.toJson());
+
+                FindIterable<Document> result =  collection.find(qeuryToFind);
+                List<Pair<Integer, Integer>> stationCongestionList = new ArrayList<>();
+                for ( Document doc : result ) {
+                    Log.d(TAG, "doInBackground: result = " + doc.toJson());
+                    JSONObject jsonObject = new JSONObject(doc.toJson());
+                    Log.d(TAG, "doInBackground: " + jsonObject.get("stationID") + "/" + jsonObject.get(dateInfo[2]));
+                    int stationId = Integer.parseInt((String)jsonObject.get("stationID"));
+                    int congestion = Integer.parseInt((String)jsonObject.get(dateInfo[2]));
+                    stationCongestionList.add(new Pair<Integer, Integer>(stationId, congestion));
+                }
+                return stationCongestionList;
+
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Log.d(TAG, "doInBackground: EXCEPTION");
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(List<Pair<Integer, Integer>> conList) {
+            super.onPostExecute(conList);
+            if (conList == null) {
+                // Exception doing
+            } else {
+                reInflate( conList );
+            }
+
+        }
+    }
+
     private class CongestionTask extends AsyncTask<Void, Void, Integer> {
         private static final String TAG = "CongestionTask";
 
@@ -141,13 +246,15 @@ public class ServerConnectionSingle {
                 MongoDatabase db = mongoClient.getDatabase("congestion");
                 MongoCollection<Document> collection = db.getCollection("data");
 
-                Document myDoc = collection.find(Filters.and(Filters.eq("date", dateInfo[0]), Filters.eq("isRedDay", dateInfo[1]), Filters.eq("stationID", String.valueOf(mStation.getStationID())))).first();
-//                Document myDoc = collection.find(Filters.and(Filters.eq("date", "0"), Filters.eq("isRedDay", "0"), Filters.eq("stationID", String.valueOf(mStation.getStationID()) ))).first();
 
-                Log.d(TAG, "doInBackground: " + myDoc.toJson());
+                Log.d(TAG, "doInBackground: " + collection.toString());
+
+                Document myDoc = collection.find(Filters.and(Filters.eq("date", dateInfo[0]), Filters.eq("isRedDay", dateInfo[1]), Filters.eq("stationID", String.valueOf(mStation.getStationID())))).first();
+
+                Log.d(TAG, "doInBackground: myDoc.toJson() : " + myDoc.toJson());
                 JSONObject jsonObject = new JSONObject(myDoc.toJson());
+
                 return Integer.parseInt((String) jsonObject.get(dateInfo[2]));
-//                return Integer.parseInt((String)jsonObject.get("14"));
             } catch (JSONException ex) {
                 ex.printStackTrace();
                 return NONE_EXIST_STATION;
@@ -207,9 +314,11 @@ public class ServerConnectionSingle {
             Log.d(TAG, "onPostExecute: " + integer);
             getCongestionInfo();
             this.cancel(true);
+            mStation.setAccidentInfo( integer == ACCIDENT_TRUE  );
             tasks.remove(this);
         }
     }
+
 
 
 }

@@ -1,16 +1,13 @@
 package com.estsoft.r_subway_android;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
@@ -21,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.estsoft.r_subway_android.Controller.RouteControllerNew;
@@ -52,19 +49,17 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
-import com.estsoft.r_subway_android.UI.StationInfo.StationInfoFragment;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
-import com.estsoft.r_subway_android.listener.ServerConnectionListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
 import com.facebook.stetho.Stetho;
 import com.flipboard.bottomsheet.BottomSheetLayout;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -83,6 +78,11 @@ public class MainActivity extends AppCompatActivity
     public static final int ALL_MARKERS = 0;
     public static final int ACT_MARKER = 1;
     public static final int REINFLATE_MARKER = 2;
+    public static final int REINFLATE_MARKER_SERVER = 3;
+
+    public static final int START_MARKER = 21;
+    public static final int TRANSFER_MARKER = 22;
+    public static final int END_MARKER = 23;
 
     public static final int SHORT_ROUTE = 10;
     public static final int MIN_TRANSFER = 11;
@@ -110,9 +110,6 @@ public class MainActivity extends AppCompatActivity
     private Station startStation = null;
     private Station endStation = null;
 
-    private ServerConnection mServerConnection = null;
-    private ServerConnectionSingle mServerConnectionSingle = null;
-
     private RouteNew currentRoute = null;
     private RouteNew[] routes = null;
     private RelativeLayout passMarkerMother = null;
@@ -120,8 +117,6 @@ public class MainActivity extends AppCompatActivity
     private List<ImageView> transferMarkers = null;
     private TextView markerText = null;
     private List<View> markerList = null;
-
-    private ProgressBar progressBar = null;
 
     private TtfMapImageView mapView = null;
 
@@ -191,19 +186,19 @@ public class MainActivity extends AppCompatActivity
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.addDrawerListener(interactionListener);
+
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         toolbar.setNavigationOnClickListener(interactionListener);
 
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(interactionListener);
-
         searchSetting = new SearchSetting();
         expandableListAdapter = new ExpandableListAdapter(this, searchSetting.getGroupList(), searchSetting.getSettingCollection());
 
@@ -212,6 +207,7 @@ public class MainActivity extends AppCompatActivity
 
         expListView.setOnGroupClickListener(interactionListener);
         expListView.setOnChildClickListener(interactionListener);
+
 
 
         Stetho.initialize(
@@ -256,8 +252,6 @@ public class MainActivity extends AppCompatActivity
         routeController = new RouteControllerNew( stationController, mapView, this );
 
 //        mapView.setSemiStationLaneNumber( stationController );
-
-        mServerConnection = new ServerConnection(this);
 
         InternetManager.init(this);
 
@@ -429,11 +423,9 @@ public class MainActivity extends AppCompatActivity
                 stationBottomSheet.dismissSheet();
             }
         } else if ( markerMode == REINFLATE_MARKER ){
-
             for (View marker : markerList) {
                 setMarkerVisibility(marker, false);
             }
-
             activeStation = null;
             currentRoute = null;
 
@@ -444,10 +436,23 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             routeMarkers = null;
-
             applyMapScaleChange();
+        } else if (markerMode == REINFLATE_MARKER_SERVER) {
+            for (View marker : markerList) {
+                setMarkerVisibility(marker, false);
+            }
+            activeStation = null;
 
+            if (routeMarkers != null) {
+                for (ImageView view : routeMarkers) {
+                    view.setVisibility(View.GONE);
+                    passMarkerMother.removeView(view);
+                }
+            }
+            routeMarkers = null;
+            applyMapScaleChange();
         }
+
     }
 
     @Override
@@ -570,7 +575,7 @@ public class MainActivity extends AppCompatActivity
             );
 
         }
-        System.gc();
+//        System.gc();
 
     }
 
@@ -801,21 +806,21 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
-                    marker.setImageResource( R.drawable.start_marker );
+                    marker.setImageResource( R.drawable.route_start_normal_marker);
                     marker.setId( 5000 + count );
                     marker.setAlpha( 1f );
                 } else if ( i == 0 ){
-                    marker.setImageResource( R.drawable.transfer_marker );
+                    marker.setImageResource( R.drawable.route_transfer_normal_marker);
                     marker.setId( 4000 + count );
-                    marker.setAlpha( 0.8f );
+                    marker.setAlpha( 1f );
                 } else if (count == route.getTotalSize() - 1){
-                    marker.setImageResource( R.drawable.end_marker );
+                    marker.setImageResource( R.drawable.route_end_normal_marker);
                     marker.setId( 5000 + count );
                     marker.setAlpha( 1f );
                 } else if ( i != section.size() - 1 ) {
-                    marker.setImageResource(R.drawable.blue_route_icon);
+                    marker.setImageResource( R.drawable.blue_route_icon );
                     marker.setId( 3000 + count );
-                    marker.setAlpha(0.6f);
+                    marker.setAlpha(0.7f);
                 }
                 routeMarkers.add(marker);
                 count ++;
@@ -836,6 +841,96 @@ public class MainActivity extends AppCompatActivity
 
         setRouteMarkerPosition();
 
+        //진행중~!!!!
+        // TrainsPerHour setting... and check null
+        for ( Station station : route.getETSStation() ) {
+            station.setTrainsPerHour( stationController.getTrainsPerHour(station, new GregorianCalendar()) );
+        }
+        new ServerConnectionSingle().getRouteCongestion(route.getETSStation(), this);
+    }
+
+    public void reInflateRouteMarker( List<Pair<Integer, Integer>> conList ) {
+
+        setMarkerDefault(REINFLATE_MARKER_SERVER);
+
+        if (routeMarkers == null) routeMarkers = new ArrayList<>();
+
+        int count = 0;
+        for ( List<Station> section : currentRoute.getSections() ) {
+            for ( int i = 0 ; i < section.size(); i ++ ) {
+                Log.d(TAG, "inflateRouteNew: inflating");
+                ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
+                if ( count == 0 ) {
+//                    marker.setImageResource( R.drawable.route_start_normal_marker);
+                    marker.setImageResource(getCongestionDrawble(section.get(i), conList, START_MARKER));
+                    marker.setId( 5000 + count );
+                    marker.setAlpha( 1f );
+                } else if ( i == 0 ){
+//                    marker.setImageResource( R.drawable.route_transfer_normal_marker);
+                    marker.setImageResource(getCongestionDrawble(section.get(i), conList, TRANSFER_MARKER));
+                    marker.setId( 4000 + count );
+                    marker.setAlpha( 1f );
+                } else if (count == currentRoute.getTotalSize() - 1){
+//                    marker.setImageResource( R.drawable.route_end_normal_marker);
+                    marker.setImageResource(getCongestionDrawble(section.get(i), conList, END_MARKER));
+                    marker.setId( 5000 + count );
+                    marker.setAlpha( 1f );
+                } else if ( i != section.size() - 1 ) {
+                    marker.setImageResource( R.drawable.blue_route_icon );
+                    marker.setId( 3000 + count );
+                    marker.setAlpha(0.7f);
+                }
+                routeMarkers.add(marker);
+                count ++;
+            }
+        }
+
+        for (int i = 3; i < 6; i++) {
+            for ( ImageView mark : routeMarkers ) {
+                if (mark.getId() / 1000 == i) {
+                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                    passMarkerMother.addView(mark);
+                    mark.setVisibility(View.VISIBLE);
+                    // marker set Layout width, height using startMarker's LayoutParam
+                    mark.setLayoutParams(markerList.get(0).getLayoutParams());
+                }
+            }
+        }
+
+        setRouteMarkerPosition();
+    }
+    private int getCongestionDrawble (Station station, List<Pair<Integer, Integer>> conList, int etsStatus  ) {
+        int conStatus = -1;
+        for ( Pair<Integer, Integer> pair : conList  ) {
+            if (pair.first == station.getStationID()) {
+                conStatus = new ServerConnectionSingle().getRYGByCongestion(pair.second, station);
+                break;
+            }
+        }
+
+
+        if (conStatus == ServerConnectionSingle.CON_GREEN) {
+            Log.d(TAG, "getCongestionDrawble: GREEN");
+            if (etsStatus == START_MARKER) return R.drawable.route_start_green_marker;
+            if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_green_marker;
+            if (etsStatus == END_MARKER) return R.drawable.route_end_green_marker;
+        } else if (conStatus == ServerConnectionSingle.CON_YELLOW) {
+            Log.d(TAG, "getCongestionDrawble: CON_YELLOW");
+            if (etsStatus == START_MARKER) return R.drawable.route_start_yellow_marker;
+            if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_yellow_marker;
+            if (etsStatus == END_MARKER) return R.drawable.route_end_yellow_marker;
+        } else if (conStatus == ServerConnectionSingle.CON_RED) {
+            Log.d(TAG, "getCongestionDrawble: CON_RED");
+            if (etsStatus == START_MARKER) return R.drawable.route_start_red_marker;
+            if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_red_marker;
+            if (etsStatus == END_MARKER) return R.drawable.route_end_red_marker;
+        } else {
+            Log.d(TAG, "getCongestionDrawble: DEFAULT");
+            if (etsStatus == START_MARKER) return R.drawable.route_start_normal_marker;
+            if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_normal_marker;
+            if (etsStatus == END_MARKER) return R.drawable.route_end_normal_marker;
+        }
+        return R.drawable.pass_marker;
     }
 
 
@@ -901,5 +996,9 @@ public class MainActivity extends AppCompatActivity
         inflateRouteNew(currentRoute);
         // 수정
 //        runBottomSheet(null, routes);
+    }
+
+    public ExpandableListView getExpListView() {
+        return expListView;
     }
 }

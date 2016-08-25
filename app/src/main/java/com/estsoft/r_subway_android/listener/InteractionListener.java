@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.estsoft.r_subway_android.Crawling.ServerConnection;
 import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
@@ -43,7 +44,7 @@ public class InteractionListener implements
         SearchView.OnQueryTextListener,
         ExpandableListView.OnChildClickListener,
         NavigationView.OnNavigationItemSelectedListener, ExpandableListView.OnGroupClickListener, ViewPager.OnPageChangeListener,
-        OnSheetDismissedListener {
+        OnSheetDismissedListener,DrawerLayout.DrawerListener {
 
     public InteractionListener(Context context, List<SemiStation> list) {
 
@@ -105,6 +106,7 @@ public class InteractionListener implements
             Log.d(TAG, "onClick: toolbarNavigationImageButton");
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
 
+                host.getExpListView().collapseGroup(1);
                 host.getDrawer().closeDrawer(GravityCompat.START);
                 Log.d(TAG, "onClick: drawer closed");
 
@@ -246,6 +248,7 @@ public class InteractionListener implements
 
         @Override
         public void onPageSelected(int position) {
+            ServerConnectionSingle.killThread();
             switch ( position ) {
                 case 0 :
                     host.setCurrentRoute( position, host.SHORT_ROUTE );
@@ -272,14 +275,41 @@ public class InteractionListener implements
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
             host.setMarkerDefault(host.ALL_MARKERS);
+            ServerConnectionSingle.killThread();
         } else if (bottomSheetLayout.getId() == R.id.station_bottomSheet) {
             //스테이션 시트일때
             host.setMarkerDefault(host.ACT_MARKER);
         }
+        host.getStationController().cleanStations();
 //        host.getRouteBottomSheet().dismissSheet();
     }
 
     public int getSearchTextContext() {
         return searchTextContext;
     }
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            host.getExpListView().collapseGroup(0);
+            host.getExpListView()
+
+
+                    .collapseGroup(1);
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+
 }

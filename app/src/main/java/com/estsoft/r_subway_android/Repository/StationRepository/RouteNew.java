@@ -2,6 +2,7 @@ package com.estsoft.r_subway_android.Repository.StationRepository;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,8 @@ public class RouteNew {
 
     private static final int[] expressStationIDs = {
             // 1 호선
-            133, 139, 174, 177, 180, 182, 1543, 186, 188, 1402, 1404, 1405, 1407, 1408, 141, 172,
+            100, 101, 103, 105, 107, 111, 112, 114, 117, 120, 141, 138,
+            133, 135, 139, 174, 177, 180, 181, 182, 184, 186, 189, 1402, 1404, 1405, 1407, 1408,
             // 4 호선
             409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425, 426,
             427, 428, 429, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
@@ -126,6 +128,8 @@ public class RouteNew {
     private static final String TAG = "RouteNew";
 
     private List<List<Station>> sections;
+    private List<Station> mStations = null;
+    private List<Station> etsStations = null;
     private List<Boolean> ExpressSectionIndex;
     private int totalSize;
 
@@ -133,6 +137,18 @@ public class RouteNew {
         this.sections = sections;
         ExpressSectionIndex = expressSectionIndex;
         totalSize = -1;
+    }
+
+    public List<Station> getETSStation() {
+        if ( this.etsStations == null ) {
+            this.etsStations = new ArrayList<>();
+            int sectionSize = sections.size();
+            for ( int i = 0; i < sectionSize; i ++ ) {
+                etsStations.add(sections.get(i).get(0));
+                if ( i >= sectionSize - 1 ) etsStations.add((sections.get(i).get(sections.get(i).size() - 1)));
+            }
+        }
+        return etsStations;
     }
 
     public Station getStationByOrder( int index ) {
@@ -147,6 +163,19 @@ public class RouteNew {
         }
         return null;
     }
+
+    public List<Station> getStationListByOrder() {
+        if ( mStations == null ) {
+            mStations = new ArrayList<>();
+            for ( List<Station> section : sections ) {
+                for ( Station station : section  ) {
+                    mStations.add(station);
+                }
+            }
+        }
+        return mStations;
+    }
+
     public int getTotalSize(){
         if ( totalSize == -1 ) {
             totalSize = 0;

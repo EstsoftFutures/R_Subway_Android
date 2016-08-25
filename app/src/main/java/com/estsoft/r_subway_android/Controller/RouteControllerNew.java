@@ -157,7 +157,7 @@ public class RouteControllerNew {
             path = ShortestPath.getMinimumTransferPathByIntArray(defaultAdj, start, end);
         else
             path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
-        Log.d(TAG, "getRouteNew: passing pathget");
+
         // if could not find Route
         if (path.length == 0) return null;
         // if could not find Route
@@ -388,11 +388,13 @@ public class RouteControllerNew {
     }
     private Boolean checkTerminalName ( List<Station> terminals, String timeTerminalName ) {
         for ( int i = 0; i < terminals.size(); i ++ ) {
-            Log.d(TAG, "checkTerminalName: " + timeTerminalName + " finding " + terminals.get(i).getStationName());
             String terminalName = terminals.get(i).getStationName();
             String[] tmp = terminalName.split("\\(");
-            terminalName = tmp[0];
-            if (terminalName.equals(timeTerminalName)) return true;
+            String justTerminalName = tmp[0];
+            Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
+            if (justTerminalName.equals(timeTerminalName)){
+                return true;
+            }
         }
         return false;
     }
