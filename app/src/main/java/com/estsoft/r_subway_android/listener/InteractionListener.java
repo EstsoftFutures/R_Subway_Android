@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.estsoft.r_subway_android.Crawling.ServerConnection;
 import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
@@ -247,6 +248,7 @@ public class InteractionListener implements
 
         @Override
         public void onPageSelected(int position) {
+            ServerConnectionSingle.killThread();
             switch ( position ) {
                 case 0 :
                     host.setCurrentRoute( position, host.SHORT_ROUTE );
@@ -273,10 +275,12 @@ public class InteractionListener implements
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
             host.setMarkerDefault(host.ALL_MARKERS);
+            ServerConnectionSingle.killThread();
         } else if (bottomSheetLayout.getId() == R.id.station_bottomSheet) {
             //스테이션 시트일때
             host.setMarkerDefault(host.ACT_MARKER);
         }
+        host.getStationController().cleanStations();
 //        host.getRouteBottomSheet().dismissSheet();
     }
 

@@ -157,7 +157,7 @@ public class RouteControllerNew {
             path = ShortestPath.getMinimumTransferPathByIntArray(defaultAdj, start, end);
         else
             path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
-        Log.d(TAG, "getRouteNew: passing pathget");
+
         // if could not find Route
         if (path.length == 0) return null;
         // if could not find Route

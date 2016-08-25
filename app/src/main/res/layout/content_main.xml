@@ -54,14 +54,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="matrix"
-                android:src="@drawable/start_marker" />
+                android:src="@drawable/route_start_normal_marker" />
 
             <ImageView
                 android:id="@+id/endMarker"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="matrix"
-                android:src="@drawable/end_marker" />
+                android:src="@drawable/route_end_normal_marker" />
 
         </RelativeLayout>
 

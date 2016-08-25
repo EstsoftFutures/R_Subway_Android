@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,7 +42,6 @@ public class StationController {
 
     private List<Station> deepCopiedStations = null;
 
-
     private ArrayList<Pair<Station, Integer>> adj[] = null;
     private TtfXmlParserCost costParser;
     private InputStream inputStream;
@@ -59,6 +59,14 @@ public class StationController {
 
         mContext = context;
 
+    }
+
+    public void cleanStations() {
+        if (deepCopiedStations == null) return;
+        Iterator<Station> iter = deepCopiedStations.iterator();
+        while(iter.hasNext()) {
+            iter.next().cleanStation();
+        }
     }
 
     private ArrayList<Pair<Station, Integer>>[] initializeAdj(int transferWeight) throws IOException, XmlPullParserException {
@@ -475,6 +483,41 @@ public class StationController {
 //            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarFirst.get(Calendar.HOUR) + ":" + nextCalendarFirst.get(Calendar.MINUTE) + " to " + nextTerminalFirst );
 //            Log.d(TAG, "getPrevNextStationTime: " + nextCalendarSecond.get(Calendar.HOUR) + ":" + nextCalendarSecond.get(Calendar.MINUTE) + " to " + nextTerminalSecond );
         return result;
+    }
+
+    public int getTrainsPerHour( Station station, Calendar cal ) {
+
+        int stationID = station.getStationID();
+        JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(mContext, stationID);
+        StationTimetable stt = jsonTimetableParser.getStationTimetable();
+
+        Calendar newCal = (Calendar)cal.clone();
+        int day = newCal.get(Calendar.DAY_OF_WEEK);
+        ArrayList<HashMap<String, Object>>[] prevTimeTable, nextTimeTable;
+
+        switch (day) {
+            case 1:
+                prevTimeTable = stt.getSunUpWayLdx();
+                nextTimeTable = stt.getSunDownWayLdx();
+                break;
+            case 7:
+                prevTimeTable = stt.getSatUpWayLdx();
+                nextTimeTable = stt.getSatDownWayLdx();
+                break;
+            default:
+                prevTimeTable = stt.getOrdUpWayLdx();
+                nextTimeTable = stt.getOrdDownWayLdx();
+                break;
+        }
+
+        int hour = newCal.get(Calendar.HOUR_OF_DAY);
+        int hourIndexFirst = hour - 5 < 0 ? hour + 19 : hour - 5;
+
+        int prevTrainsSize = prevTimeTable[hourIndexFirst].size();
+        int nextTrainsSize = nextTimeTable[hourIndexFirst].size();
+
+        return prevTrainsSize + nextTrainsSize ;
+
     }
 //    private Map getCalendar( ArrayList<HashMap<String, Object>> timeList, String key, Calendar cal) {
 

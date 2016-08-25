@@ -46,6 +46,7 @@ public class Station extends TtfNode {
 
     private PointF mapPoint = null;
     private int conLevel;
+
     private List<Integer> exLaneNumbers;
 
     private RealmStation realmStation;
@@ -56,6 +57,10 @@ public class Station extends TtfNode {
     private List<String> timeStringList;
 
     private int TrainsPerHour;
+
+    private Integer congestionNum = null;
+    private Integer congestionFlag = null;
+    private Boolean accidentFlag = null;
 
 
     public Station( RealmStation rst, PointF mapPoint, int conLevel ) {
@@ -85,6 +90,12 @@ public class Station extends TtfNode {
     }
     public static Station getEmptyStation() {
         return new Station();
+    }
+
+    public void cleanStation() {
+        this.accidentFlag = null;
+        this.congestionFlag = null;
+        this.congestionNum = null;
     }
 
     public void copyFromRealmStationLite(  ) {
@@ -424,6 +435,30 @@ public class Station extends TtfNode {
 
     public void setConLevel(int conLevel) {
         this.conLevel = conLevel;
+    }
+
+    public Integer getCongestionNum() {
+        return congestionNum;
+    }
+
+    public void setCongestionNum(int congestionNum) {
+        this.congestionNum = congestionNum;
+    }
+
+    public int getCongestionFlag() {
+        return congestionFlag;
+    }
+
+    public void setCongestionFlag(int congestionFlag) {
+        this.congestionFlag = congestionFlag;
+    }
+
+    public Boolean getAccidentFlag() {
+        return accidentFlag;
+    }
+
+    public void setAccidentFlag(Boolean accidentFlag) {
+        this.accidentFlag = accidentFlag;
     }
 }
 
