@@ -25,7 +25,7 @@ bool hasAdjGraph();
  * Global field
  * */
 
-BitQueue<Station> bq(4000);
+//BitQueue<Station> bq(4000);
 vector<pair<Station, int> > adj[MAX];
 bool isExcept[113] = {false,};
 Logger logger;
@@ -72,6 +72,9 @@ Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getShortestPathByIntArr
     // Bring the Station
     int startIdx = env->GetIntField(start, filedIndex);
     int endIdx = env->GetIntField(end, filedIndex);
+
+   // logger.logE(logger.intToString(startIdx), "출발");
+
     // using the dijkstra algorithm.
 
     // return is testing
@@ -167,27 +170,27 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
     dist[start.index] = 0;
     parent[start.index] = start.index;
     // bitqueue
-    //priority_queue<pair<int,Station> > pq;
-    bq.push(make_pair(start, 0));
+    priority_queue<pair<int,Station> > pq;
+    //bq.push(make_pair(start, 0));
     // priperty queue
-    //pq.push(make_pair(0,start));
+    pq.push(make_pair(0,start));
 
     // is pq
-    while(!bq.empty())
+    while(!pq.empty())
     {
         // bitqueue
-        Station here = bq.top().first;
-        int cost = bq.top().second;
+//        Station here = bq.top().first;
+//        int cost = bq.top().second;
 
         // priperty queue
-//        Station here = pq.top().second;
-//        int cost = pq.top().first;
+        Station here = pq.top().second;
+        int cost = pq.top().first;
 
         // bitqueue
-        bq.pop();
+       // bq.pop();
 
         // priperty queue
-        //pq.pop();
+        pq.pop();
 
         if(dist[here.index] < cost) continue;
 
@@ -216,10 +219,10 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
                 parent[there.index] = here.index;
 
                 // bitqueue
-                bq.push(make_pair(there, nextDist));
+                //bq.push(make_pair(there, nextDist));
 
                 // priqueue
-                //pq.push(make_pair(nextDist, there));
+                 pq.push(make_pair(nextDist, there));
             }
         }
     }

@@ -29,6 +29,11 @@ public class SemiStation {
     public void sortLaneNumbers() {
         Collections.sort(this.laneNumbers);
         Collections.reverse(this.laneNumbers);
+        if (this.getIntId() == 133) {
+            for ( int num : laneNumbers  ) {
+                Log.d(TAG, "sortLaneNumbers: + " + num);
+            }
+        }
     }
 
     public List<Integer> getLaneNumbers() {

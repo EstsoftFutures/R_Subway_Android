@@ -91,9 +91,11 @@ public class TtfMapImageView extends MapTouchImageView {
         for ( SemiStation ss : semiStationList ) {
             if (ss.getName().equals( semiStation.getName() )) {
                 ss.getLaneNumbers().add( semiStation.getLaneNumber() );
+                Log.d(TAG, "saveSemiStation: " + semiStation.getLaneNumber());
                 return;
             }
         }
+
         semiStation.sortLaneNumbers();
         semiStationList.add(semiStation);
     }

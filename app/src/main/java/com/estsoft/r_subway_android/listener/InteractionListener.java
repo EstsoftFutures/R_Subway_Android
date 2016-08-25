@@ -106,12 +106,12 @@ public class InteractionListener implements
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
 
                 host.getDrawer().closeDrawer(GravityCompat.START);
-                Log.d(TAG, "onClick: drawer open");
+                Log.d(TAG, "onClick: drawer closed");
 
             } else {
                 host.getDrawer().openDrawer(GravityCompat.START);
                 host.hideSoftKeyboard(v);
-                Log.d(TAG, "onClick: drawer closed");
+                Log.d(TAG, "onClick: drawer open");
             }
         }
 
@@ -163,6 +163,8 @@ public class InteractionListener implements
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
+        Log.d(TAG, "onGroupClick: Goupclicked");
+        
         ImageView check = (ImageView) v.findViewById(R.id.setting_group_check);
 
         //검색노선 설정은 CHECK안되도록
@@ -217,6 +219,7 @@ public class InteractionListener implements
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         DrawerLayout drawer = (DrawerLayout) host.findViewById(R.id.drawer_layout);
+        Log.d(TAG, "onNavigationItemSelected: ");
 
         return true;
     }
