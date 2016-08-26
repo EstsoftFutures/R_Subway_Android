@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.R;
 import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 import com.estsoft.r_subway_android.Repository.StationRepository.Station;
@@ -77,11 +78,87 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 holder.routeStationTo.setVisibility(View.VISIBLE);
                 holder.routeStartTime.setVisibility(View.VISIBLE);
                 holder.routeFirstMom.setVisibility(View.VISIBLE);
+                holder.routeCon.setVisibility(View.GONE);
                 break;
 
             case 1:
+                holder.routeStartStation.setVisibility(View.GONE);
+                holder.routeStationTo.setVisibility(View.GONE);
+                holder.routeNumStations.setVisibility(View.GONE);
+                holder.routeStartTime.setVisibility(View.GONE);
+                holder.routeFirstMom.setVisibility(View.GONE);
 
-                if (position > 0 && route[mPage].getSections().size() > position - 1) {
+
+                //congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%"
+                LinearLayout liRouteCon = new LinearLayout(mActivity);
+                liRouteCon.setOrientation(LinearLayout.VERTICAL);
+
+                LinearLayout.LayoutParams llpCon = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                llpCon.topMargin = 10;
+                llpCon.leftMargin = 140;
+                llpCon.bottomMargin = 10;
+
+
+                for (int i = 0; i < route[mPage].getSections().size(); i++) {
+                    RelativeLayout reRouteCon = new RelativeLayout(mActivity);
+                    Station startStation = route[mPage].getSections().get(i).get(0);
+
+                    TextView routeCongestion = new TextView(mActivity);
+                    TextView routeCongestionPer = new TextView(mActivity);
+
+
+                    if (startStation.getCongestionNum() != null && startStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
+                        routeCongestion.setText(startStation.getStationName() + " 혼잡도: " + startStation.getCongestionNum() + " 명 (1시간 기준) ");
+                        routeCongestion.setTextColor(Color.BLACK);
+                        routeCongestionPer.setText( (int) (startStation.getCongestionNum() / ((double) startStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
+                        routeCongestionPer.setTextColor(conColor(startStation.getCongestionFlag()));
+                        routeCongestion.setVisibility(View.VISIBLE);
+
+                    } else {
+                        routeCongestion.setText(startStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+                        routeCongestion.setTextColor(Color.BLACK);
+                        routeCongestion.setVisibility(View.VISIBLE);
+                        routeCongestionPer.setText("");
+                    }
+
+                    reRouteCon.addView(routeCongestion);
+                    reRouteCon.addView(routeCongestionPer);
+                    RelativeLayout.LayoutParams paramRouteConPer = (RelativeLayout.LayoutParams) routeCongestionPer.getLayoutParams();
+                    paramRouteConPer.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    liRouteCon.addView(reRouteCon);
+
+                }
+
+
+                RelativeLayout reRouteCon = new RelativeLayout(mActivity);
+
+                Station endStation = route[mPage].getSections().get(route[mPage].getSections().size()-1).get(route[mPage].getSections().get(route[mPage].getSections().size()-1).size()-1);
+                TextView endCongestion = new TextView(mActivity);
+                TextView endConPer = new TextView(mActivity);
+                if (endStation.getCongestionNum() != null && endStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
+                    endCongestion.setText(endStation.getStationName() + " 혼잡도: " + endStation.getCongestionNum() + " 명 (1시간 기준) ");
+                    endCongestion.setTextColor(Color.BLACK);
+                    endConPer.setText( (int) (endStation.getCongestionNum() / ((double) endStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
+                    endConPer.setTextColor(conColor(endStation.getCongestionFlag()));
+                    endCongestion.setVisibility(View.VISIBLE);
+                } else {
+                    endCongestion.setText(endStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+                    endCongestion.setTextColor(Color.BLACK);
+                    endCongestion.setVisibility(View.VISIBLE);
+                    endConPer.setText("");
+                }
+                reRouteCon.addView(endCongestion);
+                reRouteCon.addView(endConPer);
+                RelativeLayout.LayoutParams paramRouteEndConPer = (RelativeLayout.LayoutParams) endConPer.getLayoutParams();
+                paramRouteEndConPer.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                liRouteCon.addView(reRouteCon);
+                holder.routeCon.addView(liRouteCon);
+
+                holder.routeCon.setVisibility(View.VISIBLE);
+
+                break;
+            case 2:
+                if (position > 1 && route[mPage].getSections().size() > position - 2) {
 
                     LinearLayout ll1 = (LinearLayout) holder.itemView.findViewById(R.id.mother01);
 
@@ -217,8 +294,8 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 holder.routeNumStations.setVisibility(View.GONE);
                 holder.routeStartTime.setVisibility(View.GONE);
                 holder.routeFirstMom.setVisibility(View.GONE);
+                holder.routeCon.setVisibility(View.GONE);
                 break;
-
         }
 
 
@@ -226,7 +303,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -235,6 +312,8 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
         TextView routeStartStation, routeNumStations, routeStartTime;
         TextView routeStationTo;
 
+        LinearLayout routeCon;
+        TextView routeConStart, routeConMid, routeConEnd;
 
         public ViewHolder(View view) {
             super(view);
@@ -246,6 +325,8 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
             routeStationTo = (TextView) view.findViewById(R.id.route_station_to);
             routeFirstMom = (LinearLayout) view.findViewById(R.id.route_first_mom);
 
+
+            routeCon = (LinearLayout) view.findViewById(R.id.con_route);
             view.setOnClickListener(this);
         }
 
@@ -367,5 +448,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 return R.drawable.lane_1_mid;
         }
     }
+    private int conColor(int flag){
+       if(flag == ServerConnectionSingle.CON_RED) return Color.rgb(221,80,68);
+        if(flag == ServerConnectionSingle.CON_GREEN) return Color.rgb(69,125,215);
+        if(flag == ServerConnectionSingle.CON_YELLOW) return Color.rgb(253,219,86);
 
+        return Color.BLACK;
+    }
 }

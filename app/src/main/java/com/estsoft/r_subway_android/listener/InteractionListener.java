@@ -181,13 +181,6 @@ public class InteractionListener implements
             case 0 :
                 SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
-            case 1 :
-                /*SearchSetting.setAvoidDangerStations( !SearchSetting.isAvoidDangerStations() );
-                break;
-
-            case 2 :*/
-                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
-                break;
             default:
                 break;
         }
