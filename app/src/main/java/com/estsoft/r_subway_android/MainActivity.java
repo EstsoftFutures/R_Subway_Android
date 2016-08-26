@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity
 
     private ExpandableListAdapter expandableListAdapter = null;
 
+    public RoutePagerAdapter mRoutePagerAdapter = null;
+
     private RouteControllerNew routeController = null;
     private StationController stationController = null;
     private Station activeStation = null;
@@ -119,6 +123,8 @@ public class MainActivity extends AppCompatActivity
     private List<View> markerList = null;
 
     private TtfMapImageView mapView = null;
+
+    private RecyclerView searchListView = null;
 
     private float normalMarkerSize = -1;
     private float routeMarkerSize = -1;
@@ -181,6 +187,7 @@ public class MainActivity extends AppCompatActivity
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
         mSearchView.setFocusableInTouchMode(true);
+
         setSupportActionBar(toolbar);
 
 
@@ -369,6 +376,7 @@ public class MainActivity extends AppCompatActivity
     public void itemClick(SemiStation semiStation) {
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
+        searchListView.setVisibility(View.GONE);
         hideSoftKeyboard(mapView);
         if (status == FULL) {       
             setMarkerDefault(ALL_MARKERS);
@@ -630,7 +638,8 @@ public class MainActivity extends AppCompatActivity
         stationBottomSheet.addOnSheetDismissedListener(interactionListener);
 
 
-        final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+//        final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         routeBottomSheet.addOnSheetDismissedListener(interactionListener);
 
 
@@ -644,7 +653,7 @@ public class MainActivity extends AppCompatActivity
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
  //           Log.d(TAG,"pager : station:"+exStations.size());
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
- //       viewPager.setOffscreenPageLimit(1);
+    //   viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -692,7 +701,10 @@ public class MainActivity extends AppCompatActivity
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
-            viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager(),route));
+
+            mRoutePagerAdapter = new RoutePagerAdapter(getSupportFragmentManager(), route);
+
+            viewPager.setAdapter( mRoutePagerAdapter );
 
 
 //        viewPager.setOffscreenPageLimit(3);
@@ -898,6 +910,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         setRouteMarkerPosition();
+        Log.d(TAG, "reInflateRouteMarker: " + getCurPage());
+        mRoutePagerAdapter.reinflateRouteCongestion(getCurPage());
+
     }
     private int getCongestionDrawble (Station station, List<Pair<Integer, Integer>> conList, int etsStatus  ) {
         int conStatus = -1;
@@ -938,6 +953,14 @@ public class MainActivity extends AppCompatActivity
     getters
     */
 
+    public RecyclerView getSearchListView() {
+        return searchListView;
+    }
+
+    public void setSearchListView(RecyclerView searchListView) {
+        this.searchListView = searchListView;
+    }
+
     public BottomSheetLayout getRouteBottomSheet() {
         return routeBottomSheet;
     }
@@ -964,6 +987,9 @@ public class MainActivity extends AppCompatActivity
 
     public int getCurPage() {
         return curPage;
+    }
+    public void setCurPage(int page ) {
+        this.curPage = page;
     }
 
     public TtfMapImageView getMapView() {
@@ -1000,5 +1026,29 @@ public class MainActivity extends AppCompatActivity
 
     public ExpandableListView getExpListView() {
         return expListView;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if (getDrawer().isDrawerOpen(GravityCompat.START)) {
+            getDrawer().closeDrawer(GravityCompat.START);
+            return;
+        }
+        if (stationBottomSheet.isSheetShowing()) {
+            stationBottomSheet.dismissSheet();
+            return;
+        }
+        if (routeBottomSheet.isSheetShowing()) {
+            routeBottomSheet.dismissSheet();
+            return;
+        }
+        if (searchListView.getVisibility() == View.VISIBLE) {
+            ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
+            searchListView.setVisibility(View.GONE);
+            return;
+        }
+        super.onBackPressed();
     }
 }
