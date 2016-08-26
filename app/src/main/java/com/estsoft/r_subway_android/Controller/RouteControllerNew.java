@@ -378,7 +378,10 @@ public class RouteControllerNew {
             }
         }
 
-        if (!newCal.equals(compareCal)) return newCal;
+        if (!newCal.equals(compareCal)) {
+            Log.d(TAG, "getTimeTable: returning CAL!!!");
+            return newCal;
+        }
         else {
             newCal.set( Calendar.MINUTE, 60 );
 //            newCal.set( Calendar.MINUTE, 0 );
@@ -392,7 +395,13 @@ public class RouteControllerNew {
             String[] tmp = terminalName.split("\\(");
             String justTerminalName = tmp[0];
             Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
-            if (justTerminalName.equals(timeTerminalName)){
+            Log.d(TAG, "checkTerminalName: /" + timeTerminalName.getClass() +  " // " + justTerminalName.getClass());
+//            if (justTerminalName.equals(timeTerminalName)){
+//            if (justTerminalName.contains(timeTerminalName)) {
+
+
+            if (timeTerminalName.equals(justTerminalName)) {
+                Log.d(TAG, "checkTerminalName: / in true /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
                 return true;
             }
         }
@@ -580,10 +589,10 @@ public class RouteControllerNew {
         Log.d(TAG, "initializeSettings: " + mode);
         if (mode == CUSTOM_ROUTE) {
             expressFirst = SearchSetting.isActiveExpressOnly();
-            Log.d(TAG, "initializeSettings: " + expressFirst);
         } else {
             expressFirst = false;
         }
+        Log.d(TAG, "initializeSettings: " + expressFirst);
     }
 
 }

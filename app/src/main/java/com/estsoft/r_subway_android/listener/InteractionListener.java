@@ -186,7 +186,7 @@ public class InteractionListener implements
                 break;
 
             case 2 :*/
-                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
+//                SearchSetting.setActiveExpressOnly( !SearchSetting.isActiveExpressOnly() );
                 break;
             default:
                 break;
