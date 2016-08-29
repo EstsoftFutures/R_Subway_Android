@@ -182,9 +182,9 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
         if(cost == 0 && !startPoint) startPoint = true;
         else if(cost == 0 && startPoint)
         {
-            break;
-//            bq.pop();
-//            continue;
+          //  break;
+            bq.pop();
+            continue;
         }
 
 

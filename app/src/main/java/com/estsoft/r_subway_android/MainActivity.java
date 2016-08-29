@@ -772,7 +772,6 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
 
-
         setStatus();
     }
 
@@ -783,6 +782,7 @@ public class MainActivity extends AppCompatActivity
 //            progressBar.setVisibility(View.VISIBLE);
 
 //            currentRoute = routeController.getRouteNew(startStation, endStation);
+
             routes = routeController.getRoutes(startStation, endStation);
 
             currentRoute = routes[0];
