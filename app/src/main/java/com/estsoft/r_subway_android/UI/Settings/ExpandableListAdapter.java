@@ -46,11 +46,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.setting_group_child_item, null);
+        }else{
+
+            if(SearchSetting.getActiveLanes().get(childPosition).isActive()){
+                convertView.findViewById(R.id.setting_child_check).setVisibility(View.VISIBLE);
+            }else{
+                convertView.findViewById(R.id.setting_child_check).setVisibility(View.INVISIBLE);
+            }
+
         }
 
         TextView item = (TextView) convertView.findViewById(R.id.setting_group_child_item);
 
         item.setText(setting);
+
+
         return convertView;
     }
 
@@ -72,16 +82,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        String laptopName = (String) getGroup(groupPosition);
+        String groupName = (String) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.setting_group_item,
                     null);
+
+        }else{
+            if(SearchSetting.isActiveExpressOnly() && groupPosition != 1){
+                convertView.findViewById(R.id.setting_group_check).setVisibility(View.VISIBLE);
+            }else{
+                convertView.findViewById(R.id.setting_group_check).setVisibility(View.INVISIBLE);
+            }
+
         }
         TextView item = (TextView) convertView.findViewById(R.id.setting_group_item);
         item.setTypeface(null, Typeface.BOLD);
-        item.setText(laptopName);
+        item.setText(groupName);
 
         return convertView;
     }
