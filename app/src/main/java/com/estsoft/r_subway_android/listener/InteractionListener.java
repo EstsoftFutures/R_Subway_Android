@@ -211,8 +211,6 @@ public class InteractionListener implements
         } else {
             check.setVisibility(View.VISIBLE);
         }
-
-
         SearchSetting.getActiveLanes().get(childPosition).setActive( !SearchSetting.getActiveLanes().get(childPosition).isActive()  );
 
         SearchSetting.checkSettings();
