@@ -1077,7 +1077,7 @@ public class MainActivity extends AppCompatActivity
             routeBottomSheet.dismissSheet();
             return;
         }
-        if (searchListView.getVisibility() == View.VISIBLE) {
+        if (searchListView != null && searchListView.getVisibility() == View.VISIBLE) {
             ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
             searchListView.setVisibility(View.GONE);
             return;
