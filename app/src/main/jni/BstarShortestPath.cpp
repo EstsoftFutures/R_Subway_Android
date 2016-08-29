@@ -25,7 +25,7 @@ bool hasAdjGraph();
  * Global field
  * */
 
-//BitQueue<Station> bq(4000);
+BitQueue<Station> bq(4000);
 vector<pair<Station, int> > adj[MAX];
 bool isExcept[113] = {false,};
 Logger logger;
@@ -40,9 +40,7 @@ Java_com_estsoft_r_1subway_1android_utility_ShortestPath_setLineRange(JNIEnv *en
     for(int i = 0; i < 113; i++)
         isExcept[i] = isExceptj[i];
 
-
     // TODO
-
     env->ReleaseBooleanArrayElements(isExcept_, isExceptj, 0);
 }
 
@@ -72,9 +70,6 @@ Java_com_estsoft_r_1subway_1android_utility_ShortestPath_getShortestPathByIntArr
     // Bring the Station
     int startIdx = env->GetIntField(start, filedIndex);
     int endIdx = env->GetIntField(end, filedIndex);
-
-   // logger.logE(logger.intToString(startIdx), "출발");
-
     // using the dijkstra algorithm.
 
     // return is testing
@@ -170,27 +165,38 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
     dist[start.index] = 0;
     parent[start.index] = start.index;
     // bitqueue
-    priority_queue<pair<int,Station> > pq;
-    //bq.push(make_pair(start, 0));
+    //priority_queue<pair<int,Station> > pq;
+    bq.push(make_pair(start, 0));
     // priperty queue
-    pq.push(make_pair(0,start));
+    //pq.push(make_pair(0,start));
+
+    bool startPoint = false;
 
     // is pq
-    while(!pq.empty())
+    while(!bq.empty())
     {
         // bitqueue
-//        Station here = bq.top().first;
-//        int cost = bq.top().second;
+        Station here = bq.top().first;
+        int cost = bq.top().second;
+
+        if(cost == 0 && !startPoint) startPoint = true;
+        else if(cost == 0 && startPoint)
+        {
+          //  break;
+            bq.pop();
+            continue;
+        }
+
 
         // priperty queue
-        Station here = pq.top().second;
-        int cost = pq.top().first;
+//        Station here = pq.top().second;
+//        int cost = pq.top().first;
 
         // bitqueue
-       // bq.pop();
+        bq.pop();
 
         // priperty queue
-        pq.pop();
+        //pq.pop();
 
         if(dist[here.index] < cost) continue;
 
@@ -198,7 +204,6 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
         {
 
             Station there = adj[here.index][i].first;
-
 
             if(isExcept[there.getLaneType()] == true)
                 continue;
@@ -212,17 +217,17 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
             {
                 nextDist += weight;
             }
-
+            // if(기존의 비용 > 지금 내가 발견한 비용)
             if(dist[there.index] > nextDist)
             {
                 dist[there.index] = nextDist;
                 parent[there.index] = here.index;
 
                 // bitqueue
-                //bq.push(make_pair(there, nextDist));
+                bq.push({there,nextDist});
 
                 // priqueue
-                 pq.push(make_pair(nextDist, there));
+//                pq.push(make_pair(nextDist, there));
             }
         }
     }
@@ -239,7 +244,6 @@ jintArray shortestPath(JNIEnv *env, Station start ,Station end, const vector<int
     if(parent[end.index] == -1)
         return env->NewIntArray(0);
 
-
     int v = end.index;
 
     vector<int> path(1, v);
@@ -248,6 +252,7 @@ jintArray shortestPath(JNIEnv *env, Station start ,Station end, const vector<int
         v = parent[v];
         path.push_back(v);
     }
+
     reverse(path.begin(), path.end());
 
     jintArray shortestPathIntArray = env->NewIntArray(path.size());
@@ -257,6 +262,7 @@ jintArray shortestPath(JNIEnv *env, Station start ,Station end, const vector<int
 
     env->SetIntArrayRegion(shortestPathIntArray, 0, path.size(), tempArr);
 
+    //return env->NewIntArray(0);
     return shortestPathIntArray;
 }
 

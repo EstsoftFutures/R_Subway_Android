@@ -3,6 +3,7 @@ package com.estsoft.r_subway_android;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -10,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +52,7 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.UI.Tutorial.TutorialActivity;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity
     public static final int START_MARKER = 21;
     public static final int TRANSFER_MARKER = 22;
     public static final int END_MARKER = 23;
+    public static final int EXCEPT_ACTI_MARKER = 24;
 
     public static final int SHORT_ROUTE = 10;
     public static final int MIN_TRANSFER = 11;
@@ -104,6 +109,8 @@ public class MainActivity extends AppCompatActivity
 
     private ExpandableListAdapter expandableListAdapter = null;
 
+    public RoutePagerAdapter mRoutePagerAdapter = null;
+
     private RouteControllerNew routeController = null;
     private StationController stationController = null;
     private Station activeStation = null;
@@ -114,11 +121,12 @@ public class MainActivity extends AppCompatActivity
     private RouteNew[] routes = null;
     private RelativeLayout passMarkerMother = null;
     private List<ImageView> routeMarkers = null;
-    private List<ImageView> transferMarkers = null;
     private TextView markerText = null;
     private List<View> markerList = null;
 
     private TtfMapImageView mapView = null;
+
+    private RecyclerView searchListView = null;
 
     private float normalMarkerSize = -1;
     private float routeMarkerSize = -1;
@@ -139,6 +147,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startActivity(new Intent(getApplicationContext(), TutorialActivity.class));
 
         ButterKnife.bind(this);
 
@@ -181,6 +191,7 @@ public class MainActivity extends AppCompatActivity
 
         mSearchView = (SearchView) toolbar.getMenu().findItem(R.id.menu_search).getActionView();
         mSearchView.setFocusableInTouchMode(true);
+
         setSupportActionBar(toolbar);
 
 
@@ -369,14 +380,13 @@ public class MainActivity extends AppCompatActivity
     public void itemClick(SemiStation semiStation) {
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
+        searchListView.setVisibility(View.GONE);
         hideSoftKeyboard(mapView);
-        if (status == FULL) {       
-            setMarkerDefault(ALL_MARKERS);
+        if (status == FULL) {
             routeBottomSheet.dismissSheet();
+            setMarkerDefault(ALL_MARKERS);
         }
-
         setActiveStation( semiStation );
-
         Log.d(TAG, "itemClick: ");
     }
 
@@ -395,6 +405,39 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.endMarker));
             markerList.add((TextView) findViewById(R.id.markerText));
         }
+
+        if(markerMode == EXCEPT_ACTI_MARKER ) {
+            for (View marker : markerList) {
+                if (markerList.get(3).getId() == marker.getId()) {
+                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
+                    continue;
+                }
+                if (markerList.get(0).getId() == marker.getId()) {
+                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
+                    continue;
+                }
+                setMarkerVisibility(marker, false);
+            }
+            startStation = null;
+            endStation = null;
+            status = WAIT;
+            currentRoute = null;
+
+            if (routeMarkers != null) {
+                for (ImageView view : routeMarkers) {
+                    view.setVisibility(View.GONE);
+                    passMarkerMother.removeView(view);
+                }
+            }
+            routeMarkers = null;
+
+            applyMapScaleChange();
+
+            return;
+        }
+
+
+
         if (markerMode == ALL_MARKERS) {
             for (View marker : markerList) {
                 setMarkerVisibility(marker, false);
@@ -457,6 +500,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
+        Log.d(TAG, "setActiveStation: " + semiStation.toString());
         ServerConnectionSingle.killThread();
 
         if (status != FULL) {
@@ -487,15 +531,12 @@ public class MainActivity extends AppCompatActivity
                 ImageView activeMarker = (ImageView)findViewById(R.id.marker);
                 setMarkerVisibility(activeMarker, true);
                 setMarkerPosition(0, null, null);
-
             }
 
 
             runBottomSheet(stationController.getExStations(activeStation), null);
 //            runBottomSheet(activeStation, null);
 //            stationController.getExStations(activeStation);
-
-
         }
     }
 
@@ -503,7 +544,7 @@ public class MainActivity extends AppCompatActivity
         int visibility = visible ? View.VISIBLE : View.INVISIBLE;
         if (marker.getId() == R.id.marker) {
             markerText.setVisibility(visibility);
-            // marker ImageView 삭제해야함! 임시방편
+//            marker ImageView 삭제해야함! 임시방편
             visibility = View.INVISIBLE;
         }
         marker.setVisibility(visibility);
@@ -630,7 +671,8 @@ public class MainActivity extends AppCompatActivity
         stationBottomSheet.addOnSheetDismissedListener(interactionListener);
 
 
-        final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+//        final BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
+        BottomSheetLayout routeBottomSheet = (BottomSheetLayout) findViewById(R.id.route_bottomSheet1);
         routeBottomSheet.addOnSheetDismissedListener(interactionListener);
 
 
@@ -644,7 +686,7 @@ public class MainActivity extends AppCompatActivity
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
  //           Log.d(TAG,"pager : station:"+exStations.size());
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
- //       viewPager.setOffscreenPageLimit(1);
+    //   viewPager.setOffscreenPageLimit(3);
             Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -692,7 +734,10 @@ public class MainActivity extends AppCompatActivity
             routeBottomSheet.showWithSheetView(LayoutInflater.from(this).inflate(R.layout.layout_routeinfo_bottomsheet, stationBottomSheet, false));
             // Get the ViewPager and set it's RoutePagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.route_viewpager);
-            viewPager.setAdapter(new RoutePagerAdapter(getSupportFragmentManager(),route));
+
+            mRoutePagerAdapter = new RoutePagerAdapter(getSupportFragmentManager(), route);
+
+            viewPager.setAdapter( mRoutePagerAdapter );
 
 
 //        viewPager.setOffscreenPageLimit(3);
@@ -759,7 +804,6 @@ public class MainActivity extends AppCompatActivity
         setMarkerVisibility(markerList.get(0), false);
         setMarkerPosition(0, null, null);
 
-
         setStatus();
     }
 
@@ -770,6 +814,7 @@ public class MainActivity extends AppCompatActivity
 //            progressBar.setVisibility(View.VISIBLE);
 
 //            currentRoute = routeController.getRouteNew(startStation, endStation);
+
             routes = routeController.getRoutes(startStation, endStation);
 
             currentRoute = routes[0];
@@ -898,6 +943,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         setRouteMarkerPosition();
+        Log.d(TAG, "reInflateRouteMarker: " + getCurPage());
+        mRoutePagerAdapter.reinflateRouteCongestion(getCurPage());
+
     }
     private int getCongestionDrawble (Station station, List<Pair<Integer, Integer>> conList, int etsStatus  ) {
         int conStatus = -1;
@@ -938,6 +986,14 @@ public class MainActivity extends AppCompatActivity
     getters
     */
 
+    public RecyclerView getSearchListView() {
+        return searchListView;
+    }
+
+    public void setSearchListView(RecyclerView searchListView) {
+        this.searchListView = searchListView;
+    }
+
     public BottomSheetLayout getRouteBottomSheet() {
         return routeBottomSheet;
     }
@@ -964,6 +1020,9 @@ public class MainActivity extends AppCompatActivity
 
     public int getCurPage() {
         return curPage;
+    }
+    public void setCurPage(int page ) {
+        this.curPage = page;
     }
 
     public TtfMapImageView getMapView() {
@@ -1000,5 +1059,29 @@ public class MainActivity extends AppCompatActivity
 
     public ExpandableListView getExpListView() {
         return expListView;
+    }
+
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if (getDrawer().isDrawerOpen(GravityCompat.START)) {
+            getDrawer().closeDrawer(GravityCompat.START);
+            return;
+        }
+        if (stationBottomSheet.isSheetShowing()) {
+            stationBottomSheet.dismissSheet();
+            return;
+        }
+        if (routeBottomSheet.isSheetShowing()) {
+            routeBottomSheet.dismissSheet();
+            return;
+        }
+        if (searchListView.getVisibility() == View.VISIBLE) {
+            ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
+            searchListView.setVisibility(View.GONE);
+            return;
+        }
+        super.onBackPressed();
     }
 }

@@ -90,7 +90,6 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
                 public void onItemClick(View view, int position) {
                     Log.d(TAG, "make new itemclick" + position);
                     mSearchListAdapterListener.itemClick(stationList.get(position));
-
                 }
             };
         }

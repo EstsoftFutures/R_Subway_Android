@@ -30,10 +30,15 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("h:mm");
 
+    private static final String TAG = "RouteRecyclerViewAdapter";
+
     private final FragmentActivity mActivity;
     OnItemClickListener mItemClickListener;
     RouteNew[] route;
     private int mPage;
+
+    //인규
+    private ViewHolder mHolder = null;
 
     public RouteRecyclerViewAdapter(FragmentActivity mActivity, RouteNew[] route, int mPage) {
         this.mActivity = mActivity;
@@ -82,6 +87,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 break;
 
             case 1:
+                mHolder = holder;
                 holder.routeStartStation.setVisibility(View.GONE);
                 holder.routeStationTo.setVisibility(View.GONE);
                 holder.routeNumStations.setVisibility(View.GONE);
@@ -107,19 +113,11 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                     TextView routeCongestionPer = new TextView(mActivity);
 
 
-                    if (startStation.getCongestionNum() != null && startStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
-                        routeCongestion.setText(startStation.getStationName() + " 혼잡도: " + startStation.getCongestionNum() + " 명 (1시간 기준) ");
-                        routeCongestion.setTextColor(Color.BLACK);
-                        routeCongestionPer.setText( (int) (startStation.getCongestionNum() / ((double) startStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
-                        routeCongestionPer.setTextColor(conColor(startStation.getCongestionFlag()));
-                        routeCongestion.setVisibility(View.VISIBLE);
-
-                    } else {
-                        routeCongestion.setText(startStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+                        routeCongestion.setText(startStation.getStationName() + " 혼잡도 정보를 받아오고 있습니다.");
                         routeCongestion.setTextColor(Color.BLACK);
                         routeCongestion.setVisibility(View.VISIBLE);
                         routeCongestionPer.setText("");
-                    }
+
 
                     reRouteCon.addView(routeCongestion);
                     reRouteCon.addView(routeCongestionPer);
@@ -135,18 +133,12 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 Station endStation = route[mPage].getSections().get(route[mPage].getSections().size()-1).get(route[mPage].getSections().get(route[mPage].getSections().size()-1).size()-1);
                 TextView endCongestion = new TextView(mActivity);
                 TextView endConPer = new TextView(mActivity);
-                if (endStation.getCongestionNum() != null && endStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
-                    endCongestion.setText(endStation.getStationName() + " 혼잡도: " + endStation.getCongestionNum() + " 명 (1시간 기준) ");
-                    endCongestion.setTextColor(Color.BLACK);
-                    endConPer.setText( (int) (endStation.getCongestionNum() / ((double) endStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
-                    endConPer.setTextColor(conColor(endStation.getCongestionFlag()));
-                    endCongestion.setVisibility(View.VISIBLE);
-                } else {
-                    endCongestion.setText(endStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+
+                    endCongestion.setText(endStation.getStationName() + " 혼잡도 정보를 받아오고 있습니다.");
                     endCongestion.setTextColor(Color.BLACK);
                     endCongestion.setVisibility(View.VISIBLE);
                     endConPer.setText("");
-                }
+
                 reRouteCon.addView(endCongestion);
                 reRouteCon.addView(endConPer);
                 RelativeLayout.LayoutParams paramRouteEndConPer = (RelativeLayout.LayoutParams) endConPer.getLayoutParams();
@@ -298,6 +290,85 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 break;
         }
 
+
+    }
+
+    public void reInflateRouteCon() {
+        Log.d("reInflateRouteCon", "reInflateRouteCon: RE INFLATE!!!!!!!!!!!!!!!!!!!!!!!! " + mPage);
+        mHolder.routeStartStation.setVisibility(View.GONE);
+        mHolder.routeStationTo.setVisibility(View.GONE);
+        mHolder.routeNumStations.setVisibility(View.GONE);
+        mHolder.routeStartTime.setVisibility(View.GONE);
+        mHolder.routeFirstMom.setVisibility(View.GONE);
+        mHolder.routeCon.removeAllViews();
+
+
+        //congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%"
+        LinearLayout liRouteCon = new LinearLayout(mActivity);
+        liRouteCon.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams llpCon = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llpCon.topMargin = 10;
+        llpCon.leftMargin = 140;
+        llpCon.bottomMargin = 10;
+
+
+        for (int i = 0; i < route[mPage].getSections().size(); i++) {
+            RelativeLayout reRouteCon = new RelativeLayout(mActivity);
+            Station startStation = route[mPage].getSections().get(i).get(0);
+
+            TextView routeCongestion = new TextView(mActivity);
+            TextView routeCongestionPer = new TextView(mActivity);
+
+
+            if (startStation.getCongestionNum() != null && startStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
+                routeCongestion.setText(startStation.getStationName() + " 혼잡도: " + startStation.getCongestionNum() + " 명 (1시간 기준) ");
+                routeCongestion.setTextColor(Color.BLACK);
+                routeCongestionPer.setText( (int) (startStation.getCongestionNum() / ((double) startStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
+                routeCongestionPer.setTextColor(conColor(startStation.getCongestionFlag()));
+                routeCongestion.setVisibility(View.VISIBLE);
+
+            } else {
+                routeCongestion.setText(startStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+                routeCongestion.setTextColor(Color.BLACK);
+                routeCongestion.setVisibility(View.VISIBLE);
+                routeCongestionPer.setText("");
+            }
+
+            reRouteCon.addView(routeCongestion);
+            reRouteCon.addView(routeCongestionPer);
+            RelativeLayout.LayoutParams paramRouteConPer = (RelativeLayout.LayoutParams) routeCongestionPer.getLayoutParams();
+            paramRouteConPer.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            liRouteCon.addView(reRouteCon);
+
+        }
+
+
+        RelativeLayout reRouteCon = new RelativeLayout(mActivity);
+
+        Station endStation = route[mPage].getSections().get(route[mPage].getSections().size()-1).get(route[mPage].getSections().get(route[mPage].getSections().size()-1).size()-1);
+        TextView endCongestion = new TextView(mActivity);
+        TextView endConPer = new TextView(mActivity);
+        if (endStation.getCongestionNum() != null && endStation.getCongestionNum() != ServerConnectionSingle.NONE_EXIST_STATION) {
+            endCongestion.setText(endStation.getStationName() + " 혼잡도: " + endStation.getCongestionNum() + " 명 (1시간 기준) ");
+            endCongestion.setTextColor(Color.BLACK);
+            endConPer.setText( (int) (endStation.getCongestionNum() / ((double) endStation.getTrainsPerHour() * 10 * 4 * 12) * 100) + "%");
+            endConPer.setTextColor(conColor(endStation.getCongestionFlag()));
+            endCongestion.setVisibility(View.VISIBLE);
+        } else {
+            endCongestion.setText(endStation.getStationName() + " 혼잡도 정보가 제공되지 않습니다");
+            endCongestion.setTextColor(Color.BLACK);
+            endCongestion.setVisibility(View.VISIBLE);
+            endConPer.setText("");
+        }
+        reRouteCon.addView(endCongestion);
+        reRouteCon.addView(endConPer);
+        RelativeLayout.LayoutParams paramRouteEndConPer = (RelativeLayout.LayoutParams) endConPer.getLayoutParams();
+        paramRouteEndConPer.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        liRouteCon.addView(reRouteCon);
+        mHolder.routeCon.addView(liRouteCon);
+
+        mHolder.routeCon.setVisibility(View.VISIBLE);
 
     }
 

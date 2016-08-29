@@ -441,7 +441,7 @@ public class Station extends TtfNode {
         return congestionNum;
     }
 
-    public void setCongestionNum(int congestionNum) {
+    public void setCongestionNum(Integer congestionNum) {
         this.congestionNum = congestionNum;
     }
 

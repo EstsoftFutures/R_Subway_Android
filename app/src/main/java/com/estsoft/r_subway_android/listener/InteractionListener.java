@@ -1,7 +1,6 @@
 package com.estsoft.r_subway_android.listener;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,14 +14,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.estsoft.r_subway_android.Crawling.ServerConnection;
 import com.estsoft.r_subway_android.Crawling.ServerConnectionSingle;
 import com.estsoft.r_subway_android.MainActivity;
 import com.estsoft.r_subway_android.R;
@@ -59,7 +54,6 @@ public class InteractionListener implements
     private final MainActivity host;
 
     private final Toolbar toolbar;
-
     private final int startStationButton = R.id.Start;
     private final int arriveStationButton = R.id.Arrive;
     private final int endInfoButton = R.id.end_info;
@@ -101,6 +95,7 @@ public class InteractionListener implements
                 break;
         }
 
+
         //툴바의 mNavButtonView 인지 더 정확히 확인해야함.
         if (v.getClass() == ImageButton.class) {
             Log.d(TAG, "onClick: toolbarNavigationImageButton");
@@ -134,14 +129,20 @@ public class InteractionListener implements
         RecyclerView listView = (RecyclerView) host.findViewById(R.id.list_test_view);
 
         List<SemiStation> searchResult;
-        if (newText.equals("")) {
-            searchResult = new ArrayList<>();
-            listView.setVisibility(View.GONE);
-            host.hideSoftKeyboard(host.getMapView());
-        } else {
-            searchResult = checkChoseong(newText);
-            listView.setVisibility(View.VISIBLE);
-        }
+
+        String text = newText;
+        if (newText.equals("")) text = "NONE";
+        searchResult = checkChoseong(text);
+        listView.setVisibility(View.VISIBLE);
+
+//        if (newText.equals("")) {
+//            searchResult = new ArrayList<>();
+//            listView.setVisibility(View.GONE);
+//            host.hideSoftKeyboard(host.getMapView());
+//        } else {
+//            searchResult = checkChoseong(newText);
+//            listView.setVisibility(View.VISIBLE);
+//        }
 
 
 
@@ -156,6 +157,8 @@ public class InteractionListener implements
         sla.SetOnItemClickListener(sla.getmItemClickListener());
 
         listView.setAdapter(sla);
+
+        host.setSearchListView( listView );
 
         return true;
     }
@@ -198,6 +201,8 @@ public class InteractionListener implements
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
+
+        Log.d(TAG, "onChildClick: " + selected);
 
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
@@ -263,6 +268,7 @@ public class InteractionListener implements
                     host.setCurrentRoute( position, host.DEFAULT_ROUTE );
                     break;
             }
+//            host.mRoutePagerAdapter.reinflateRouteCongestion(position);
             Log.d("pager","====================>"+host.getCurPage());
         }
 
@@ -270,11 +276,16 @@ public class InteractionListener implements
         public void onPageScrollStateChanged(int state) {
 
         }
+
+
+
     @Override
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
-            host.setMarkerDefault(host.ALL_MARKERS);
+            Log.d(TAG, "onDismissed: ss");
+            host.setMarkerDefault(host.EXCEPT_ACTI_MARKER);
+            host.setCurPage(0);
             ServerConnectionSingle.killThread();
         } else if (bottomSheetLayout.getId() == R.id.station_bottomSheet) {
             //스테이션 시트일때

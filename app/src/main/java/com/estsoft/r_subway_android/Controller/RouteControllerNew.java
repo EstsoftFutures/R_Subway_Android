@@ -139,7 +139,11 @@ public class RouteControllerNew {
 
     }
 
+
     private RouteNew getRouteNew( Station start, Station end, int mode  ) {
+
+        Log.d(TAG, "getRouteNew: " + start.getIndex() + start.getStationName());
+        Log.d(TAG, "getRouteNew: " + end.getIndex() + end.getStationName());
 
         inputCalendar = null;
 

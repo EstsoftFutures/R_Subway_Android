@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.estsoft.r_subway_android.Repository.StationRepository.RouteNew;
 
 
 public class RouteInfoFragment extends Fragment {
+    private static final String TAG = "RouteInfoFragment";
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPage;
     private static RouteNew[]  route;
@@ -28,6 +30,10 @@ public class RouteInfoFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void reInflateRouteConInfo() {
+        Log.d(TAG, "reInflateRouteConInfo: " + mPage);
+        adapter.reInflateRouteCon();
+    }
 
     public static RouteInfoFragment newInstance(int page, RouteNew[] route1) {
         RouteInfoFragment fragment = new RouteInfoFragment();
