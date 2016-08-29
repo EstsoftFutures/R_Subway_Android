@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity
     public static final int START_MARKER = 21;
     public static final int TRANSFER_MARKER = 22;
     public static final int END_MARKER = 23;
+    public static final int EXCEPT_ACTI_MARKER = 24;
 
     public static final int SHORT_ROUTE = 10;
     public static final int MIN_TRANSFER = 11;
@@ -120,7 +121,6 @@ public class MainActivity extends AppCompatActivity
     private RouteNew[] routes = null;
     private RelativeLayout passMarkerMother = null;
     private List<ImageView> routeMarkers = null;
-    private List<ImageView> transferMarkers = null;
     private TextView markerText = null;
     private List<View> markerList = null;
 
@@ -405,6 +405,39 @@ public class MainActivity extends AppCompatActivity
             markerList.add((ImageView) findViewById(R.id.endMarker));
             markerList.add((TextView) findViewById(R.id.markerText));
         }
+
+        if(markerMode == EXCEPT_ACTI_MARKER ) {
+            for (View marker : markerList) {
+                if (markerList.get(3).getId() == marker.getId()) {
+                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
+                    continue;
+                }
+                if (markerList.get(0).getId() == marker.getId()) {
+                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
+                    continue;
+                }
+                setMarkerVisibility(marker, false);
+            }
+            startStation = null;
+            endStation = null;
+            status = WAIT;
+            currentRoute = null;
+
+            if (routeMarkers != null) {
+                for (ImageView view : routeMarkers) {
+                    view.setVisibility(View.GONE);
+                    passMarkerMother.removeView(view);
+                }
+            }
+            routeMarkers = null;
+
+            applyMapScaleChange();
+
+            return;
+        }
+
+
+
         if (markerMode == ALL_MARKERS) {
             for (View marker : markerList) {
                 setMarkerVisibility(marker, false);
@@ -498,7 +531,6 @@ public class MainActivity extends AppCompatActivity
                 ImageView activeMarker = (ImageView)findViewById(R.id.marker);
                 setMarkerVisibility(activeMarker, true);
                 setMarkerPosition(0, null, null);
-
             }
 
 
@@ -512,7 +544,7 @@ public class MainActivity extends AppCompatActivity
         int visibility = visible ? View.VISIBLE : View.INVISIBLE;
         if (marker.getId() == R.id.marker) {
             markerText.setVisibility(visibility);
-            // marker ImageView 삭제해야함! 임시방편
+//            marker ImageView 삭제해야함! 임시방편
             visibility = View.INVISIBLE;
         }
         marker.setVisibility(visibility);

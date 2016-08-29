@@ -202,6 +202,8 @@ public class InteractionListener implements
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
 
+        Log.d(TAG, "onChildClick: " + selected);
+
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
         if (check.getVisibility() == View.VISIBLE) {
@@ -274,12 +276,15 @@ public class InteractionListener implements
         public void onPageScrollStateChanged(int state) {
 
         }
+
+
+
     @Override
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
             Log.d(TAG, "onDismissed: ss");
-            host.setMarkerDefault(host.ALL_MARKERS);
+            host.setMarkerDefault(host.EXCEPT_ACTI_MARKER);
             host.setCurPage(0);
             ServerConnectionSingle.killThread();
         } else if (bottomSheetLayout.getId() == R.id.station_bottomSheet) {

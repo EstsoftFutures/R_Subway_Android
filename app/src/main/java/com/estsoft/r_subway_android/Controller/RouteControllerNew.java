@@ -139,6 +139,7 @@ public class RouteControllerNew {
 
     }
 
+
     private RouteNew getRouteNew( Station start, Station end, int mode  ) {
 
         Log.d(TAG, "getRouteNew: " + start.getIndex() + start.getStationName());
