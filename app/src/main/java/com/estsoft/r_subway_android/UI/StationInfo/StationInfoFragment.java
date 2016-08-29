@@ -132,6 +132,7 @@ public class StationInfoFragment extends Fragment {
 
 
         });
+
         ViewPager vp = (ViewPager) mRecyclerView.getParent().getParent();
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

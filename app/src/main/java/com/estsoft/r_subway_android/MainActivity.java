@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerView searchListView = null;
 
+    private EditText searchEditText = null;
+
     private float normalMarkerSize = -1;
     private float routeMarkerSize = -1;
 
@@ -265,10 +267,6 @@ public class MainActivity extends AppCompatActivity
 //        mapView.setSemiStationLaneNumber( stationController );
 
         InternetManager.init(this);
-
-
-
-
     }
 
 
@@ -294,9 +292,10 @@ public class MainActivity extends AppCompatActivity
                 LinearLayout searchPlate = (LinearLayout)searchView.findViewById(R.id.search_plate);
                 if(searchPlate != null){
                     EditText mSearchEditText = (EditText)searchPlate.findViewById(R.id.search_src_text);
+                    searchEditText = mSearchEditText;
                     if(mSearchEditText != null){
                         mSearchEditText.clearFocus();     // This fixes the keyboard from popping up each time
-                        mSearchEditText.setCursorVisible(false);
+                        mSearchEditText.setCursorVisible(true);
                     }
                 }
             }
@@ -330,8 +329,7 @@ public class MainActivity extends AppCompatActivity
 
         searchMenu.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-
-
+        hideSoftKeyboard(mapView);
 
         return true;
     }
@@ -358,7 +356,13 @@ public class MainActivity extends AppCompatActivity
     public void hideSoftKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
+        if  (searchEditText != null) {
+            Log.d(TAG, "hideSoftKeyboard: setting focus");
+            searchEditText.setFocusable(false);
+            searchEditText.setFocusableInTouchMode(true);
+        } else {
+            Log.d(TAG, "hideSoftKeyboard: searchEditText is null");
+        }
     }
 
     //설정창 navigation items
@@ -380,8 +384,8 @@ public class MainActivity extends AppCompatActivity
     public void itemClick(SemiStation semiStation) {
         RecyclerView list = (RecyclerView)findViewById(R.id.list_test_view);
         ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
+        findViewById(interactionListener.getSearchTextContext()).clearFocus();
         searchListView.setVisibility(View.GONE);
-        hideSoftKeyboard(mapView);
         if (status == FULL) {
             routeBottomSheet.dismissSheet();
             setMarkerDefault(ALL_MARKERS);
@@ -1061,6 +1065,12 @@ public class MainActivity extends AppCompatActivity
         return expListView;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -1077,7 +1087,7 @@ public class MainActivity extends AppCompatActivity
             routeBottomSheet.dismissSheet();
             return;
         }
-        if (searchListView.getVisibility() == View.VISIBLE) {
+        if (searchListView != null && searchListView.getVisibility() == View.VISIBLE) {
             ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
             searchListView.setVisibility(View.GONE);
             return;
