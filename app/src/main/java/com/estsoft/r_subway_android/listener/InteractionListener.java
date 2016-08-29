@@ -278,6 +278,7 @@ public class InteractionListener implements
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
+            Log.d(TAG, "onDismissed: ss");
             host.setMarkerDefault(host.ALL_MARKERS);
             host.setCurPage(0);
             ServerConnectionSingle.killThread();

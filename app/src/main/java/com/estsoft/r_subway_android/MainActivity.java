@@ -3,6 +3,7 @@ package com.estsoft.r_subway_android;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -51,6 +52,7 @@ import com.estsoft.r_subway_android.UI.RouteInfo.RoutePagerAdapter;
 import com.estsoft.r_subway_android.UI.Settings.ExpandableListAdapter;
 import com.estsoft.r_subway_android.UI.Settings.SearchSetting;
 import com.estsoft.r_subway_android.UI.StationInfo.PagerAdapter;
+import com.estsoft.r_subway_android.UI.Tutorial.TutorialActivity;
 import com.estsoft.r_subway_android.listener.InteractionListener;
 import com.estsoft.r_subway_android.listener.SearchListAdapterListener;
 import com.estsoft.r_subway_android.listener.TtfMapImageViewListener;
@@ -145,6 +147,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startActivity(new Intent(getApplicationContext(), TutorialActivity.class));
 
         ButterKnife.bind(this);
 
@@ -378,13 +382,11 @@ public class MainActivity extends AppCompatActivity
         ((EditText)findViewById(interactionListener.getSearchTextContext())).setText("");
         searchListView.setVisibility(View.GONE);
         hideSoftKeyboard(mapView);
-        if (status == FULL) {       
-            setMarkerDefault(ALL_MARKERS);
+        if (status == FULL) {
             routeBottomSheet.dismissSheet();
+            setMarkerDefault(ALL_MARKERS);
         }
-
         setActiveStation( semiStation );
-
         Log.d(TAG, "itemClick: ");
     }
 
@@ -465,6 +467,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
+        Log.d(TAG, "setActiveStation: " + semiStation.toString());
         ServerConnectionSingle.killThread();
 
         if (status != FULL) {
@@ -502,8 +505,6 @@ public class MainActivity extends AppCompatActivity
             runBottomSheet(stationController.getExStations(activeStation), null);
 //            runBottomSheet(activeStation, null);
 //            stationController.getExStations(activeStation);
-
-
         }
     }
 
