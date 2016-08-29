@@ -129,7 +129,7 @@ public class JSONTimetableParser {
 
                 JsonPrimitive ordUpTimeValue = ordUpListValue.get(j).getAsJsonPrimitive();
 //                Log.d(TAG, "ordListValue" + ordUpTimeValue.getAsString());
-                Log.d("newone", "" + ordUpWayLdx[i]);
+  //              Log.d("newone", "" + ordUpWayLdx[i]);
                 ordUpWayLdx[i].add(new HashMap<String, Object>());
                 ordUpWayLdx[i].get(j).put("ordUpWayLdx", ordUpTimeValue.getAsString());
                 ordUpWayLdx[i].get(j).put("isExpress", false);

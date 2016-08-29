@@ -125,15 +125,15 @@ public class SearchSetting {
     }
 
     public static void checkSettings() {
-        Log.d(TAG, "checkSettings: 혼잡도 ? " + isAvoidCongestStations());
-        Log.d(TAG, "checkSettings: 급행차 ? " + isActiveExpressOnly());
+    //    Log.d(TAG, "checkSettings: 혼잡도 ? " + isAvoidCongestStations());
+    //    Log.d(TAG, "checkSettings: 급행차 ? " + isActiveExpressOnly());
 
-        Log.d(TAG, "checkSettings: 검색노선");
+    //    Log.d(TAG, "checkSettings: 검색노선");
         for (int i = 0 ; i < getActiveLanes().size(); i ++ ) {
             Lane lane = getActiveLanes().get(i);
-            Log.d(TAG, "checkSettings: " + lane.getName() + "/Status " + lane.isActive());
+    //        Log.d(TAG, "checkSettings: " + lane.getName() + "/Status " + lane.isActive());
         }
-        Log.d(TAG, "checkSettings: -------------------------------------------------------");
+     //   Log.d(TAG, "checkSettings: -------------------------------------------------------");
 
     }
 

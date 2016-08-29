@@ -104,14 +104,14 @@ public class StationController {
             for (int j = 0; j < station.getExStations().size(); j++) {
 //                Log.d(TAG, "initializeAdj: EX " + station.getExStations().get(j).getStationName());
                 adj[i].add(new Pair<Station, Integer>(station.getExStations().get(j), transferWeight));
-                Log.d(TAG, "initializeAdj: " + transferWeight);
+//                Log.d(TAG, "initializeAdj: " + transferWeight);
             }
 
-            if (adj[i].size() == 0) {
+/*            if (adj[i].size() == 0) {
                 Log.d(TAG, "StationController: " + station.getStationName());
             } else {
                 Log.d(TAG, "StationController: " + adj[i].get(adj[i].size() - 1).second);
-            }
+            }*/
         }
         return adj;
     }
@@ -123,7 +123,7 @@ public class StationController {
                 return boundary.get(i);
             }
         }
-        Log.d(TAG, "initializeAdj: NULL!! " + stationId);
+    //    Log.d(TAG, "initializeAdj: NULL!! " + stationId);
         return null;
     }
 
@@ -204,7 +204,7 @@ public class StationController {
     public void setSemiStationLaneNumber(List<SemiStation> ssl) {
         for (SemiStation ss : ssl) {
             ss.setLaneNumbers(getExNumbers(ss));
-            Log.d(TAG, "setSemiStationLaneNumber: " + ss.getName() + " // " + ss.getLaneNumbers());
+        //    Log.d(TAG, "setSemiStationLaneNumber: " + ss.getName() + " // " + ss.getLaneNumbers());
         }
     }
 
@@ -213,9 +213,9 @@ public class StationController {
         //아래 한줄은 XML index 를 Station Index 랑 싱크맞추면 빠름
         Station st = getDeepStation(semiStation.getIntId());
         exNumbers.add(st.getLaneType());
-        Log.d(TAG, "getExNumbers: " + st.getStationName() + " // " + st.getLaneName());
+     //   Log.d(TAG, "getExNumbers: " + st.getStationName() + " // " + st.getLaneName());
         for (int i = 0; i < st.getExStations().size(); i++) {
-            Log.d(TAG, "getExNumbers: " + st.getExStations().get(i).getStationName() + " // " + st.getExStations().get(i).getLaneName());
+     //       Log.d(TAG, "getExNumbers: " + st.getExStations().get(i).getStationName() + " // " + st.getExStations().get(i).getLaneName());
             exNumbers.add(st.getExStations().get(i).getLaneType());
         }
         return exNumbers;
@@ -224,14 +224,14 @@ public class StationController {
     private RealmStation getRealmStationByID(int ID) {
         RealmStation matchRealmStation = null;
         for (RealmStation rst : realmStationList) {
-            Log.d(TAG, "getRealmStationByID: " + rst.getStationID());
-            Log.d(TAG, "getRealmStationByID: ID = " + ID);
+       //     Log.d(TAG, "getRealmStationByID: " + rst.getStationID());
+       //     Log.d(TAG, "getRealmStationByID: ID = " + ID);
             if (rst.getStationID() == ID) {
                 matchRealmStation = rst;
                 break;
             }
         }
-        Log.d(TAG, "getRealmStationByID: ---------------------------------------------------------- ");
+     //   Log.d(TAG, "getRealmStationByID: ---------------------------------------------------------- ");
         return matchRealmStation;
     }
 
@@ -242,7 +242,7 @@ public class StationController {
         for (RealmStation rst : realmStationList) {
             Station st = new Station(rst, null, getConLevel(rst.getStationID()));
             deepCopiedStations.add(st);
-            Log.e(TAG, "deepCopyRealmStation: ," + st.getStationID() + ", " + st.getStationName() + ", " + st.getAddress());
+        //    Log.e(TAG, "deepCopyRealmStation: ," + st.getStationID() + ", " + st.getStationName() + ", " + st.getAddress());
         }
 //        for ( Station st : deepCopiedStations ) {
 //            Log.d(TAG, "deepCopyRealmStation: " + st.getIndex());
@@ -266,7 +266,7 @@ public class StationController {
                 }
             }
         }
-        Log.d(TAG, "getExStations: for count = " + debugCount);
+       // Log.d(TAG, "getExStations: for count = " + debugCount);
 
         for (Station stationForTime : exStations) {
             stationForTime.setTimeStringList(getPrevNextStationTime(stationForTime));
@@ -311,8 +311,8 @@ public class StationController {
         }
 
 
-        Log.d(TAG,"prev :"+prevTimeTable[19]);
-        Log.d(TAG,"next :"+nextTimeTable[19]);
+    //    Log.d(TAG,"prev :"+prevTimeTable[19]);
+     //   Log.d(TAG,"next :"+nextTimeTable[19]);
 
         int hour = newCal.get(Calendar.HOUR_OF_DAY);
         int hourIndexFirst = hour - 5 < 0 ? hour + 19 : hour - 5;
@@ -322,7 +322,7 @@ public class StationController {
 
         station.setTrainsPerHour( prevTrainsSize + nextTrainsSize );
 
-        Log.d(TAG, "getPrevNextStationTime: TEST " + hour + " / " + station.getTrainsPerHour());
+      //  Log.d(TAG, "getPrevNextStationTime: TEST " + hour + " / " + station.getTrainsPerHour());
 
         Map prevFirst = null;
         Calendar prevCalendarFirst = null;
@@ -358,8 +358,8 @@ public class StationController {
             if(hourGapFirst> 0) {
                 result.add(prevTerminalFirst + "행 "+ hourGapFirst +"시간 "+ timeGapFirst + "분 후 ");
             }else{
-                Log.d(TAG, "Hour" +  prevCalendarFirst.get(Calendar.HOUR_OF_DAY));
-                Log.d(TAG, "Hour" +  prevCalendarSecond.get(Calendar.HOUR_OF_DAY));
+         //       Log.d(TAG, "Hour" +  prevCalendarFirst.get(Calendar.HOUR_OF_DAY));
+        //        Log.d(TAG, "Hour" +  prevCalendarSecond.get(Calendar.HOUR_OF_DAY));
                 result.add(prevTerminalFirst + "행 "+ timeGapFirst + "분 후 ");
 
             }
@@ -415,7 +415,7 @@ public class StationController {
                 nextTerminalFirst = (String) nextFirst.get("terminal");
                 int nextHour = nextCalendarFirst.get(Calendar.HOUR_OF_DAY);
                 int nextHourIndex = nextHour - 5 < 0 ? nextHour  + 19 : nextHour - 5;
-                Log.d(TAG, "nextHour" + nextHour + "nextHourIndex" + nextHourIndex);
+          //      Log.d(TAG, "nextHour" + nextHour + "nextHourIndex" + nextHourIndex);
                 nextSecond = getCalendar(nextTimeTable, nextHourIndex, nextKey, (Calendar) nextCalendarFirst.clone());
             }
 
@@ -435,8 +435,8 @@ public class StationController {
             if(hourGapFirst> 0) {
                 result.add(nextTerminalFirst + "행 "+ hourGapFirst +"시간 "+ timeGapFirst + "분 후 ");
             }else{
-                Log.d(TAG, "Hour" +  nextCalendarFirst.get(Calendar.HOUR_OF_DAY));
-                Log.d(TAG, "Hour" +  nextCalendarSecond.get(Calendar.HOUR_OF_DAY));
+         //       Log.d(TAG, "Hour" +  nextCalendarFirst.get(Calendar.HOUR_OF_DAY));
+          //      Log.d(TAG, "Hour" +  nextCalendarSecond.get(Calendar.HOUR_OF_DAY));
                 result.add(nextTerminalFirst + "행 "+ timeGapFirst + "분 후 ");
 
             }
@@ -525,11 +525,11 @@ public class StationController {
         // out of boundary 24시 등
         if( hourIndex >= timeTable.length) return null;
 
-        Log.d(TAG, "getCalendar: " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
+     //   Log.d(TAG, "getCalendar: " + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE));
         Map<String, Object> result = new HashMap<>();
         ArrayList<HashMap<String, Object>> timeList = timeTable[hourIndex];
-        Log.d(TAG,"timelist size: "+timeList.size());
-        Log.d(TAG,"timelist tostring"+timeList.toString());
+      //  Log.d(TAG,"timelist size: "+timeList.size());
+      //  Log.d(TAG,"timelist tostring"+timeList.toString());
         // there is no ele in table
         if (timeList.size() == 0) return null;
 

@@ -88,7 +88,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
             mItemClickListener = new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    Log.d(TAG, "make new itemclick" + position);
+          //          Log.d(TAG, "make new itemclick" + position);
                     mSearchListAdapterListener.itemClick(stationList.get(position));
                 }
             };
@@ -123,7 +123,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
         for (int i = 0; i < holder.station.getLaneNumbers().size(); i++) {
 //            for (int i = 0; i < 2; i ++ ) {
-            Log.d(TAG, "onBindViewHolder: " + holder.station.getLaneNumbers());
+       //     Log.d(TAG, "onBindViewHolder: " + holder.station.getLaneNumbers());
             ImageView transfer = (ImageView) inflater.inflate(R.layout.search_list_item_transfer, null);
 
             transfer.setImageResource(getResouceIdByLaneNumber(holder.station.getLaneNumbers().get(i)));

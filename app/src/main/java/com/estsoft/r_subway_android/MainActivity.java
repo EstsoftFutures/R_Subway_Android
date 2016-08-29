@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.linemap_naver);
-        Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
+ //       Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
         mapView.setTtfMapImageViewListener(this);
 
         mapView.setImageResource(R.drawable.linemap_naver);
@@ -245,16 +245,16 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
+   //     Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
         Realm realm = Realm.getInstance(this);
         RealmResults<RealmStation> results = realm.where(RealmStation.class).findAll();
-        for(RealmStation station : results) {
+/*        for(RealmStation station : results) {
             Log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
-        }
+        }*/
 
         try {
             stationController = new StationController(Realm.getInstance(this), getResources().openRawResource(R.raw.station_cost), this);
-            Log.d(TAG, "initializeAdj: Successfully Finished ");
+     //       Log.d(TAG, "initializeAdj: Successfully Finished ");
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -338,14 +338,14 @@ public class MainActivity extends AppCompatActivity
 
     public void onComposeAction(MenuItem mi) {
         // handle click here
-        Log.d("123","123");
+     //   Log.d("123","123");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                Log.d("1234534534534533","12334534534534");
+        //        Log.d("1234534534534533","12334534534534");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -387,7 +387,7 @@ public class MainActivity extends AppCompatActivity
             setMarkerDefault(ALL_MARKERS);
         }
         setActiveStation( semiStation );
-        Log.d(TAG, "itemClick: ");
+     //   Log.d(TAG, "itemClick: ");
     }
 
 
@@ -409,11 +409,11 @@ public class MainActivity extends AppCompatActivity
         if(markerMode == EXCEPT_ACTI_MARKER ) {
             for (View marker : markerList) {
                 if (markerList.get(3).getId() == marker.getId()) {
-                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
+              //      Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
                     continue;
                 }
                 if (markerList.get(0).getId() == marker.getId()) {
-                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
+                //    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
                     continue;
                 }
                 setMarkerVisibility(marker, false);
@@ -500,12 +500,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        Log.d(TAG, "setActiveStation: " + semiStation.toString());
+      //  Log.d(TAG, "setActiveStation: " + semiStation.toString());
         ServerConnectionSingle.killThread();
 
         if (status != FULL) {
             activeStation = stationController.getStation(semiStation);
-            Log.d(TAG, "setActiveStation: " + activeStation.getStationID());
+      //      Log.d(TAG, "setActiveStation: " + activeStation.getStationID());
 
             mapView.moveToMapCenter( semiStation.getPosition() );
 
@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity
                     default:
                         markerPosition = new PointF(0, 0);
                 }
-                Log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
+        //        Log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
                 if (marker instanceof ImageView ) {
                     setImageMatrix((ImageView)marker, mapView.getMarkerRatio(), markerPosition);
                 }
@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity
  //           Log.d(TAG,"pager : station:"+exStations.size());
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
     //   viewPager.setOffscreenPageLimit(3);
-            Log.d("pager", "------------->" + viewPager.toString());
+       //     Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
             tabsStrip.setTabPaddingLeftRight(25);
@@ -699,7 +699,7 @@ public class MainActivity extends AppCompatActivity
             stationBottomSheet.setShouldDimContentView(false);
             stationBottomSheet.setInterceptContentTouch(false);
 
-            Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
+       //     Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
             ImageView start = (ImageView) findViewById(R.id.Start);
             ImageView arrive = (ImageView) findViewById(R.id.Arrive);
@@ -708,7 +708,7 @@ public class MainActivity extends AppCompatActivity
 
             // getting Server AccidentInfo
 //            mServerConnection.getAccidentInfo(activeStation);
-            Log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
+      //      Log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
 
 //            Log.d("----------->", start.getText().toString());
 //            Log.d("----------->", arrive.getText().toString());
@@ -741,7 +741,7 @@ public class MainActivity extends AppCompatActivity
 
 
 //        viewPager.setOffscreenPageLimit(3);
-            Log.d("pager", "------------->" + viewPager.toString());
+     //       Log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
             tabsStrip.setTabPaddingLeftRight(25);
@@ -837,18 +837,18 @@ public class MainActivity extends AppCompatActivity
 
     private void inflateRouteNew(RouteNew route) {
 
-        Log.d(TAG, "inflateRouteNew: route is null" );
+    //    Log.d(TAG, "inflateRouteNew: route is null" );
 
         if (route == null) return;
 
-        Log.d(TAG, "inflateRouteNew: under if " + route.getSections().size());
+    //    Log.d(TAG, "inflateRouteNew: under if " + route.getSections().size());
 
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
 
         int count = 0;
         for ( List<Station> section : route.getSections() ) {
             for ( int i = 0 ; i < section.size(); i ++ ) {
-                Log.d(TAG, "inflateRouteNew: inflating");
+             //   Log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
                     marker.setImageResource( R.drawable.route_start_normal_marker);
@@ -875,7 +875,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 3; i < 6; i++) {
             for ( ImageView mark : routeMarkers ) {
                 if (mark.getId() / 1000 == i) {
-                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                  //  Log.d(TAG, "inflateRouteNew: " + mark.getId());
                     passMarkerMother.addView(mark);
                     mark.setVisibility(View.VISIBLE);
                     // marker set Layout width, height using startMarker's LayoutParam
@@ -903,7 +903,7 @@ public class MainActivity extends AppCompatActivity
         int count = 0;
         for ( List<Station> section : currentRoute.getSections() ) {
             for ( int i = 0 ; i < section.size(); i ++ ) {
-                Log.d(TAG, "inflateRouteNew: inflating");
+             //   Log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
 //                    marker.setImageResource( R.drawable.route_start_normal_marker);
@@ -933,7 +933,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 3; i < 6; i++) {
             for ( ImageView mark : routeMarkers ) {
                 if (mark.getId() / 1000 == i) {
-                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                  //  Log.d(TAG, "inflateRouteNew: " + mark.getId());
                     passMarkerMother.addView(mark);
                     mark.setVisibility(View.VISIBLE);
                     // marker set Layout width, height using startMarker's LayoutParam
@@ -943,7 +943,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         setRouteMarkerPosition();
-        Log.d(TAG, "reInflateRouteMarker: " + getCurPage());
+      //  Log.d(TAG, "reInflateRouteMarker: " + getCurPage());
         mRoutePagerAdapter.reinflateRouteCongestion(getCurPage());
 
     }
@@ -958,22 +958,22 @@ public class MainActivity extends AppCompatActivity
 
 
         if (conStatus == ServerConnectionSingle.CON_GREEN) {
-            Log.d(TAG, "getCongestionDrawble: GREEN");
+        //    Log.d(TAG, "getCongestionDrawble: GREEN");
             if (etsStatus == START_MARKER) return R.drawable.route_start_green_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_green_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_green_marker;
         } else if (conStatus == ServerConnectionSingle.CON_YELLOW) {
-            Log.d(TAG, "getCongestionDrawble: CON_YELLOW");
+         //   Log.d(TAG, "getCongestionDrawble: CON_YELLOW");
             if (etsStatus == START_MARKER) return R.drawable.route_start_yellow_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_yellow_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_yellow_marker;
         } else if (conStatus == ServerConnectionSingle.CON_RED) {
-            Log.d(TAG, "getCongestionDrawble: CON_RED");
+         //   Log.d(TAG, "getCongestionDrawble: CON_RED");
             if (etsStatus == START_MARKER) return R.drawable.route_start_red_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_red_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_red_marker;
         } else {
-            Log.d(TAG, "getCongestionDrawble: DEFAULT");
+         //   Log.d(TAG, "getCongestionDrawble: DEFAULT");
             if (etsStatus == START_MARKER) return R.drawable.route_start_normal_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_normal_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_normal_marker;

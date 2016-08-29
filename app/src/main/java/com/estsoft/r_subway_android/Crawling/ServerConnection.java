@@ -104,7 +104,7 @@ public class ServerConnection {
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            Log.d(TAG, "onPostExecute: " + integer);
+   //         Log.d(TAG, "onPostExecute: " + integer);
 //            SystemClock.sleep(2000);
 //            ((MainActivity)mContext).setStationStatus( integer );
         }

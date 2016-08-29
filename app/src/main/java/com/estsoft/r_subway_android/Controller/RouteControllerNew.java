@@ -59,7 +59,7 @@ public class RouteControllerNew {
         this.defaultAdj = stationController.getAdj();
     }
 
-    private void debugSections( List<List<Station>> sections ) {
+ /*   private void debugSections( List<List<Station>> sections ) {
         Log.d(TAG, "debugSections: section Size = " + sections.size());
         for (int i = 0; i < sections.size(); i ++ ) {
             List<Station> section = sections.get(i);
@@ -114,7 +114,7 @@ public class RouteControllerNew {
                     " /inactive? " + activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()]);
         }
     }
-
+*/
     public RouteNew[] getRoutes( Station start, Station end ) {
         RouteNew[] routes = new RouteNew[3];
         // getShortRout
@@ -150,7 +150,7 @@ public class RouteControllerNew {
         //SearchSetting
         initializeSettings( mode );
         ShortestPath.setLineRange( activeLaneArr );
-        debugActiveLanes();
+   //     debugActiveLanes();
         //SearchSetting done
 
         // raw section making
@@ -169,7 +169,7 @@ public class RouteControllerNew {
         List<Integer> listPath = getListPath(path);
         // listing path[] end
         List<List<Station>> sections = getSections(listPath);
-        debugSections(sections);
+    //    debugSections(sections);
         // raw section making done
 
         // before process
@@ -191,13 +191,13 @@ public class RouteControllerNew {
             // isPrevWay check of section
             boolean isPrevWay = isPrevWay( section.get(0), section.get(1) );
             sectionIsPrevWay.add(isPrevWay);
-            debugIsPrevWay( section, isPrevWay );
+     //       debugIsPrevWay( section, isPrevWay );
             // isPrevWay check Done
 
             // finding terminals of section
             List<Station> terminals = findTerminals( section, isPrevWay );
             sectionTerminals.add( terminals );
-            debugTerminals( section, terminals );
+     //       debugTerminals( section, terminals );
             // finding terminals done
 
             // get Calendar List.
@@ -210,7 +210,7 @@ public class RouteControllerNew {
                 // sharing Calendar for Each section
                 inputCalendar = stationCalendar;
             }
-            debugSectionCalendars( section );
+    //        debugSectionCalendars( section );
             // Calendar Mapping done.
 
             // isExpress check (in Function getTimeTable)
@@ -221,13 +221,13 @@ public class RouteControllerNew {
             if (isExpress) {
                 section = getNoneExRemovedSection( section );
             }
-            debugGetNoneExRemovedSection( section );
+     //       debugGetNoneExRemovedSection( section );
             // deleting none Express Stations done
 
             // mapping mapPoints
             setMapPoint( section );
             // mapping mapPoints done
-            debugMapPoints( section );
+    //        debugMapPoints( section );
 
             processedSections.add(section);
         }
@@ -258,9 +258,9 @@ public class RouteControllerNew {
             Station station = section.get(i);
             if ( RouteNew.isExpressStation( station.getStationID() ) )
                 removedSection.add( station );
-            else {
+/*            else {
                 Log.d(TAG, "getNoneExRemovedSection: " + station.getStationName() + "is deleting");
-            }
+            }*/
         }
         return removedSection;
     }
@@ -359,10 +359,10 @@ public class RouteControllerNew {
             HashMap<String, Object> timeMap = timeList.get(i);
             String timeString[] = ((String)timeMap.get( key )).split("\\(");
             int timeMinute = Integer.parseInt(timeString[0]);
-            Log.d(TAG, "getTimeTable: " + timeMinute);
+  //          Log.d(TAG, "getTimeTable: " + timeMinute);
             String terminalName = timeString[1].replace(")", "");
-            Log.d(TAG, "getTimeTable: " + terminalName );
-            Log.d(TAG, "checkTerminalName: " + station.getStationName());
+  //         Log.d(TAG, "getTimeTable: " + terminalName );
+   //        Log.d(TAG, "checkTerminalName: " + station.getStationName());
 
             boolean tmpIsExpress = (Boolean)timeMap.get("isExpress");
             if (expressFirst && RouteNew.isExpressStation(station.getStationID())) {
@@ -383,7 +383,7 @@ public class RouteControllerNew {
         }
 
         if (!newCal.equals(compareCal)) {
-            Log.d(TAG, "getTimeTable: returning CAL!!!");
+    //        Log.d(TAG, "getTimeTable: returning CAL!!!");
             return newCal;
         }
         else {
@@ -398,14 +398,14 @@ public class RouteControllerNew {
             String terminalName = terminals.get(i).getStationName();
             String[] tmp = terminalName.split("\\(");
             String justTerminalName = tmp[0];
-            Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
-            Log.d(TAG, "checkTerminalName: /" + timeTerminalName.getClass() +  " // " + justTerminalName.getClass());
+    //      Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
+     //       Log.d(TAG, "checkTerminalName: /" + timeTerminalName.getClass() +  " // " + justTerminalName.getClass());
 //            if (justTerminalName.equals(timeTerminalName)){
 //            if (justTerminalName.contains(timeTerminalName)) {
 
 
             if (timeTerminalName.equals(justTerminalName)) {
-                Log.d(TAG, "checkTerminalName: / in true /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
+      //         Log.d(TAG, "checkTerminalName: / in true /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
                 return true;
             }
         }
@@ -457,7 +457,7 @@ public class RouteControllerNew {
     }
     private void findingTerminal ( Station nextStation ) {
             if (RouteNew.compareTerminalName(nextStation.getStationName(), nextStation.getLaneType())) {
-                Log.d(TAG, "findingTerminal: " + nextStation.getStationName());
+        //        Log.d(TAG, "findingTerminal: " + nextStation.getStationName());
                 fTerminals.add(nextStation);
             }
     }
@@ -498,7 +498,7 @@ public class RouteControllerNew {
     private List<List<Station>> getSection ( List<Integer> listPath, int start, int end ) {
         List<List<Station>> sections = new ArrayList<>();
         List<Station> section = new ArrayList<>();
-        Log.d(TAG, "getSection: LaneType : " +  stationController.getStation(listPath.get(start)).getLaneType());
+     //   Log.d(TAG, "getSection: LaneType : " +  stationController.getStation(listPath.get(start)).getLaneType());
         // 처음과 끝 역
         int startStationID = stationController.getStation(listPath.get(start)).getStationID();
         int endStationID = stationController.getStation(listPath.get(end)).getStationID();
@@ -511,7 +511,7 @@ public class RouteControllerNew {
             //1호선일때, 구로때문에
             //수정!!
 //            if (false) {
-            Log.d(TAG, "getSection: into the space good night");
+      //      Log.d(TAG, "getSection: into the space good night");
             if ( stationController.getStation(listPath.get(start)).getLaneType() == 1
                     && RouteNew.checkFirstLaneException(startStationID)
                     && RouteNew.checkFirstLaneException(endStationID)) {
@@ -555,14 +555,14 @@ public class RouteControllerNew {
             }
         }
 
-        Log.d(TAG, "getSection: ----------------------------------------");
-        for ( List<Station> list : sections ) {
+     //   Log.d(TAG, "getSection: ----------------------------------------");
+      /*  for ( List<Station> list : sections ) {
             for ( Station st : list ) {
                 Log.d(TAG, "getSection: " + st.getStationName());
             }
             Log.d(TAG, "getSection:  // ");
         }
-
+*/
         return sections;
     }
 
@@ -580,7 +580,7 @@ public class RouteControllerNew {
 //            activeLaneArr[i] = true;
 //        }
         if ( mode == CUSTOM_ROUTE) {
-            Log.d(TAG, "initActiveLaneArr: CUSTOM_ROUTE");
+     //       Log.d(TAG, "initActiveLaneArr: CUSTOM_ROUTE");
             for (int i = 0; i < SearchSetting.getActiveLanes().size(); i++) {
                 activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()] =
                         !(SearchSetting.getActiveLanes().get(i).isActive());
@@ -590,13 +590,13 @@ public class RouteControllerNew {
 
     private void initializeSettings( int mode ){
         initActiveLaneArr( mode );
-        Log.d(TAG, "initializeSettings: " + mode);
+     //   Log.d(TAG, "initializeSettings: " + mode);
         if (mode == CUSTOM_ROUTE) {
             expressFirst = SearchSetting.isActiveExpressOnly();
         } else {
             expressFirst = false;
         }
-        Log.d(TAG, "initializeSettings: " + expressFirst);
+     //   Log.d(TAG, "initializeSettings: " + expressFirst);
     }
 
 }
