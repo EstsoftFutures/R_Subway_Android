@@ -115,7 +115,7 @@ public class InitializeRealm {
             String json = getJSONFromAsset(i);
             if (json != null) {
                 RealmStation station = realm.where(RealmStation.class).equalTo("stationID", i).findFirst();
-      //          Log.d("\\\\", String.valueOf(station.getStationID()));
+                Log.d("\\\\", String.valueOf(station.getStationID()));
                 JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
                 JsonObject result = jsonObject.getAsJsonObject("result");
                 JsonObject exOBJ = result.getAsJsonObject("exOBJ");
@@ -139,7 +139,7 @@ public class InitializeRealm {
                     for(JsonElement prev : prevStations) {
                         int prevStationID = prev.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation prevStation = realm.where(RealmStation.class).equalTo("stationID", prevStationID).findFirst();
-        //                Log.d("\\\\", String.valueOf(prevStation.getStationID()));
+                        Log.d("\\\\", String.valueOf(prevStation.getStationID()));
 
                         realm.beginTransaction();
                         station.getPrevStations().add(prevStation);
@@ -153,7 +153,7 @@ public class InitializeRealm {
                     for(JsonElement next : nextStations) {
                         int nextStationID = next.getAsJsonObject().getAsJsonPrimitive("stationID").getAsInt();
                         RealmStation nextStation = realm.where(RealmStation.class).equalTo("stationID", nextStationID).findFirst();
-             //          Log.d("\\\\", String.valueOf(nextStation.getStationID()));
+                        Log.d("\\\\", String.valueOf(nextStation.getStationID()));
 
                         realm.beginTransaction();
                         station.getNextStations().add(nextStation);

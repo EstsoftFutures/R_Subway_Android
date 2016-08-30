@@ -97,13 +97,11 @@ public class StationInfoFragment extends Fragment {
 
  */
                 mPage = getArguments().getInt(ARG_PAGE);
-        //        Log.d(TAG,""+stations.size());
-        //        Log.d(TAG,"mPage: "+mPage);
-/*
+                Log.d(TAG,""+stations.size());
+                Log.d(TAG,"mPage: "+mPage);
                 for(int i=0;i<stations.size();i++){
                     Log.d(TAG, ""+stations.get(i).getStationID());
                 }
-*/
 
                 if (position == 1) {
                     for(int i=0;i<stations.size();i++){

@@ -86,7 +86,7 @@ public class RouteController {
         Route route = new Route( testConlevel, start.getStationId1(), end.getStationId1());
 
 
-    //    Log.d(TAG, "getRoute: " + stationList.size());
+        Log.d(TAG, "getRoute: " + stationList.size());
 
 
         return route;

@@ -69,17 +69,17 @@ public class InteractionListener implements
 
         switch (v.getId()) {
             case startStationButton:
-            //    Log.d(TAG, "onClick: startStationButton");
+                Log.d(TAG, "onClick: startStationButton");
                 host.onStartClick(v);
                 break;
 
             case arriveStationButton:
-             //   Log.d(TAG, "onClick: arriveStationButton");
+                Log.d(TAG, "onClick: arriveStationButton");
                 host.onArriveClick(v);
                 break;
 
             case endInfoButton:
-          //      Log.d(TAG, "onClick: endInfoButton");
+                Log.d(TAG, "onClick: endInfoButton");
 //                host.onArriveClick(v);
                 host.setMarkerDefault(host.ALL_MARKERS);
                 host.getRouteBottomSheet().dismissSheet();
@@ -91,24 +91,24 @@ public class InteractionListener implements
 //                break;
 
             default:
-          //    Log.d(TAG, "onClick: default");
+                Log.d(TAG, "onClick: default");
                 break;
         }
 
 
         //툴바의 mNavButtonView 인지 더 정확히 확인해야함.
         if (v.getClass() == ImageButton.class) {
-         //   Log.d(TAG, "onClick: toolbarNavigationImageButton");
+            Log.d(TAG, "onClick: toolbarNavigationImageButton");
             if (host.getDrawer().isDrawerOpen(GravityCompat.START)) {
 
                 host.getExpListView().collapseGroup(1);
                 host.getDrawer().closeDrawer(GravityCompat.START);
-         //       Log.d(TAG, "onClick: drawer closed");
+                Log.d(TAG, "onClick: drawer closed");
 
             } else {
                 host.getDrawer().openDrawer(GravityCompat.START);
                 host.hideSoftKeyboard(v);
-         //       Log.d(TAG, "onClick: drawer open");
+                Log.d(TAG, "onClick: drawer open");
             }
         }
 
@@ -168,7 +168,7 @@ public class InteractionListener implements
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 
-    //    Log.d(TAG, "onGroupClick: Goupclicked");
+        Log.d(TAG, "onGroupClick: Goupclicked");
         
         ImageView check = (ImageView) v.findViewById(R.id.setting_group_check);
 
@@ -202,7 +202,7 @@ public class InteractionListener implements
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         final String selected = (String) host.getExpandableListAdapter().getChild(groupPosition, childPosition);
 
-       // Log.d(TAG, "onChildClick: " + selected);
+        Log.d(TAG, "onChildClick: " + selected);
 
         ImageView check = (ImageView) v.findViewById(R.id.setting_child_check);
 
@@ -224,7 +224,7 @@ public class InteractionListener implements
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         DrawerLayout drawer = (DrawerLayout) host.findViewById(R.id.drawer_layout);
-    //    Log.d(TAG, "onNavigationItemSelected: ");
+        Log.d(TAG, "onNavigationItemSelected: ");
 
         return true;
     }
@@ -267,7 +267,7 @@ public class InteractionListener implements
                     break;
             }
 //            host.mRoutePagerAdapter.reinflateRouteCongestion(position);
-       //     Log.d("pager","====================>"+host.getCurPage());
+            Log.d("pager","====================>"+host.getCurPage());
         }
 
         @Override
@@ -281,7 +281,7 @@ public class InteractionListener implements
     public void onDismissed(BottomSheetLayout bottomSheetLayout) {
         if (bottomSheetLayout.getId() == R.id.route_bottomSheet1) {
             //루트 시트일때
-         //   Log.d(TAG, "onDismissed: ss");
+            Log.d(TAG, "onDismissed: ss");
             host.setMarkerDefault(host.EXCEPT_ACTI_MARKER);
             host.setCurPage(0);
             ServerConnectionSingle.killThread();

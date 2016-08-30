@@ -42,12 +42,12 @@ public class CrawlingSocket extends Thread {
             ex.printStackTrace();
         } finally {
             accidentInfo = "Server Connection Fail";
-      //      Log.d(TAG, "run: " + accidentInfo);
+            Log.d(TAG, "run: " + accidentInfo);
         }
     }
 
     public String getAccidentInfo() {
-     //   Log.d(TAG, "getAccidentInfo: Call getAccidentInfo" );
+        Log.d(TAG, "getAccidentInfo: Call getAccidentInfo" );
         return accidentInfo;
     }
 

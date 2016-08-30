@@ -68,10 +68,10 @@ public class RouteNew {
     };
 
     public static boolean checkFirstLaneException( int stationID ) {
-   //     Log.d(TAG, "checkFirstLaneException: run! " + stationID);
+        Log.d(TAG, "checkFirstLaneException: run! " + stationID);
         for (int i = 0; i  < firstLaneExceptingStation.length; i ++) {
             if ( firstLaneExceptingStation[i] == stationID ) {
-    //            Log.d(TAG, "checkFirstLaneException: returning true!!");
+                Log.d(TAG, "checkFirstLaneException: returning true!!");
                 return true;
             }
         }
@@ -116,7 +116,7 @@ public class RouteNew {
         }
     }
     public static boolean compareTerminalName( String stationName, int laneType ) {
-    //    Log.d(TAG, "compareTerminalName: " + laneType);
+        Log.d(TAG, "compareTerminalName: " + laneType);
         String[] laneTerminalNames = terminalStationNames[ getLineIndex(laneType) ];
         if (stationName.contains("(")) stationName = stationName.substring(0, stationName.indexOf("("));
         for (int i = 0; i < laneTerminalNames.length; i ++ ) {

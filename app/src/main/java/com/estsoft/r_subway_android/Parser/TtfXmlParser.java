@@ -150,7 +150,7 @@ public class TtfXmlParser {
             throw new IllegalStateException();
         }
         String tagName = parser.getName();
-    //    Log.d("SKIP_TAG", tagName);
+        Log.d("SKIP_TAG", tagName);
         int depth = 1;
         while (depth != 0) {
             switch (parser.next()) {
