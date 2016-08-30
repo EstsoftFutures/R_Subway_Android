@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -52,6 +53,7 @@ public class Station extends TtfNode {
     private RealmStation realmStation;
 
     private Calendar arriveTime;
+    private Calendar[] arriveTimes;
     private boolean isExpress;
 
     private List<String> timeStringList;
@@ -459,6 +461,11 @@ public class Station extends TtfNode {
 
     public void setAccidentFlag(Boolean accidentFlag) {
         this.accidentFlag = accidentFlag;
+    }
+
+    public Calendar[] getArriveTimes() {
+        if (arriveTimes == null) arriveTimes = new GregorianCalendar[3];
+        return arriveTimes;
     }
 }
 

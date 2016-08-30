@@ -147,6 +147,8 @@ public class RouteControllerNew {
 
         inputCalendar = null;
 
+        int arriveTimeIndex = 0;
+
         //SearchSetting
         initializeSettings( mode );
         ShortestPath.setLineRange( activeLaneArr );
@@ -155,12 +157,16 @@ public class RouteControllerNew {
 
         // raw section making
         int[] path ;
-        if ( mode == SHORT_PATH )
+        if ( mode == SHORT_PATH ){
             path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
-        else if ( mode == MIN_TRANSFER )
+            arriveTimeIndex = 0;
+        } else if ( mode == MIN_TRANSFER ) {
             path = ShortestPath.getMinimumTransferPathByIntArray(defaultAdj, start, end);
-        else
+            arriveTimeIndex = 1;
+        } else {
             path = ShortestPath.getShortestPathByIntArray(defaultAdj, start, end);
+            arriveTimeIndex = 2;
+        }
 
         // if could not find Route
         if (path.length == 0) return null;
@@ -206,11 +212,12 @@ public class RouteControllerNew {
             for ( int j = 0; j < section.size(); j ++ ) {
                 Station station = section.get(j);
                 Calendar stationCalendar = sectionCalendars.get(j);
-                station.setArriveTime( stationCalendar );
+//                station.setArriveTime( stationCalendar );
+                station.getArriveTimes()[arriveTimeIndex] = (Calendar)stationCalendar.clone();
                 // sharing Calendar for Each section
                 inputCalendar = stationCalendar;
             }
-            debugSectionCalendars( section );
+//            debugSectionCalendars( section );
             // Calendar Mapping done.
 
             // isExpress check (in Function getTimeTable)
@@ -278,12 +285,15 @@ public class RouteControllerNew {
             Calendar newCal;
             if (i == 0) {
                 // adding transfer Cost...
+                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
                 sharedTime.add(Calendar.MINUTE, getTransferCost(null, null));
+                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
                 // adding done
                 newCal = getTimeTable( station, terminals, isPrevWay, sharedTime );
             } else {
                 newCal =  getTimeGap( section.get( i - 1 ).getIndex(), section.get(i).getIndex(), sharedTime ) ;
             }
+            Log.d(TAG, "getSectionCalendars: " + station.getStationName() + " 시간 : " + newCal.get(Calendar.HOUR) + ":" + newCal.get(Calendar.MINUTE));
             sectionCalendars.add( newCal );
             sharedTime = newCal;
         }
@@ -309,6 +319,7 @@ public class RouteControllerNew {
     private Calendar getTimeTable ( Station station, List<Station> terminals, boolean isPrevWay, Calendar sharedTime ) {
         Calendar newCal = (Calendar)sharedTime.clone();
         Calendar compareCal = (Calendar)sharedTime.clone();
+        Log.d(TAG, "getTimeTable__:0  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
 
         JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(context , station.getStationID());
         StationTimetable stt = jsonTimetableParser.getStationTimetable();
@@ -366,15 +377,17 @@ public class RouteControllerNew {
 
             boolean tmpIsExpress = (Boolean)timeMap.get("isExpress");
             if (expressFirst && RouteNew.isExpressStation(station.getStationID())) {
-                if ( timeMinute >= minute && checkTerminalName(terminals, terminalName) && tmpIsExpress ) {
+                if ( timeMinute > minute && checkTerminalName(terminals, terminalName) && tmpIsExpress ) {
                     newCal.set(Calendar.MINUTE, timeMinute);
                     // 전역변수 isExpress
                     isExpress = tmpIsExpress;
                     break;
                 }
             } else {
-                if ( timeMinute >= minute && checkTerminalName(terminals, terminalName) ) {
+                if ( timeMinute > minute && checkTerminalName(terminals, terminalName) ) {
+                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
                     newCal.set(Calendar.MINUTE, timeMinute);
+                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
                     // 전역변수 isExpress
                     isExpress = tmpIsExpress;
                     break;
@@ -383,11 +396,14 @@ public class RouteControllerNew {
         }
 
         if (!newCal.equals(compareCal)) {
-            Log.d(TAG, "getTimeTable: returning CAL!!!");
+            Log.d(TAG, "getTimeTable__:2  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
+            Log.d(TAG, "getTimeTable: --- " + station.getStationName());
+            Log.d(TAG, "getTimeTable: --- " + newCal.get(Calendar.HOUR) + " : " + newCal.get(Calendar.MINUTE));
             return newCal;
         }
         else {
             newCal.set( Calendar.MINUTE, 60 );
+            Log.d(TAG, "getTimeTable__:1  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
 //            newCal.set( Calendar.MINUTE, 0 );
             return getTimeTable(station, terminals, isPrevWay, newCal);
         }

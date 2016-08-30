@@ -74,7 +74,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 holder.routeStationTo.setText(start.getStationName() + "~" + end.getStationName());
                 Log.d("TEST", "onBindViewHolder: " + start.getStationName());
 
-                holder.routeNumStations.setText(convertCalendar(start.getArriveTime(), end.getArriveTime()));
+                holder.routeNumStations.setText(convertCalendar(start.getArriveTimes()[mPage], end.getArriveTimes()[mPage]));
                 holder.routeStartTime.setText("환승" + (route[mPage].getSections().size() - 1) + "회");
 
 
@@ -193,7 +193,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         routeNumStations.setLayoutParams(llp6);
 
 
-                        Calendar startTime = route[mPage].getSections().get(i).get(0).getArriveTime();
+                        Calendar startTime = route[mPage].getSections().get(i).get(0).getArriveTimes()[mPage];
                         TextView routeStartTime = new TextView(mActivity);
                         routeStartTime.setTextColor(Color.BLACK);
                         routeStartTime.setTextSize(18);
@@ -231,7 +231,8 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                             throughStationName.setLayoutParams(llp2);
 
                             TextView throughStationTime = new TextView(mActivity);
-                            Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTime();
+//                            Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTime();
+                            Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTimes()[mPage];
                             throughStationTime.setTextColor(Color.BLACK);
                             Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
                             throughStationTime.setText(sdf.format(throughStationArrive.getTime()));
@@ -261,7 +262,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                         routeArriveStationName.setTextSize(20);
 
                         routeArriveStationName.setLayoutParams(llp3);
-                        Calendar arriveTime = route[mPage].getSections().get(i).get(route[mPage].getSections().get(i).size() - 1).getArriveTime();
+                        Calendar arriveTime = route[mPage].getSections().get(i).get(route[mPage].getSections().get(i).size() - 1).getArriveTimes()[mPage];
                         TextView routeArriveTime = new TextView(mActivity);
                         routeArriveTime.setTextColor(Color.BLACK);
                         routeArriveTime.setTextSize(18);
