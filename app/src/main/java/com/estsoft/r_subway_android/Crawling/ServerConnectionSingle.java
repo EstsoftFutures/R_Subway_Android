@@ -154,10 +154,10 @@ public class ServerConnectionSingle {
     private void callAdapter(int internetStatus) {
         if (internetStatus == INTERNET_GOOD) {
             mAdapter.setStationStatus(internetStatus, accidentStatus, congestionStatus, congestionColor, mStation);
-            Log.d(TAG, "callAdapter: " + mStation.getStationID() + " / " + mStation.getLaneName() + " / " + mStation.getStationName() + " accident : " + accidentStatus + " congestionStatus : " + congestionStatus);
+//            Log.d(TAG, "callAdapter: " + mStation.getStationID() + " / " + mStation.getLaneName() + " / " + mStation.getStationName() + " accident : " + accidentStatus + " congestionStatus : " + congestionStatus);
         } else {
             mAdapter.setStationStatus(internetStatus, 0, 0, 0, mStation);
-            Log.d(TAG, "callAdapter: INTERNET_DISCONNECTED");
+//            Log.d(TAG, "callAdapter: INTERNET_DISCONNECTED");
         }
 
     }
@@ -173,7 +173,7 @@ public class ServerConnectionSingle {
         @Override
         protected List<Pair<Integer, Integer>> doInBackground(Void... params) {
             String[] dateInfo = DateManager.getInstance().getDayAndTime().split("-");
-            Log.d(TAG, "doInBackground: " + dateInfo[0] + " _ " + dateInfo[1] + " _ " + dateInfo[2]);
+//            Log.d(TAG, "doInBackground: " + dateInfo[0] + " _ " + dateInfo[1] + " _ " + dateInfo[2]);
 
             try {
                 MongoClientURI mongoUri = new MongoClientURI("mongodb://222.239.250.207:11012");
@@ -193,14 +193,14 @@ public class ServerConnectionSingle {
                 objs.add(new BasicDBObject("stationID", new BasicDBObject("$in", ids)));
                 qeuryToFind.put("$and", objs);
 
-                Log.d(TAG, "doInBackground: " + qeuryToFind.toJson());
+//                Log.d(TAG, "doInBackground: " + qeuryToFind.toJson());
 
                 FindIterable<Document> result =  collection.find(qeuryToFind);
                 List<Pair<Integer, Integer>> stationCongestionList = new ArrayList<>();
                 for ( Document doc : result ) {
-                    Log.d(TAG, "doInBackground: result = " + doc.toJson());
+//                    Log.d(TAG, "doInBackground: result = " + doc.toJson());
                     JSONObject jsonObject = new JSONObject(doc.toJson());
-                    Log.d(TAG, "doInBackground: " + jsonObject.get("stationID") + "/" + jsonObject.get(dateInfo[2]));
+//                    Log.d(TAG, "doInBackground: " + jsonObject.get("stationID") + "/" + jsonObject.get(dateInfo[2]));
                     int stationId = Integer.parseInt((String)jsonObject.get("stationID"));
                     int congestion = Integer.parseInt((String)jsonObject.get(dateInfo[2]));
                     stationCongestionList.add(new Pair<Integer, Integer>(stationId, congestion));
@@ -211,7 +211,7 @@ public class ServerConnectionSingle {
                 ex.printStackTrace();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Log.d(TAG, "doInBackground: EXCEPTION");
+//                Log.d(TAG, "doInBackground: EXCEPTION");
             }
 
             return null;
@@ -238,7 +238,7 @@ public class ServerConnectionSingle {
 
             String[] dateInfo = DateManager.getInstance().getDayAndTime().split("-");
 
-            Log.d(TAG, "doInBackground: " + dateInfo[0] + " _ " + dateInfo[1] + " _ " + dateInfo[2]);
+//            Log.d(TAG, "doInBackground: " + dateInfo[0] + " _ " + dateInfo[1] + " _ " + dateInfo[2]);
 
             try {
                 MongoClientURI mongoUri = new MongoClientURI("mongodb://222.239.250.207:11012");
@@ -247,11 +247,11 @@ public class ServerConnectionSingle {
                 MongoCollection<Document> collection = db.getCollection("data");
 
 
-                Log.d(TAG, "doInBackground: " + collection.toString());
+//                Log.d(TAG, "doInBackground: " + collection.toString());
 
                 Document myDoc = collection.find(Filters.and(Filters.eq("date", dateInfo[0]), Filters.eq("isRedDay", dateInfo[1]), Filters.eq("stationID", String.valueOf(mStation.getStationID())))).first();
 
-                Log.d(TAG, "doInBackground: myDoc.toJson() : " + myDoc.toJson());
+//                Log.d(TAG, "doInBackground: myDoc.toJson() : " + myDoc.toJson());
                 JSONObject jsonObject = new JSONObject(myDoc.toJson());
 
                 return Integer.parseInt((String) jsonObject.get(dateInfo[2]));
@@ -311,7 +311,7 @@ public class ServerConnectionSingle {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
             accidentStatus = integer;
-            Log.d(TAG, "onPostExecute: " + integer);
+//            Log.d(TAG, "onPostExecute: " + integer);
             getCongestionInfo();
             this.cancel(true);
             mStation.setAccidentInfo( integer == ACCIDENT_TRUE  );

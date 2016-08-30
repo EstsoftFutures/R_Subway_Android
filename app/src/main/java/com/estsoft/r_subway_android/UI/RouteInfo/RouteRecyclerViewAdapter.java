@@ -72,7 +72,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
                 Station start = route[mPage].getSections().get(0).get(0);
                 Station end = route[mPage].getSections().get(route[mPage].getSections().size() - 1).get(route[mPage].getSections().get(route[mPage].getSections().size() - 1).size() - 1);
                 holder.routeStationTo.setText(start.getStationName() + "~" + end.getStationName());
-                Log.d("TEST", "onBindViewHolder: " + start.getStationName());
+//                Log.d("TEST", "onBindViewHolder: " + start.getStationName());
 
                 holder.routeNumStations.setText(convertCalendar(start.getArriveTimes()[mPage], end.getArriveTimes()[mPage]));
                 holder.routeStartTime.setText("환승" + (route[mPage].getSections().size() - 1) + "회");
@@ -234,7 +234,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
 //                            Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTime();
                             Calendar throughStationArrive = route[mPage].getSections().get(i).get(j).getArriveTimes()[mPage];
                             throughStationTime.setTextColor(Color.BLACK);
-                            Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
+//                            Log.d("RouteRecyclerview", "arrivetime" + sdf.format(throughStationArrive.getTime()));
                             throughStationTime.setText(sdf.format(throughStationArrive.getTime()));
                             throughStationTime.setTextSize(18);
 
@@ -295,7 +295,7 @@ public class RouteRecyclerViewAdapter extends RecyclerView.Adapter<RouteRecycler
     }
 
     public void reInflateRouteCon() {
-        Log.d("reInflateRouteCon", "reInflateRouteCon: RE INFLATE!!!!!!!!!!!!!!!!!!!!!!!! " + mPage);
+//        Log.d("reInflateRouteCon", "reInflateRouteCon: RE INFLATE!!!!!!!!!!!!!!!!!!!!!!!! " + mPage);
         mHolder.routeStartStation.setVisibility(View.GONE);
         mHolder.routeStationTo.setVisibility(View.GONE);
         mHolder.routeNumStations.setVisibility(View.GONE);

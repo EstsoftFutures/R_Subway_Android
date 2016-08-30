@@ -123,13 +123,13 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         float[] value = new float[9];
         this.usingMatrix.getValues( value );
 
-        Log.d(TAG, "Matrix = " + usingMatrix.toString());
+//        Log.d(TAG, "Matrix = " + usingMatrix.toString());
 
         //뷰 크기
         int width = this.getWidth();
-        Log.d(TAG, "setImagePit123123123: " + width);
+//        Log.d(TAG, "setImagePit123123123: " + width);
         int height = this.getHeight();
-        Log.d(TAG, "ViewSize = " + width + "/" + height);
+//        Log.d(TAG, "ViewSize = " + width + "/" + height);
 
 
         //이미지 크기
@@ -141,13 +141,13 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         int imageWidth = drawable.getIntrinsicWidth();
         int imageHeight = drawable.getIntrinsicHeight();
 
-        Log.w(TAG, "ImageSize = " + imageWidth + "/" + imageHeight);
+//        Log.w(TAG, "ImageSize = " + imageWidth + "/" + imageHeight);
 
         //value[0], value[4]의 Default = 1f
         scaledImageWidth = (int)(imageWidth * value[0]);
         scaledImageHeight = (int)(imageHeight * value[4]);
 
-        Log.d(TAG, "ScaleSize = " + scaledImageWidth + "/" + scaledImageHeight);
+//        Log.d(TAG, "ScaleSize = " + scaledImageWidth + "/" + scaledImageHeight);
 
 
         //이미지가 바깥으로 나가지 않도록
@@ -189,8 +189,8 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
         float mag = minMag;
 
-        Log.d(TAG, "calMinMaxMag: imageHeight = " + imageHeight);
-        Log.d(TAG, "calMinMaxMag: ViewHeight = " + viewHeight);
+//        Log.d(TAG, "calMinMaxMag: imageHeight = " + imageHeight);
+//        Log.d(TAG, "calMinMaxMag: ViewHeight = " + viewHeight);
 
         if ( imageWidth > viewWidth || imageHeight > viewHeight ) {
 //            Width matches ViewWidth
@@ -201,7 +201,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
             if ( imageWidth < imageHeight ) target = HEIGHT;
             if ( target == WIDTH ) mag = ((float)viewWidth / imageWidth) * minMagSupport ;
             if ( target == HEIGHT ) mag = ((float)viewHeight / imageHeight) * minMagSupport;
-            Log.d(TAG, "calMinMaxMag: " + mag);
+//            Log.d(TAG, "calMinMaxMag: " + mag);
 
 
             // Default Magnification set
@@ -222,10 +222,10 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
     private void setMaxMag ( float minMag, float maxMagnification ){
         maxMag = minMag * ( 1 + (0.1f * maxMagnification));
-        Log.d(TAG, "setMaxMag: " + minMag );
-        Log.d(TAG, "setMaxMag: " + maxMag );
-        Log.d(TAG, "setMaxMag: " + 0.1f * maxMagnification);
-        Log.d(TAG, "setMaxMag: " + maxMagnification);
+//        Log.d(TAG, "setMaxMag: " + minMag );
+//        Log.d(TAG, "setMaxMag: " + maxMag );
+//        Log.d(TAG, "setMaxMag: " + 0.1f * maxMagnification);
+//        Log.d(TAG, "setMaxMag: " + maxMagnification);
     }
 
 
@@ -245,13 +245,13 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                 start.set( event.getX(), event.getY() );
 //                posX1 = (int) event.getX();
 //                posY1 = (int) event.getY();
-                Log.d(TAG, "ACTION_DOWN");
-                Log.d(TAG, "MODE = DRAG");
-                Log.d(TAG, "POST : " + posX1 + " : " + posY1);
+//                Log.d(TAG, "ACTION_DOWN");
+//                Log.d(TAG, "MODE = DRAG");
+//                Log.d(TAG, "POST : " + posX1 + " : " + posY1);
                 break;
 
             case MotionEvent.ACTION_UP :
-                Log.d(TAG, "ACTION_UP");
+//                Log.d(TAG, "ACTION_UP");
                 mode = NONE;
                 select = select == START ? DONE : NONE;
                 break;     // 첫번째 손가락을 떼었을 경우
@@ -273,10 +273,10 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
                 select = NONE;
 
-                Log.d(TAG, "ACTION_POINTER_DOWN");
-                Log.d(TAG, "MODE = ZOOM");
-                Log.d(TAG, "NEW_DIST : " + newDist);
-                Log.d(TAG, "OLD_DIST : " + oldDist);
+//                Log.d(TAG, "ACTION_POINTER_DOWN");
+//                Log.d(TAG, "MODE = ZOOM");
+//                Log.d(TAG, "NEW_DIST : " + newDist);
+//                Log.d(TAG, "OLD_DIST : " + oldDist);
                 break;
 
 
@@ -296,9 +296,9 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
 
                         select = NONE;
 
-                        Log.d(TAG, "ACTION_MOVE");
-                        Log.d(TAG, "MODE = DRAGGING");
-                        Log.d(TAG, "POST : " + posX2 + " : " + posY2);
+//                        Log.d(TAG, "ACTION_MOVE");
+//                        Log.d(TAG, "MODE = DRAGGING");
+//                        Log.d(TAG, "POST : " + posX2 + " : " + posY2);
 
                     }
 
@@ -317,19 +317,17 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
                         float scaleRevision = (scale -1) * pinchSensitivity;
                         scale = 1 + scaleRevision;
 
-                        Log.d(TAG, "ACTION_MOVE");
-                        Log.d(TAG, "ZOOM IN!");
-                        Log.d(TAG, "MODE = PINCH_ZOOMING");
-                        Log.d(TAG, "NEW_DIST : " + newDist);
-                        Log.d(TAG, "OLD_DIST : " + oldDist);
-                        Log.d(TAG, "Scale : " + scale);
+//                        Log.d(TAG, "ACTION_MOVE");
+//                        Log.d(TAG, "ZOOM IN!");
+//                        Log.d(TAG, "MODE = PINCH_ZOOMING");
+//                        Log.d(TAG, "NEW_DIST : " + newDist);
+//                        Log.d(TAG, "OLD_DIST : " + oldDist);
+//                        Log.d(TAG, "Scale : " + scale);
 
                         oldDist = newDist;
 
-                        Log.d(TAG, "onTouch: SCALE " + scale );
-
-
-                        Log.d(TAG, "onTouch: 포스트 전 " + usingMatrix.toString() + " mode = " + mode);
+//                        Log.d(TAG, "onTouch: SCALE " + scale );
+//                        Log.d(TAG, "onTouch: 포스트 전 " + usingMatrix.toString() + " mode = " + mode);
                         float[] val = new float[9];
                         usingMatrix.getValues(val);
                         usingMatrix.postScale(scale, scale, mid.x, mid.y);
@@ -438,7 +436,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         // 그리고 가운데 위치하도록
         scaledImageWidth = (int)(imageWidth * value[0]);
         scaledImageHeight = (int)(imageHeight * value[4]);
-        Log.d("123123", scaledImageWidth + " / " + scaledImageHeight);
+//        Log.d("123123", scaledImageWidth + " / " + scaledImageHeight);
 
         // 뷰와 확대된 이미지 비교
         // 가운데 위치
@@ -462,7 +460,7 @@ public class MapTouchImageView extends ImageView implements View.OnTouchListener
         movedImageY = (int)value[5];
 
         matrix.setValues( value );
-        Log.d(TAG, "matrixTurning: " + matrix.toString());
+//        Log.d(TAG, "matrixTurning: " + matrix.toString());
         savedMatrix2.set( matrix );
     }
 

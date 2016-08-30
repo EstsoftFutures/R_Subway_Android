@@ -66,7 +66,7 @@ public class RouteControllerNew {
             Log.d(TAG, "debugSections: START AT " + section.get(0).getStationName() + " / " + section.get(0).getLaneName());
             for (int j = 0; j < section.size(); j ++ ) {
                 Station st = section.get(j);
-                Log.d(TAG, "debugSections: " + st.getStationName());
+                Log.d(TAG, "debugSections: " + st.getStationName() + st.getStationID());
             }
             if ( i == sections.size() - 1) Log.d(TAG, "debugSections: END! ");
             else Log.d(TAG, "debugSections: TRANSFER! ");
@@ -118,23 +118,23 @@ public class RouteControllerNew {
     public RouteNew[] getRoutes( Station start, Station end ) {
         RouteNew[] routes = new RouteNew[3];
         // getShortRout
-        Log.d(TAG, "getRoutes: " + "SHORT_ROUTE");
+//        Log.d(TAG, "getRoutes: " + "SHORT_ROUTE");
         routes[0] = getRouteNew( start, end, SHORT_PATH );
         // getShortRoute done
 
         // getMinTransferRoute
 //        defaultAdj = stationController.getMinTransferAdj();
-        Log.d(TAG, "getRoutes: " + "MIN_TRANSFER");
+//        Log.d(TAG, "getRoutes: " + "MIN_TRANSFER");
         routes[1] = getRouteNew( start, end, MIN_TRANSFER );
         // getMinTransferRoute done
 
         // getCustomRoute
 //        defaultAdj = stationController.getShortestPathAdj();
-        Log.d(TAG, "getRoutes: " + "CUSTOM_ROUTE");
+//        Log.d(TAG, "getRoutes: " + "CUSTOM_ROUTE");
         routes[2] = getRouteNew( start, end, CUSTOM_ROUTE );
         // getCustomRoute done
 
-        Log.d(TAG, "getRoutes: " + "returning Route");
+//        Log.d(TAG, "getRoutes: " + "returning Route");
         return routes;
 
     }
@@ -142,8 +142,8 @@ public class RouteControllerNew {
 
     private RouteNew getRouteNew( Station start, Station end, int mode  ) {
 
-        Log.d(TAG, "getRouteNew: " + start.getIndex() + start.getStationName());
-        Log.d(TAG, "getRouteNew: " + end.getIndex() + end.getStationName());
+//        Log.d(TAG, "getRouteNew: " + start.getIndex() + start.getStationName());
+//        Log.d(TAG, "getRouteNew: " + end.getIndex() + end.getStationName());
 
         inputCalendar = null;
 
@@ -152,7 +152,7 @@ public class RouteControllerNew {
         //SearchSetting
         initializeSettings( mode );
         ShortestPath.setLineRange( activeLaneArr );
-        debugActiveLanes();
+//        debugActiveLanes();
         //SearchSetting done
 
         // raw section making
@@ -175,7 +175,7 @@ public class RouteControllerNew {
         List<Integer> listPath = getListPath(path);
         // listing path[] end
         List<List<Station>> sections = getSections(listPath);
-        debugSections(sections);
+//        debugSections(sections);
         // raw section making done
 
         // before process
@@ -197,13 +197,13 @@ public class RouteControllerNew {
             // isPrevWay check of section
             boolean isPrevWay = isPrevWay( section.get(0), section.get(1) );
             sectionIsPrevWay.add(isPrevWay);
-            debugIsPrevWay( section, isPrevWay );
+//            debugIsPrevWay( section, isPrevWay );
             // isPrevWay check Done
 
             // finding terminals of section
             List<Station> terminals = findTerminals( section, isPrevWay );
             sectionTerminals.add( terminals );
-            debugTerminals( section, terminals );
+//            debugTerminals( section, terminals );
             // finding terminals done
 
             // get Calendar List.
@@ -221,20 +221,22 @@ public class RouteControllerNew {
             // Calendar Mapping done.
 
             // isExpress check (in Function getTimeTable)
+            if (isExpress) isExpress = RouteNew.isExpressStation(section.get(0).getStationID()) && RouteNew.isExpressStation(section.get(section.size()-1).getStationID());
             isExpressSection.add(isExpress);
             // isExpress done
 
             // deleting none Express Stations
+            Log.d(TAG, "getRouteNew: " + isExpress);
             if (isExpress) {
                 section = getNoneExRemovedSection( section );
             }
-            debugGetNoneExRemovedSection( section );
+//            debugGetNoneExRemovedSection( section );
             // deleting none Express Stations done
 
             // mapping mapPoints
             setMapPoint( section );
             // mapping mapPoints done
-            debugMapPoints( section );
+//            debugMapPoints( section );
 
             processedSections.add(section);
         }
@@ -254,6 +256,10 @@ public class RouteControllerNew {
         for ( Station st : section ) {
             //MapPoint Setting...
             if (st.getMapPoint() == null ) {
+                if (st.getStationID() == 1611) {
+                    st.setMapPoint(mapView.getStationPoint(String.valueOf(1611)));
+                    break;
+                }
                 st.setMapPoint(mapView.getStationPointByName( st.getStationName() ));
             }
         }
@@ -285,15 +291,15 @@ public class RouteControllerNew {
             Calendar newCal;
             if (i == 0) {
                 // adding transfer Cost...
-                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
+//                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
                 sharedTime.add(Calendar.MINUTE, getTransferCost(null, null));
-                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
+//                Log.d(TAG, "getSectionCalendars: Shared" + station.getStationName() + " 시간 : " + sharedTime.get(Calendar.HOUR) + ":" + sharedTime.get(Calendar.MINUTE));
                 // adding done
                 newCal = getTimeTable( station, terminals, isPrevWay, sharedTime );
             } else {
                 newCal =  getTimeGap( section.get( i - 1 ).getIndex(), section.get(i).getIndex(), sharedTime ) ;
             }
-            Log.d(TAG, "getSectionCalendars: " + station.getStationName() + " 시간 : " + newCal.get(Calendar.HOUR) + ":" + newCal.get(Calendar.MINUTE));
+//            Log.d(TAG, "getSectionCalendars: " + station.getStationName() + " 시간 : " + newCal.get(Calendar.HOUR) + ":" + newCal.get(Calendar.MINUTE));
             sectionCalendars.add( newCal );
             sharedTime = newCal;
         }
@@ -319,7 +325,7 @@ public class RouteControllerNew {
     private Calendar getTimeTable ( Station station, List<Station> terminals, boolean isPrevWay, Calendar sharedTime ) {
         Calendar newCal = (Calendar)sharedTime.clone();
         Calendar compareCal = (Calendar)sharedTime.clone();
-        Log.d(TAG, "getTimeTable__:0  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
+//        Log.d(TAG, "getTimeTable__:0  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
 
         JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(context , station.getStationID());
         StationTimetable stt = jsonTimetableParser.getStationTimetable();
@@ -370,12 +376,14 @@ public class RouteControllerNew {
             HashMap<String, Object> timeMap = timeList.get(i);
             String timeString[] = ((String)timeMap.get( key )).split("\\(");
             int timeMinute = Integer.parseInt(timeString[0]);
-            Log.d(TAG, "getTimeTable: " + timeMinute);
+//            Log.d(TAG, "getTimeTable: " + timeMinute);
             String terminalName = timeString[1].replace(")", "");
-            Log.d(TAG, "getTimeTable: " + terminalName );
-            Log.d(TAG, "checkTerminalName: " + station.getStationName());
+//            Log.d(TAG, "getTimeTable: " + terminalName );
+//            Log.d(TAG, "checkTerminalName: " + station.getStationName());
 
             boolean tmpIsExpress = (Boolean)timeMap.get("isExpress");
+//            Log.d(TAG, "getTimeTable: expressFirst ? " + expressFirst + " timeMinute : "+ timeMinute + " Minute : " + minute);
+//            Log.d(TAG, "getTimeTable: terminalName ? " + terminalName);
             if (expressFirst && RouteNew.isExpressStation(station.getStationID())) {
                 if ( timeMinute > minute && checkTerminalName(terminals, terminalName) && tmpIsExpress ) {
                     newCal.set(Calendar.MINUTE, timeMinute);
@@ -385,9 +393,9 @@ public class RouteControllerNew {
                 }
             } else {
                 if ( timeMinute > minute && checkTerminalName(terminals, terminalName) ) {
-                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
+//                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
                     newCal.set(Calendar.MINUTE, timeMinute);
-                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
+//                    Log.d(TAG, "getTimeTable__:... " + newCal.get(Calendar.HOUR) +":" + newCal.get(Calendar.MINUTE));
                     // 전역변수 isExpress
                     isExpress = tmpIsExpress;
                     break;
@@ -396,14 +404,14 @@ public class RouteControllerNew {
         }
 
         if (!newCal.equals(compareCal)) {
-            Log.d(TAG, "getTimeTable__:2  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
-            Log.d(TAG, "getTimeTable: --- " + station.getStationName());
-            Log.d(TAG, "getTimeTable: --- " + newCal.get(Calendar.HOUR) + " : " + newCal.get(Calendar.MINUTE));
+//            Log.d(TAG, "getTimeTable__:2  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
+//            Log.d(TAG, "getTimeTable: --- " + station.getStationName());
+//            Log.d(TAG, "getTimeTable: --- " + newCal.get(Calendar.HOUR) + " : " + newCal.get(Calendar.MINUTE));
             return newCal;
         }
         else {
             newCal.set( Calendar.MINUTE, 60 );
-            Log.d(TAG, "getTimeTable__:1  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
+//            Log.d(TAG, "getTimeTable__:1  " + station.getStationName() +  " " + newCal.get(Calendar.HOUR) +":"+ newCal.get(Calendar.MINUTE));
 //            newCal.set( Calendar.MINUTE, 0 );
             return getTimeTable(station, terminals, isPrevWay, newCal);
         }
@@ -414,14 +422,14 @@ public class RouteControllerNew {
             String terminalName = terminals.get(i).getStationName();
             String[] tmp = terminalName.split("\\(");
             String justTerminalName = tmp[0];
-            Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
-            Log.d(TAG, "checkTerminalName: /" + timeTerminalName.getClass() +  " // " + justTerminalName.getClass());
+//            Log.d(TAG, "checkTerminalName: /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
+//            Log.d(TAG, "checkTerminalName: /" + timeTerminalName.getClass() +  " // " + justTerminalName.getClass());
 //            if (justTerminalName.equals(timeTerminalName)){
 //            if (justTerminalName.contains(timeTerminalName)) {
 
 
             if (timeTerminalName.equals(justTerminalName)) {
-                Log.d(TAG, "checkTerminalName: / in true /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
+//                Log.d(TAG, "checkTerminalName: / in true /" + timeTerminalName + "/  finding  /" + justTerminalName +"/");
                 return true;
             }
         }
@@ -473,7 +481,7 @@ public class RouteControllerNew {
     }
     private void findingTerminal ( Station nextStation ) {
             if (RouteNew.compareTerminalName(nextStation.getStationName(), nextStation.getLaneType())) {
-                Log.d(TAG, "findingTerminal: " + nextStation.getStationName());
+//                Log.d(TAG, "findingTerminal: " + nextStation.getStationName());
                 fTerminals.add(nextStation);
             }
     }
@@ -514,7 +522,7 @@ public class RouteControllerNew {
     private List<List<Station>> getSection ( List<Integer> listPath, int start, int end ) {
         List<List<Station>> sections = new ArrayList<>();
         List<Station> section = new ArrayList<>();
-        Log.d(TAG, "getSection: LaneType : " +  stationController.getStation(listPath.get(start)).getLaneType());
+//        Log.d(TAG, "getSection: LaneType : " +  stationController.getStation(listPath.get(start)).getLaneType());
         // 처음과 끝 역
         int startStationID = stationController.getStation(listPath.get(start)).getStationID();
         int endStationID = stationController.getStation(listPath.get(end)).getStationID();
@@ -527,7 +535,7 @@ public class RouteControllerNew {
             //1호선일때, 구로때문에
             //수정!!
 //            if (false) {
-            Log.d(TAG, "getSection: into the space good night");
+//            Log.d(TAG, "getSection: into the space good night");
             if ( stationController.getStation(listPath.get(start)).getLaneType() == 1
                     && RouteNew.checkFirstLaneException(startStationID)
                     && RouteNew.checkFirstLaneException(endStationID)) {
@@ -571,12 +579,12 @@ public class RouteControllerNew {
             }
         }
 
-        Log.d(TAG, "getSection: ----------------------------------------");
+//        Log.d(TAG, "getSection: ----------------------------------------");
         for ( List<Station> list : sections ) {
             for ( Station st : list ) {
-                Log.d(TAG, "getSection: " + st.getStationName());
+//                Log.d(TAG, "getSection: " + st.getStationName());
             }
-            Log.d(TAG, "getSection:  // ");
+//            Log.d(TAG, "getSection:  // ");
         }
 
         return sections;
@@ -596,7 +604,7 @@ public class RouteControllerNew {
 //            activeLaneArr[i] = true;
 //        }
         if ( mode == CUSTOM_ROUTE) {
-            Log.d(TAG, "initActiveLaneArr: CUSTOM_ROUTE");
+//            Log.d(TAG, "initActiveLaneArr: CUSTOM_ROUTE");
             for (int i = 0; i < SearchSetting.getActiveLanes().size(); i++) {
                 activeLaneArr[SearchSetting.getActiveLanes().get(i).getNumber()] =
                         !(SearchSetting.getActiveLanes().get(i).isActive());
@@ -606,13 +614,13 @@ public class RouteControllerNew {
 
     private void initializeSettings( int mode ){
         initActiveLaneArr( mode );
-        Log.d(TAG, "initializeSettings: " + mode);
+//        Log.d(TAG, "initializeSettings: " + mode);
         if (mode == CUSTOM_ROUTE) {
             expressFirst = SearchSetting.isActiveExpressOnly();
         } else {
             expressFirst = false;
         }
-        Log.d(TAG, "initializeSettings: " + expressFirst);
+//        Log.d(TAG, "initializeSettings: " + expressFirst);
     }
 
 }

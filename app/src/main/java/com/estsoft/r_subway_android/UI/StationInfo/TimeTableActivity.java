@@ -38,28 +38,28 @@ public class TimeTableActivity extends AppCompatActivity {
 
         // StationInfoFragment로부터 stationID와 현재 page받기
         stationIDs = getIntent().getIntegerArrayListExtra("stationIDs");
-        Log.d(TAG, "stationIDs: " + stationIDs.toString());
+//        Log.d(TAG, "stationIDs: " + stationIDs.toString());
         page = getIntent().getIntExtra("page", 0);
-        Log.d(TAG, "page: " + page);
+//        Log.d(TAG, "page: " + page);
 
         //현재 page의 id 받기
         curStationID = stationIDs.get(page);
-        Log.d(TAG, "curStationID: " + curStationID);
+//        Log.d(TAG, "curStationID: " + curStationID);
 
         //timetable 정보 받기
         JSONTimetableParser jsonTimetableParser = new JSONTimetableParser(this, curStationID);
         stationTimetable = jsonTimetableParser.getStationTimetable();
-        Log.d(TAG, "stationTimetable_stationName: " + stationTimetable.getStationName());
-        Log.d(TAG, "stationTimetable_Upway: " + stationTimetable.getUpWay());
-        Log.d(TAG, "stationTimetable_Downway: " + stationTimetable.getDownWay());
-        Log.d(TAG, "stationTimetable_OrdUp: " + stationTimetable.getOrdUpWayLdx()[0]);
-        Log.d(TAG, "stationTimetable_OrdDown: " + stationTimetable.getOrdDownWayLdx().length);
-        Log.d(TAG, "stationTimetable_SatUp: " + stationTimetable.getSatUpWayLdx().length);
-        Log.d(TAG, "stationTimetable_SatDown: " + stationTimetable.getSatDownWayLdx().length);
-        Log.d(TAG, "stationTimetable_SunUp: " + stationTimetable.getSunUpWayLdx().length);
-        Log.d(TAG, "stationTimetable_SunDown: " + stationTimetable.getSunDownWayLdx().length);
-        Log.d(TAG, "stationTimetable_stationhour" + stationTimetable.getStationHour().size());
-        Log.d(TAG, "stationTimetable_stationminute" + ":" + stationTimetable.getOrdUpWayLdx().length);
+//        Log.d(TAG, "stationTimetable_stationName: " + stationTimetable.getStationName());
+//        Log.d(TAG, "stationTimetable_Upway: " + stationTimetable.getUpWay());
+//        Log.d(TAG, "stationTimetable_Downway: " + stationTimetable.getDownWay());
+//        Log.d(TAG, "stationTimetable_OrdUp: " + stationTimetable.getOrdUpWayLdx()[0]);
+//        Log.d(TAG, "stationTimetable_OrdDown: " + stationTimetable.getOrdDownWayLdx().length);
+//        Log.d(TAG, "stationTimetable_SatUp: " + stationTimetable.getSatUpWayLdx().length);
+//        Log.d(TAG, "stationTimetable_SatDown: " + stationTimetable.getSatDownWayLdx().length);
+//        Log.d(TAG, "stationTimetable_SunUp: " + stationTimetable.getSunUpWayLdx().length);
+//        Log.d(TAG, "stationTimetable_SunDown: " + stationTimetable.getSunDownWayLdx().length);
+//        Log.d(TAG, "stationTimetable_stationhour" + stationTimetable.getStationHour().size());
+//        Log.d(TAG, "stationTimetable_stationminute" + ":" + stationTimetable.getOrdUpWayLdx().length);
 
 
         ImageView timetableFinish = (ImageView) findViewById(R.id.timetable_finish);
@@ -88,8 +88,8 @@ public class TimeTableActivity extends AppCompatActivity {
 
         ArrayList<String> timeOrd = timetable(stationTimetable, 0);
 
-        Log.d(TAG, "last_upway:" + stationTimetable.getUpWay());
-        Log.d(TAG, "last_downway:" + stationTimetable.getDownWay());
+//        Log.d(TAG, "last_upway:" + stationTimetable.getUpWay());
+//        Log.d(TAG, "last_downway:" + stationTimetable.getDownWay());
 
 
         timetableAdapter = new TimetableAdapter(getApplicationContext(), timeOrd);

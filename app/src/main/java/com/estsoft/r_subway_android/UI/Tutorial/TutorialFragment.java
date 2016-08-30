@@ -99,7 +99,7 @@ public class TutorialFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v)
                     {
-                        Log.e("onClick","finish");
+//                        Log.e("onClick","finish");
                         getActivity().finish();
                     }
                 });

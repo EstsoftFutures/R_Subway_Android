@@ -19,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity
         // TtfMapImageView ... mapView 의 구현
         mapView = ((TtfMapImageView) findViewById(R.id.mapView));
         mapView.setImageResource(R.drawable.linemap_naver);
-        Log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
+        // log.e(TAG, "onCreate: " + mapView.getDrawable().getIntrinsicWidth());
         mapView.setTtfMapImageViewListener(this);
 
         mapView.setImageResource(R.drawable.linemap_naver);
@@ -247,16 +246,16 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        Log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
+        // log.d("\\\\\\\\\\\\\\", initRealmPrefs.getString("Init",null));
         Realm realm = Realm.getInstance(this);
         RealmResults<RealmStation> results = realm.where(RealmStation.class).findAll();
         for(RealmStation station : results) {
-            Log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
+            // log.d("\\\\\\\\\\", station.getStationName() + station.getStationID() + "x : " + station.getxPos() + "y : " + station.getyPos());
         }
 
         try {
             stationController = new StationController(Realm.getInstance(this), getResources().openRawResource(R.raw.station_cost), this);
-            Log.d(TAG, "initializeAdj: Successfully Finished ");
+            // log.d(TAG, "initializeAdj: Successfully Finished ");
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -267,6 +266,8 @@ public class MainActivity extends AppCompatActivity
 //        mapView.setSemiStationLaneNumber( stationController );
 
         InternetManager.init(this);
+
+        // log.d(TAG, "Flow Check: onCreate Finished");
     }
 
 
@@ -331,19 +332,21 @@ public class MainActivity extends AppCompatActivity
 
         hideSoftKeyboard(mapView);
 
+        // log.d(TAG, "Flow Check: onCreateOptionsMenu Finished");
+
         return true;
     }
 
     public void onComposeAction(MenuItem mi) {
         // handle click here
-        Log.d("123","123");
+        // log.d("123","123");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                Log.d("1234534534534533","12334534534534");
+                // log.d("1234534534534533","12334534534534");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -357,11 +360,11 @@ public class MainActivity extends AppCompatActivity
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if  (searchEditText != null) {
-            Log.d(TAG, "hideSoftKeyboard: setting focus");
+            // log.d(TAG, "hideSoftKeyboard: setting focus");
             searchEditText.setFocusable(false);
             searchEditText.setFocusableInTouchMode(true);
         } else {
-            Log.d(TAG, "hideSoftKeyboard: searchEditText is null");
+            // log.d(TAG, "hideSoftKeyboard: searchEditText is null");
         }
     }
 
@@ -391,7 +394,7 @@ public class MainActivity extends AppCompatActivity
             setMarkerDefault(ALL_MARKERS);
         }
         setActiveStation( semiStation );
-        Log.d(TAG, "itemClick: ");
+        // log.d(TAG, "itemClick: ");
     }
 
 
@@ -413,11 +416,11 @@ public class MainActivity extends AppCompatActivity
         if(markerMode == EXCEPT_ACTI_MARKER ) {
             for (View marker : markerList) {
                 if (markerList.get(3).getId() == marker.getId()) {
-                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
+                    // log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(3).getId() + " / " + marker.getId());
                     continue;
                 }
                 if (markerList.get(0).getId() == marker.getId()) {
-                    Log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
+                    // log.d(TAG, "setMarkerDefault: " + markerList.size() + " / " + markerList.get(0).getId() + " / " + marker.getId());
                     continue;
                 }
                 setMarkerVisibility(marker, false);
@@ -504,12 +507,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setActiveStation(SemiStation semiStation) {
-        Log.d(TAG, "setActiveStation: " + semiStation.toString());
+        // log.d(TAG, "setActiveStation: " + semiStation.toString());
         ServerConnectionSingle.killThread();
 
         if (status != FULL) {
             activeStation = stationController.getStation(semiStation);
-            Log.d(TAG, "setActiveStation: " + activeStation.getStationID());
+            // log.d(TAG, "setActiveStation: " + activeStation.getStationID());
 
             mapView.moveToMapCenter( semiStation.getPosition() );
 
@@ -596,7 +599,7 @@ public class MainActivity extends AppCompatActivity
                     default:
                         markerPosition = new PointF(0, 0);
                 }
-                Log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
+                // log.d(TAG, "setMarkerPosition: " + markerPosition.toString());
                 if (marker instanceof ImageView ) {
                     setImageMatrix((ImageView)marker, mapView.getMarkerRatio(), markerPosition);
                 }
@@ -688,10 +691,10 @@ public class MainActivity extends AppCompatActivity
             }
             // Get the ViewPager and set it's PagerAdapter so that it can display items
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
- //           Log.d(TAG,"pager : station:"+exStations.size());
+ //           // log.d(TAG,"pager : station:"+exStations.size());
             viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), exStations));
     //   viewPager.setOffscreenPageLimit(3);
-            Log.d("pager", "------------->" + viewPager.toString());
+            // log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
             tabsStrip.setTabPaddingLeftRight(25);
@@ -703,7 +706,7 @@ public class MainActivity extends AppCompatActivity
             stationBottomSheet.setShouldDimContentView(false);
             stationBottomSheet.setInterceptContentTouch(false);
 
-            Log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
+            // log.d(TAG, "runBottomSheet: " + ((LinearLayout) stationBottomSheet.getSheetView()).getChildAt(0).getClass());
 
             ImageView start = (ImageView) findViewById(R.id.Start);
             ImageView arrive = (ImageView) findViewById(R.id.Arrive);
@@ -712,10 +715,10 @@ public class MainActivity extends AppCompatActivity
 
             // getting Server AccidentInfo
 //            mServerConnection.getAccidentInfo(activeStation);
-            Log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
+            // log.d(TAG, "runBottomSheet: " + activeStation.isAccidentInfo());
 
-//            Log.d("----------->", start.getText().toString());
-//            Log.d("----------->", arrive.getText().toString());
+//            // log.d("----------->", start.getText().toString());
+//            // log.d("----------->", arrive.getText().toString());
 
             // 리스너로 감
             /*start.setOnClickListener(new View.OnClickListener() {
@@ -745,7 +748,7 @@ public class MainActivity extends AppCompatActivity
 
 
 //        viewPager.setOffscreenPageLimit(3);
-            Log.d("pager", "------------->" + viewPager.toString());
+            // log.d("pager", "------------->" + viewPager.toString());
             // Give the PagerSlidingTabStrip the ViewPager
             PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.route_tabs);
             tabsStrip.setTabPaddingLeftRight(25);
@@ -841,18 +844,18 @@ public class MainActivity extends AppCompatActivity
 
     private void inflateRouteNew(RouteNew route) {
 
-        Log.d(TAG, "inflateRouteNew: route is null" );
+        // log.d(TAG, "inflateRouteNew: route is null" );
 
         if (route == null) return;
 
-        Log.d(TAG, "inflateRouteNew: under if " + route.getSections().size());
+        // log.d(TAG, "inflateRouteNew: under if " + route.getSections().size());
 
         if (routeMarkers == null) routeMarkers = new ArrayList<>();
 
         int count = 0;
         for ( List<Station> section : route.getSections() ) {
             for ( int i = 0 ; i < section.size(); i ++ ) {
-                Log.d(TAG, "inflateRouteNew: inflating");
+                // log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
                     marker.setImageResource( R.drawable.route_start_normal_marker);
@@ -879,7 +882,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 3; i < 6; i++) {
             for ( ImageView mark : routeMarkers ) {
                 if (mark.getId() / 1000 == i) {
-                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                    // log.d(TAG, "inflateRouteNew: " + mark.getId());
                     passMarkerMother.addView(mark);
                     mark.setVisibility(View.VISIBLE);
                     // marker set Layout width, height using startMarker's LayoutParam
@@ -907,7 +910,7 @@ public class MainActivity extends AppCompatActivity
         int count = 0;
         for ( List<Station> section : currentRoute.getSections() ) {
             for ( int i = 0 ; i < section.size(); i ++ ) {
-                Log.d(TAG, "inflateRouteNew: inflating");
+                // log.d(TAG, "inflateRouteNew: inflating");
                 ImageView marker = (ImageView) inflater.inflate(R.layout.content_main_route, null);
                 if ( count == 0 ) {
 //                    marker.setImageResource( R.drawable.route_start_normal_marker);
@@ -937,7 +940,7 @@ public class MainActivity extends AppCompatActivity
         for (int i = 3; i < 6; i++) {
             for ( ImageView mark : routeMarkers ) {
                 if (mark.getId() / 1000 == i) {
-                    Log.d(TAG, "inflateRouteNew: " + mark.getId());
+                    // log.d(TAG, "inflateRouteNew: " + mark.getId());
                     passMarkerMother.addView(mark);
                     mark.setVisibility(View.VISIBLE);
                     // marker set Layout width, height using startMarker's LayoutParam
@@ -947,7 +950,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         setRouteMarkerPosition();
-        Log.d(TAG, "reInflateRouteMarker: " + getCurPage());
+        // log.d(TAG, "reInflateRouteMarker: " + getCurPage());
         mRoutePagerAdapter.reinflateRouteCongestion(getCurPage());
 
     }
@@ -962,22 +965,22 @@ public class MainActivity extends AppCompatActivity
 
 
         if (conStatus == ServerConnectionSingle.CON_GREEN) {
-            Log.d(TAG, "getCongestionDrawble: GREEN");
+            // log.d(TAG, "getCongestionDrawble: GREEN");
             if (etsStatus == START_MARKER) return R.drawable.route_start_green_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_green_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_green_marker;
         } else if (conStatus == ServerConnectionSingle.CON_YELLOW) {
-            Log.d(TAG, "getCongestionDrawble: CON_YELLOW");
+            // log.d(TAG, "getCongestionDrawble: CON_YELLOW");
             if (etsStatus == START_MARKER) return R.drawable.route_start_yellow_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_yellow_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_yellow_marker;
         } else if (conStatus == ServerConnectionSingle.CON_RED) {
-            Log.d(TAG, "getCongestionDrawble: CON_RED");
+            // log.d(TAG, "getCongestionDrawble: CON_RED");
             if (etsStatus == START_MARKER) return R.drawable.route_start_red_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_red_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_red_marker;
         } else {
-            Log.d(TAG, "getCongestionDrawble: DEFAULT");
+            // log.d(TAG, "getCongestionDrawble: DEFAULT");
             if (etsStatus == START_MARKER) return R.drawable.route_start_normal_marker;
             if (etsStatus == TRANSFER_MARKER) return R.drawable.route_transfer_normal_marker;
             if (etsStatus == END_MARKER) return R.drawable.route_end_normal_marker;
@@ -1068,7 +1071,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
+        // log.d(TAG, "onResume: ");
 
     }
 

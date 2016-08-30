@@ -91,7 +91,7 @@ public class TtfMapImageView extends MapTouchImageView {
         for ( SemiStation ss : semiStationList ) {
             if (ss.getName().equals( semiStation.getName() )) {
                 ss.getLaneNumbers().add( semiStation.getLaneNumber() );
-                Log.d(TAG, "saveSemiStation: " + semiStation.getLaneNumber());
+//                Log.d(TAG, "saveSemiStation: " + semiStation.getLaneNumber());
                 return;
             }
         }
@@ -142,8 +142,8 @@ public class TtfMapImageView extends MapTouchImageView {
         if ( mode != NONE && select != DONE) {
             setStationsPosition(matrix);
             ttfMapImageViewListener.applyMapScaleChange();
-            Log.d(TAG, "afterTouch: " + semiStationList.get(0).getPosition().toString() );
-            Log.d(TAG, "afterTouch: " + System.identityHashCode( semiStationList.get(0).getPosition() ));
+//            Log.d(TAG, "afterTouch: " + semiStationList.get(0).getPosition().toString() );
+//            Log.d(TAG, "afterTouch: " + System.identityHashCode( semiStationList.get(0).getPosition() ));
         }
     }
 
@@ -230,11 +230,11 @@ public class TtfMapImageView extends MapTouchImageView {
         if (mapCenter == null) {
             mapCenter = new PointF( getViewWidth() / 2 , getViewHeight() / 2);
         }
-        Log.d(TAG, "moveToMapCenter: " + mapCenter.toString());
-        Log.d(TAG, "moveToMapCenter: " + point );
+//        Log.d(TAG, "moveToMapCenter: " + mapCenter.toString());
+//        Log.d(TAG, "moveToMapCenter: " + point );
         float moveX = (mapCenter.x - point.x) / 10;
         float moveY = (mapCenter.y - point.y) / 10;
-        Log.d(TAG, "moveToMapCenter: " + moveX + " / " + moveY);
+//        Log.d(TAG, "moveToMapCenter: " + moveX + " / " + moveY);
 
 
         for ( int i = 0; i < 10; i ++ ) {

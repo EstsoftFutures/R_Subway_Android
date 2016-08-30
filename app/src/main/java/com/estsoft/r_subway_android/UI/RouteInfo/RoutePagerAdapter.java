@@ -34,7 +34,7 @@ public class RoutePagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         RouteInfoFragment rf = RouteInfoFragment.newInstance(position, route);
-        Log.d(TAG, "getItem: position - " + position );
+//        Log.d(TAG, "getItem: position - " + position );
         routeInfoFragments[position] = rf;
         return rf;
     }
@@ -51,7 +51,7 @@ public class RoutePagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public void reinflateRouteCongestion( int position ) {
-        Log.d(TAG, "reinflateRouteCongestion: " + position);
+//        Log.d(TAG, "reinflateRouteCongestion: " + position);
 //        routeInfoFragments.get(position).reInflateRouteConInfo();
         routeInfoFragments[position].reInflateRouteConInfo();
     }

@@ -31,7 +31,7 @@ public class RouteInfoFragment extends Fragment {
     }
 
     public void reInflateRouteConInfo() {
-        Log.d(TAG, "reInflateRouteConInfo: " + mPage);
+//        Log.d(TAG, "reInflateRouteConInfo: " + mPage);
         adapter.reInflateRouteCon();
     }
 
