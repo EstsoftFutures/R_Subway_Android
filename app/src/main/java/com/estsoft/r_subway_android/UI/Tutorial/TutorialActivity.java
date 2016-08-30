@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
+import android.view.WindowManager;
 import android.widget.VideoView;
 
 import com.estsoft.r_subway_android.R;
@@ -22,6 +23,7 @@ public class TutorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         viewInit();
 
