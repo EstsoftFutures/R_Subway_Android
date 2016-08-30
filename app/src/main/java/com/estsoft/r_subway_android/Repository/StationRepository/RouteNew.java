@@ -49,7 +49,7 @@ public class RouteNew {
             { "응암", "봉화산", "봉화산(서울의료원)", "새절", "한강진", "공덕", "안암", "독바위", "봉화산-새절", "봉화산-역촌"  },
             { "장암", "부평구청", "온수", "도봉산", "태릉입구", "건대입구", "내방"},
             { "암사", "모란", "잠실", },
-            { "종합운동장", "신논현", "동작", "개화", "당산"},
+            { "종합운동장", "신논현", "동작", "개화", "당산", "김포공항"},
             { "강남", "광교" }, // 신분당선
             { "왕십리", "수원", "죽전" }, //분당선
             { "오이도", "인천" }, //수인선
@@ -68,10 +68,10 @@ public class RouteNew {
     };
 
     public static boolean checkFirstLaneException( int stationID ) {
-        Log.d(TAG, "checkFirstLaneException: run! " + stationID);
+//        Log.d(TAG, "checkFirstLaneException: run! " + stationID);
         for (int i = 0; i  < firstLaneExceptingStation.length; i ++) {
             if ( firstLaneExceptingStation[i] == stationID ) {
-                Log.d(TAG, "checkFirstLaneException: returning true!!");
+//                Log.d(TAG, "checkFirstLaneException: returning true!!");
                 return true;
             }
         }
@@ -116,7 +116,7 @@ public class RouteNew {
         }
     }
     public static boolean compareTerminalName( String stationName, int laneType ) {
-        Log.d(TAG, "compareTerminalName: " + laneType);
+//        Log.d(TAG, "compareTerminalName: " + laneType);
         String[] laneTerminalNames = terminalStationNames[ getLineIndex(laneType) ];
         if (stationName.contains("(")) stationName = stationName.substring(0, stationName.indexOf("("));
         for (int i = 0; i < laneTerminalNames.length; i ++ ) {

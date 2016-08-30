@@ -17,7 +17,7 @@ public class DateManager {
     private static DateManager ourInstance = null;
 
     public static DateManager getInstance() {
-        Log.d(TAG, "getInstance: " + "instance");
+//        Log.d(TAG, "getInstance: " + "instance");
         if (ourInstance == null) ourInstance = new DateManager();
         return ourInstance;
     }
@@ -44,7 +44,7 @@ public class DateManager {
         redDayList.add("10-3");
         redDayList.add("10-9");
         redDayList.add("12-25");
-        Log.d(TAG, "DateManager: "  + "init");
+//        Log.d(TAG, "DateManager: "  + "init");
 
     }
 
@@ -61,8 +61,8 @@ public class DateManager {
         else if (curTime.get(Calendar.DAY_OF_WEEK) == 7) redDay = 1;
         else redDay = 0;
 
-        Log.d(TAG, "getDayAndTime: " + (curTime.get(Calendar.MONTH) + 1) + "." + curTime.get(Calendar.DAY_OF_MONTH) + " / " + curTime.get(Calendar.HOUR));
-        Log.d(TAG, "getDayAndTime: " + yDay + " " + redDay + " " + hour);
+//        Log.d(TAG, "getDayAndTime: " + (curTime.get(Calendar.MONTH) + 1) + "." + curTime.get(Calendar.DAY_OF_MONTH) + " / " + curTime.get(Calendar.HOUR));
+//        Log.d(TAG, "getDayAndTime: " + yDay + " " + redDay + " " + hour);
 
         return yDay + "-" + redDay + "-" + hour;
     }
@@ -72,7 +72,7 @@ public class DateManager {
             String[] dayString = day.split("-");
             int month = Integer.parseInt(dayString[0]);
             int dayint = Integer.parseInt(dayString[1]);
-            Log.d(TAG, "checkRedDay: "+ (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.DAY_OF_MONTH) );
+//            Log.d(TAG, "checkRedDay: "+ (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.DAY_OF_MONTH) );
             if ((calendar.get(Calendar.MONTH) + 1) == month && calendar.get(Calendar.DAY_OF_MONTH) == dayint ) return true;
         }
         return false;

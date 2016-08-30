@@ -31,7 +31,7 @@ public class SemiStation {
         Collections.reverse(this.laneNumbers);
         if (this.getIntId() == 133) {
             for ( int num : laneNumbers  ) {
-                Log.d(TAG, "sortLaneNumbers: + " + num);
+//                Log.d(TAG, "sortLaneNumbers: + " + num);
             }
         }
     }
@@ -65,7 +65,7 @@ public class SemiStation {
 
     public void setPosition(PointF position) {
         this.position = position;
-        Log.e("TEST", position.toString());
+//        Log.e("TEST", position.toString());
     }
 
 

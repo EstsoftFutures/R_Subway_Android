@@ -180,9 +180,10 @@ jintArray dijkstra(JNIEnv *env, const Station& start, const Station& end, int we
         int cost = bq.top().second;
 
         if(cost == 0 && !startPoint) startPoint = true;
-        else if(cost == 0 && startPoint)
+        else if(cost == 0 && startPoint && start.getStationName() != here.getStationName())
         {
-          //  break;
+            //  break;
+            logger.logE("코스트가 0인역들", here.getStationName());
             bq.pop();
             continue;
         }

@@ -72,7 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             } else {
 //                int movePerson = congestion/(mStation.getTrainsPerHour()*10*4);
                 // red : 12
-                Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
+//                Log.d(TAG,"congestion:"+congestionStatus+"stationgetTrain"+station.getTrainsPerHour());
                 congestionPercent = (int)(congestionStatus/((double)station.getTrainsPerHour()*10*4*12)*100)+"%";
                 congestionMsg = getCongestionColor(congestionColor);
                 congestionNum += congestionStatus+" 명 (1시간 기준)";
@@ -86,7 +86,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             accidentMsg = "네트워크가 활성화 되지 않았습니다.";
         }
 
-        if (congestionHolder == null) Log.d(TAG, "setStationStatus: NULL!!!!!!!!!!!!!!!!!!!");
+//        if (congestionHolder == null) Log.d(TAG, "setStationStatus: NULL!!!!!!!!!!!!!!!!!!!");
 
         congestionHolder.crawling.setText(accidentMsg);
         congestionHolder.crawling.setTextColor(Color.BLACK);
@@ -333,7 +333,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(view);
 
 
-            Log.d("station", "station" + stations.get(page).toString());
+//            Log.d("station", "station" + stations.get(page).toString());
             curInfo = (LinearLayout) view.findViewById(R.id.cur_info);
             preStation = (TextView) view.findViewById(R.id.pre_station);
             curStation = (TextView) view.findViewById(R.id.cur_station);

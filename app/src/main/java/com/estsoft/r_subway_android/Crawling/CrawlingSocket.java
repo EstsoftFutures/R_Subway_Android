@@ -34,7 +34,7 @@ public class CrawlingSocket extends Thread {
             outputStream.flush();
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             accidentInfo = input.readLine();
-            Log.d(TAG, "run: " + accidentInfo);
+//            Log.d(TAG, "run: " + accidentInfo);
             socket.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -42,13 +42,8 @@ public class CrawlingSocket extends Thread {
             ex.printStackTrace();
         } finally {
             accidentInfo = "Server Connection Fail";
-            Log.d(TAG, "run: " + accidentInfo);
+//            Log.d(TAG, "run: " + accidentInfo);
         }
-    }
-
-    public String getAccidentInfo() {
-        Log.d(TAG, "getAccidentInfo: Call getAccidentInfo" );
-        return accidentInfo;
     }
 
     /*
