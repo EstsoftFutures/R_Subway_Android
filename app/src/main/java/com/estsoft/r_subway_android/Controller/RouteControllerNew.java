@@ -31,6 +31,8 @@ public class RouteControllerNew {
     private final static int MIN_TRANSFER = 1;
     private static final int CUSTOM_ROUTE = 2;
 
+    private static final float PLUS_INTER_STATION = 3f;
+
     private final int adjScale = 6;
 
     StationController stationController = null;
@@ -313,14 +315,14 @@ public class RouteControllerNew {
         for ( Pair<Station, Integer> pair : pairs ) {
             if (pair.first.getIndex() == nextStationIndex ) {
                 int edgeCost = pair.second;
-                caledGapCal.set(Calendar.MINUTE, caledGapCal.get(Calendar.MINUTE) +  Math.round(edgeCost / adjScale) );
+                caledGapCal.set(Calendar.MINUTE, caledGapCal.get(Calendar.MINUTE) +  Math.round((edgeCost + PLUS_INTER_STATION) / adjScale) );
                 return caledGapCal;
             }
         }
         return caledGapCal;
     }
     private int getTransferCost( Station station, Station exStaton ) {
-        return 5;
+        return 2;
     }
     private Calendar getTimeTable ( Station station, List<Station> terminals, boolean isPrevWay, Calendar sharedTime ) {
         Calendar newCal = (Calendar)sharedTime.clone();
