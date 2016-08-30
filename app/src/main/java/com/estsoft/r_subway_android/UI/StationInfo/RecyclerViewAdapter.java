@@ -53,7 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void setStationStatus(int internetStatus, int accidentStatus, int congestionStatus, int congestionColor,Station station) {
         String accidentMsg = "";
         String congestionMsg = "";
-        String congestionPercent = "?";
+        String congestionPercent = "혼잡도 정보를 받아오고 있습니다.";
         String congestionNum = "승하차 인원: 약 ";
         if ( internetStatus == ServerConnectionSingle.INTERNET_GOOD ) {
 
@@ -67,6 +67,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             if ( congestionStatus == ServerConnectionSingle.NONE_EXIST_STATION ) {
                 congestionMsg = "지원하지 않는 역입니다.";
+                congestionPercent = "";
                 congestionHolder.congestionPercent.setVisibility(View.GONE);
                 congestionHolder.congestionNum.setVisibility(View.GONE);
             } else {
